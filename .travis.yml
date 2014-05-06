@@ -1,0 +1,19 @@
+language: cpp
+compiler:
+  - clang
+  - gcc
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install valgrind
+  - sudo apt-get install g++
+  - sudo apt-get install cmake
+before_script:
+  - git submodule init
+  - git submodule update
+script:
+  - mkdir build
+  - cd build
+  - cmake -DCHARTREUSE_HAS_GTEST=ON -DCHARTREUSE_ENABLE_SIMD=OFF ..
+  - make clean
+  - make
+  - valgrind --leak-check=full --track-origins=yes ./chartreuse/tests/chartreuse_tests

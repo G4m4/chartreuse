@@ -1,5 +1,5 @@
-/// @file spectrogram.h
-/// @brief Spectrogram algorithm implementation
+/// @file algorithms_common.cc
+/// @brief Common utilities for algorithms - implementations
 /// @author gm
 /// @copyright gm 2014
 ///
@@ -18,33 +18,28 @@
 /// You should have received a copy of the GNU General Public License
 /// along with Chartreuse.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "chartreuse/src/algorithms/spectrogram.h"
-
-#include <cmath>
-
-#include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
-#include "chartreuse/src/algorithms/dftraw.h"
+
+// std::min, max
+#include <algorithm>
 
 namespace chartreuse {
 namespace algorithms {
 
-Spectrogram::Spectrogram(const unsigned int window_length,
-                         const unsigned int dft_length,
-                         const float sampling_freq)
-    : window_length_(window_length),
-      dft_length_(dft_length),
-      sampling_freq_(sampling_freq),
-      scratch_memory_(window_length, 0.0f) {
-  CHARTREUSE_ASSERT(window_length > 0);
-  CHARTREUSE_ASSERT(dft_length > 0);
-  CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
-  CHARTREUSE_ASSERT(sampling_freq > 0.0f);
+unsigned int GetNearestPowerofTwo(const unsigned int value) {
+  unsigned int out(value - 1);
+  out |= out >> 1;
+  out |= out >> 2;
+  out |= out >> 4;
+  out |= out >> 8;
+  out |= out >> 16;
+  // In case of value = 1
+  const unsigned int kThreshold(2);
+  return std::max(kThreshold, out + 1);
 }
 
-void Spectrogram::operator()(const float* const input,
-                             const unsigned int length,
-                             float* const output) {
+bool IsPowerOfTwo(const unsigned int value) {
+  return (GetNearestPowerofTwo(value) == value);
 }
 
 }  // namespace algorithms

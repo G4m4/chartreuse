@@ -48,3 +48,48 @@ TEST(AudioWaveform, Range) {
     index += frame.size();
   }
 }
+
+/// @brief Compute the descriptor for a pure sinusoid,
+/// check that its range lies within [-1.0f ; 1.0f]
+TEST(AudioWaveform, Sin) {
+  AudioWaveform descriptor;
+  std::vector<float> desc_data(descriptor.DataLength());
+
+  unsigned int index(0);
+  while (index < kDataTestSetSize - 1) {
+    std::array<float, chartreuse::kHopSizeSamples> frame;
+    // Fill the frame with sin data
+    std::copy(&kInSin[index],
+              &kInSin[std::min(index + frame.size(), kDataInSinLength - 1)],
+              frame.begin());
+    descriptor(frame, &desc_data[0]);
+    for (unsigned int desc_index(0);
+         desc_index < desc_data.size();
+         ++desc_index) {
+      EXPECT_GE(1.0f, desc_data[desc_index]);
+      EXPECT_LE(-1.0f, desc_data[desc_index]);
+    }
+    index += frame.size();
+  }
+}
+
+/// @brief Performance test for computing a fixed length signal
+TEST(AudioWaveform, Perf) {
+  AudioWaveform descriptor;
+  std::vector<float> desc_data(descriptor.DataLength());
+
+  unsigned int index(0);
+  // Computing the mean output prevents the compiler from optimizing out things
+  float mean(0.0f);
+  while (index < kDataPerfSetSize) {
+    std::array<float, chartreuse::kHopSizeSamples> frame;
+    // Fill the frame with random data
+    std::generate(frame.begin(),
+                  frame.end(),
+                  std::bind(kNormDistribution, kRandomGenerator));
+    descriptor(frame, &desc_data[0]);
+    mean += desc_data[0] * desc_data[0];
+    index += frame.size();
+  }
+  EXPECT_LT(-1.0f, mean);
+}

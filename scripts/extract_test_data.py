@@ -78,6 +78,9 @@ if __name__ == "__main__":
     # print(utilities.ZeroCrossings(utilities.Diff(signals[0])))
 #     pylab.plot((signals[1] - signals[0])[view_beginning:view_beginning + view_length:1])
 
+    # Transforming a flat signal into a 2D one
+    data_2D = signals[0].reshape(25, 1024).transpose()
+    pylab.imshow(data_2D, aspect = 'auto')
     pylab.legend()
 
     pylab.show()

@@ -1,5 +1,5 @@
-/// @file dft.h
-/// @brief DFT algorithm wrapper declarations
+/// @file dftraw.h
+/// @brief DFT "raw" algorithm wrapper declarations
 /// @author gm
 /// @copyright gm 2014
 ///

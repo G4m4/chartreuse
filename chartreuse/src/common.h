@@ -59,6 +59,9 @@ template<typename Type> void IGNORE(const Type&) {}
   #define ALIGN
 #endif  // (_USE_SSE)
 
+/// @brief Hop size (e.g. frame length) in samples
+static const unsigned int kHopSizeSamples(480);
+
 }  // namespace chartreuse
 
 #endif  // CHARTREUSE_SRC_COMMON_H_

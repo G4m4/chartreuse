@@ -116,6 +116,34 @@ void RingBuffer::Push(const float* const src, const unsigned int count) {
   size_ += count;
 }
 
+void RingBuffer::Fill(const float value, const unsigned int count) {
+  CHARTREUSE_ASSERT(IsGood());
+  CHARTREUSE_ASSERT(count > 0);
+  CHARTREUSE_ASSERT(count <= Capacity() - Size());
+  // Length of the "right" part: from writing cursor to the buffer end
+  const unsigned int right_part_size(std::min(capacity_ - writing_position_,
+                                              count));
+  // Length of the "left" part: from the buffer beginning
+  // to the last element to be pushed
+  const unsigned int left_part_size(count - right_part_size);
+
+  // Filling the first part
+  std::fill(&data_[writing_position_],
+            &data_[writing_position_ + right_part_size],
+            value);
+  if (0 != left_part_size) {
+    // Fill the second part (if there is one)
+    std::fill(&data_[0],
+              &data_[left_part_size],
+              value);
+  }
+
+  writing_position_ += count;
+  writing_position_ = writing_position_ % capacity_;
+
+  size_ += count;
+}
+
 void RingBuffer::Clear(void) {
   writing_position_ = 0;
   reading_position_ = 0;

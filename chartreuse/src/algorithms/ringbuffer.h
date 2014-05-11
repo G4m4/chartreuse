@@ -49,6 +49,12 @@ class RingBuffer {
   /// @param[in]  count   Buffer elements count
   void Push(const float* const src, const unsigned int count);
 
+  /// @brief Fill "count" elements with the constant value "value"
+  ///
+  /// @param[in]  value   Value to push
+  /// @param[in]  count   Buffer elements count
+  void Fill(const float value, const unsigned int count);
+
   /// @brief Explicitly clear buffer content but does not deallocate it
   void Clear(void);
 

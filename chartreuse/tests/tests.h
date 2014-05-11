@@ -32,18 +32,12 @@
 
 #include "chartreuse/src/configuration.h"
 
-static const unsigned int kDataTestSetSize = 64 * 1024;
-static const unsigned int kIterationTestSetLength = 1024;
-
 // Smaller performance test sets in debug
 #if (_BUILD_CONFIGURATION_DEBUG)
 static const int kDataPerfSetSize = 64 * 1024;
 #else  // (_BUILD_CONFIGURATION_DEBUG)
 static const int kDataPerfSetSize = 64 * 1024 * 1024;
 #endif  // (_BUILD_CONFIGURATION_DEBUG)
-
-static const unsigned int kDefaultSamplingRate = 48000;
-static const float kDefaultTestFreq = 3520.0f;  // 8 * 440
 
 static const unsigned int kSmallDFTLength = 64;
 static const unsigned int kMediumDFTLength = 512;
@@ -64,18 +58,25 @@ static const float kDataLargeSinDFT[] = {
 };
 
 // Smaller input data set in debug
-#if (CHTZ_CONFIGURATION_DEBUG)
-static const size_t kDataInSinLength = sizeof(kDataInSin)
-                                        / (8 * sizeof(kDataInSin[0]));
-#else  // (CHTZ_CONFIGURATION_DEBUG)
-static const size_t kDataInSinLength = sizeof(kDataInSin)
-                                        / sizeof(kDataInSin[0]);
-#endif  // (CHTZ_CONFIGURATION_DEBUG)
+#if (_BUILD_CONFIGURATION_DEBUG)
+/// @brief Sinusoid data length
+static const size_t kDataInSinLength(sizeof(kDataInSin)
+                                       / (4 * sizeof(kDataInSin[0])));
+#else  // (_BUILD_CONFIGURATION_DEBUG)
+/// @brief Sinusoid data length
+static const size_t kDataInSinLength(sizeof(kDataInSin)
+                                     / sizeof(kDataInSin[0]));
+#endif  // (_BUILD_CONFIGURATION_DEBUG)
 
+/// @brief Helper wrapper around the sinusoid data
 const std::vector<float> kInSin(kDataInSin, kDataInSin + kDataInSinLength);
+
+/// @brief Standard length for tests data sets
+static const unsigned int kDataTestSetSize(kDataInSinLength);
 
 /// @brief Uniform distribution of normalized float values
 static std::uniform_real_distribution<float> kNormDistribution(-1.0f, 1.0f);
+/// @brief Random generator
 static std::default_random_engine kRandomGenerator;
 
 #endif  // CHARTREUSE_TESTS_TESTS_H_

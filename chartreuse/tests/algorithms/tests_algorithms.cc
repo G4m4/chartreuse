@@ -25,9 +25,13 @@
 // Using declarations for tested class
 using chartreuse::algorithms::DftRaw;
 
+static const unsigned int kFFTDataSize(1024);
+static const unsigned int kDefaultSamplingRate = 48000;
+static const float kDefaultTestFreq = 3520.0f;  // 8 * 440
+
 /// @brief Compute the DFT of an uniform white noise
 TEST(DftRaw, WhiteNoise) {
-  std::vector<float> data(kIterationTestSetLength);
+  std::vector<float> data(kFFTDataSize);
   std::vector<float> out_data(kLargeDFTLength, 0.0f);
   std::generate(data.begin(),
                 data.end(),

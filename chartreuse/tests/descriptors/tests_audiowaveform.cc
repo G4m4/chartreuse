@@ -73,6 +73,31 @@ TEST(AudioWaveform, Sin) {
   }
 }
 
+/// @brief Compute the descriptor for a constant value,
+/// check that its range lies within [-1.0f ; 1.0f]
+TEST(AudioWaveform, Constant) {
+  AudioWaveform descriptor;
+  std::vector<float> desc_data(descriptor.DataLength());
+  const float kConstant(1.0f);
+
+  unsigned int index(0);
+  while (index < kDataTestSetSize - 1) {
+    std::array<float, chartreuse::kHopSizeSamples> frame;
+    // Fill the frame with sin data
+    std::fill(frame.begin(),
+              frame.end(),
+              kConstant);
+    descriptor(frame, &desc_data[0]);
+    for (unsigned int desc_index(0);
+         desc_index < desc_data.size();
+         ++desc_index) {
+      EXPECT_GE(1.0f, desc_data[desc_index]);
+      EXPECT_LE(-1.0f, desc_data[desc_index]);
+    }
+    index += frame.size();
+  }
+}
+
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioWaveform, Perf) {
   AudioWaveform descriptor;

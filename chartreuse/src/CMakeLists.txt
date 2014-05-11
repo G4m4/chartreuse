@@ -11,9 +11,11 @@ include_directories(
 # Retrieve externals source files
 set(CHARTREUSE_EXTERNALS_KISSFFT_SRC
   ${KISSFFT_INCLUDE_DIRS}/tools/kiss_fftr.c
+  ${KISSFFT_INCLUDE_DIRS}/kiss_fft.c
 )
 set(CHARTREUSE_EXTERNALS_KISSFFT_HDR
   ${KISSFFT_INCLUDE_DIRS}/tools/kiss_fftr.h
+  ${KISSFFT_INCLUDE_DIRS}/kiss_fft.h
 )
 # Ignoring warnings for external source files
 foreach(src_file ${CHARTREUSE_EXTERNALS_KISSFFT_SRC})

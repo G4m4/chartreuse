@@ -4,6 +4,7 @@
 include_directories(
   SYSTEM
   ${GTEST_INCLUDE_DIRS}
+  ${KISSFFT_INCLUDE_DIRS}
 )
 
 include_directories(

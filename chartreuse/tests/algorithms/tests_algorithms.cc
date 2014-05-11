@@ -114,7 +114,7 @@ TEST(DftRaw, SinSmallLength) {
       out_data.size(),
       &out_data[0]);
 
-  for (int i = 0; i < kSmallDFTLength; i += 2) {
+  for (unsigned int i = 0; i < kSmallDFTLength; i += 2) {
     EXPECT_NEAR(kDataSmallSinDFT[i / 2], out_data[i], kEpsilon);
   }
 }
@@ -132,7 +132,7 @@ TEST(DftRaw, SinMedLength) {
       out_data.size(),
       &out_data[0]);
 
-  for (int i = 0; i < kMediumDFTLength; i += 2) {
+  for (unsigned int i = 0; i < kMediumDFTLength; i += 2) {
     EXPECT_NEAR(kDataMediumSinDFT[i / 2], out_data[i], kEpsilon);
   }
 }
@@ -152,7 +152,7 @@ TEST(DftRaw, SinLargeLength) {
       out_data.size(),
       &out_data[0]);
 
-  for (int i = 0; i < kLargeDFTLength; i += 2) {
+  for (unsigned int i = 0; i < kLargeDFTLength; i += 2) {
     EXPECT_NEAR(kDataLargeSinDFT[i / 2], out_data[i], kEpsilon);
   }
 }

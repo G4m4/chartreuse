@@ -12,17 +12,23 @@ include_directories(
 
 # Include all subdirectories tests source files
 add_subdirectory(algorithms)
+add_subdirectory(descriptors)
 
 # Group sources
 source_group("algorithms"
   FILES
   ${CHARTREUSE_TESTS_ALGORITHMS_SRC}
 )
+source_group("descriptors"
+  FILES
+  ${CHARTREUSE_TESTS_DESCRIPTORS_SRC}
+)
 
 # Source files
 set(CHARTREUSE_TESTS_SRC
     main.cc
     ${CHARTREUSE_TESTS_ALGORITHMS_SRC}
+    ${CHARTREUSE_TESTS_DESCRIPTORS_SRC}
 )
 
 # Target

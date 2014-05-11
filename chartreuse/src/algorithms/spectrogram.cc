@@ -29,22 +29,53 @@
 namespace chartreuse {
 namespace algorithms {
 
+// TODO(gm): this should probably not be fixed
+static const unsigned int kOverlap(3);
+
 Spectrogram::Spectrogram(const unsigned int window_length,
                          const unsigned int dft_length,
                          const float sampling_freq)
     : window_length_(window_length),
       dft_length_(dft_length),
       sampling_freq_(sampling_freq),
-      scratch_memory_(window_length, 0.0f) {
+      dft_(),
+      scratch_memory_(window_length),
+      tmp_buffer_(dft_length) {
   CHARTREUSE_ASSERT(window_length > 0);
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
+  // The first input buffer is to be considered as the "future" part
+  // in the overlap.
+  // Hence, the first 2 parts ("past" and "present") have to be filled in order
+  // for the internal buffer writing cursor to be at the right position
+  // TODO(gm): Find a better way using an "overlap" parameter to do this
+  scratch_memory_.Fill(0.0f, window_length * (kOverlap - 1) / kOverlap);
 }
 
+Spectrogram::~Spectrogram() {
+  // Nothing to do here for now
+};
+
 void Spectrogram::operator()(const float* const input,
-                             const unsigned int length,
                              float* const output) {
+  // Push into ringbuffer for overlap
+  scratch_memory_.Push(input, window_length_ / kOverlap);
+  // Pop - zero-padding done in the ringbuffer method
+  scratch_memory_.Pop(&tmp_buffer_[0], dft_length_);
+  // Apply the window
+  ProcessWindow(&tmp_buffer_[0]);
+  // Apply DFT
+  dft_(&tmp_buffer_[0],
+       &tmp_buffer_[dft_length_ - 1],
+       false,
+       dft_length_,
+       output);
+}
+
+void Spectrogram::ProcessWindow(float* const input) const {
+  // Nothing to do here for now
+  IGNORE(input);
 }
 
 }  // namespace algorithms

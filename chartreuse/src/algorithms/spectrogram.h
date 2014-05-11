@@ -23,6 +23,9 @@
 
 #include <vector>
 
+#include "chartreuse/src/algorithms/dftraw.h"
+#include "chartreuse/src/algorithms/ringbuffer.h"
+
 namespace chartreuse {
 namespace algorithms {
 
@@ -38,31 +41,41 @@ class Spectrogram {
   /// @param[in]  window_length   Length of each internal segment
   /// @param[in]  dft_length   Length of the DFT applied to each segment
   /// @param[in]  sampling_freq   Sampling frequency (required by the DFT)
+  // TODO(gm): an "overlap" parameter should be parameterized too
+  // (for now it is fixed at 3)
   explicit Spectrogram(const unsigned int window_length,
                        const unsigned int dft_length,
                        const float sampling_freq);
+  ~Spectrogram();
 
   /// @brief Actual performing method
   /// Retrieve the spectrogram for the given input segment
   /// overlapping and such will be automatically taken care of.
   ///
-  /// @param[in]  input   First element of the input
-  /// @param[in]  length    Input length
+  /// @param[in]  input   First element of the input (length = window / overlap)
   /// @param[out]  output    Output data (length = dft_length / 2 + 1)
   /// @return nothing (cannot fail)
   void operator()(const float* const input,
-                  const unsigned int length,
                   float* const output);
 
  private:
-   // No assignment operator for this class
-   Spectrogram& operator=(const Spectrogram& right);
+  // No assignment operator for this class
+  Spectrogram& operator=(const Spectrogram& right);
+
+  /// @brief Processing method: apply a window on the given signal (in-place)
+  ///
+  /// @param[in,out]  input   Input to be windowed
+  /// @return nothing (cannot fail)
+  // TODO(gm): Implement this as a separated class?
+  void ProcessWindow(float* const input) const;
 
    const unsigned int window_length_;  ///< Length of each internal segment
    const unsigned int dft_length_;  ///< Length of the DFT
    const float sampling_freq_;  ///< Input sampling frequency
-   std::vector<float> scratch_memory_;  ///< Internal scratch memory
-                                        ///< for overlapped data saving
+   DftRaw dft_;  ///< DFT algorithm wrapper object
+   RingBuffer scratch_memory_;  ///< Internal scratch memory
+                                ///< for overlapped data saving
+   std::vector<float> tmp_buffer_;  ///< Internal temporary buffer for DFT
 };
 
 }  // namespace algorithms

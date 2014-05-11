@@ -22,6 +22,7 @@
 #define CHARTREUSE_TESTS_TESTS_H_
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <functional>
 #include <iterator>
@@ -31,6 +32,7 @@
 #include "gtest/gtest.h"
 
 #include "chartreuse/src/configuration.h"
+#include "chartreuse/src/common.h"
 
 // Smaller performance test sets in debug
 #if (_BUILD_CONFIGURATION_DEBUG)

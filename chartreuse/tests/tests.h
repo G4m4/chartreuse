@@ -75,7 +75,7 @@ static const size_t kDataInSinLength = sizeof(kDataInSin)
 const std::vector<float> kInSin(kDataInSin, kDataInSin + kDataInSinLength);
 
 /// @brief Uniform distribution of normalized float values
-std::uniform_real_distribution<float> kNormDistribution(-1.0f, 1.0f);
-std::default_random_engine kRandomGenerator;
+static std::uniform_real_distribution<float> kNormDistribution(-1.0f, 1.0f);
+static std::default_random_engine kRandomGenerator;
 
 #endif  // CHARTREUSE_TESTS_TESTS_H_

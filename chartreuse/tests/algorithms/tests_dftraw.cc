@@ -1,5 +1,5 @@
-/// @file tests_algorithms.cc
-/// @brief Chartreuse Algorithms tests
+/// @file tests_dftraw.cc
+/// @brief Chartreuse "DftRaw" algorithm tests
 /// @author gm
 /// @copyright gm 2014
 ///

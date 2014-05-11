@@ -1,4 +1,4 @@
-/// @file audiowaveform.h
+/// @file audiowaveform.cc
 /// @brief AudioWaveform descriptor declaration
 /// @author gm
 /// @copyright gm 2014

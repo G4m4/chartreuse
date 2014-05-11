@@ -31,10 +31,14 @@ set(CHARTREUSE_TESTS_SRC
     ${CHARTREUSE_TESTS_ALGORITHMS_SRC}
     ${CHARTREUSE_TESTS_DESCRIPTORS_SRC}
 )
+set(CHARTREUSE_TESTS_HDR
+    tests.h
+)
 
 # Target
 add_executable(chartreuse_tests
   ${CHARTREUSE_TESTS_SRC}
+  ${CHARTREUSE_TESTS_HDR}
 )
 
 set_target_mt(chartreuse_tests)

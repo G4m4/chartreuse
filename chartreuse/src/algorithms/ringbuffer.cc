@@ -25,7 +25,7 @@
 #include "chartreuse/src/common.h"
 
 namespace chartreuse {
-namespace synthesizer {
+namespace algorithms {
 
 RingBuffer::RingBuffer(const unsigned int capacity)
     : data_(nullptr),
@@ -141,5 +141,5 @@ unsigned int RingBuffer::Size(void) const {
   return size_;
 }
 
-}  // namespace synthesizer
+}  // namespace algorithms
 }  // namespace chartreuse

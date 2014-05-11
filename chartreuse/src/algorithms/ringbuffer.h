@@ -22,7 +22,7 @@
 #define CHARTREUSE_SRC_ALGORITHMS_RINGBUFFER_H_
 
 namespace chartreuse {
-namespace synthesizer {
+namespace algorithms {
 
 /// @brief Simple implementation of a circular buffer
 ///
@@ -44,8 +44,6 @@ class RingBuffer {
   void Pop(float* dest, const unsigned int count);
 
   /// @brief Push elements into the buffer
-  ///
-  /// Specialization for custom Sample type
   ///
   /// @param[in]  src   Buffer to push
   /// @param[in]  count   Buffer elements count
@@ -73,7 +71,7 @@ class RingBuffer {
   unsigned int reading_position_;  ///< Beginning of the reading part
 };
 
-}  // namespace synthesizer
+}  // namespace algorithms
 }  // namespace chartreuse
 
 #endif  // CHARTREUSE_SRC_ALGORITHMS_RINGBUFFER_H_

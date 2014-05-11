@@ -18,8 +18,8 @@
 /// You should have received a copy of the GNU General Public License
 /// along with Chartreuse.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CHARTREUSE_SRC_ALGORITHMS_DFT_H_
-#define CHARTREUSE_SRC_ALGORITHMS_DFT_H_
+#ifndef CHARTREUSE_SRC_ALGORITHMS_DFTRAW_H_
+#define CHARTREUSE_SRC_ALGORITHMS_DFTRAW_H_
 
 #include "chartreuse/src/common.h"
 
@@ -52,4 +52,4 @@ class DftRaw {
 }  // namespace algorithms
 }  // namespace chartreuse
 
-#endif  // CHARTREUSE_SRC_ALGORITHMS_DFT_H_
+#endif  // CHARTREUSE_SRC_ALGORITHMS_DFTRAW_H_

@@ -32,6 +32,7 @@ set(CHARTREUSE_TESTS_SRC
     ${CHARTREUSE_TESTS_DESCRIPTORS_SRC}
 )
 set(CHARTREUSE_TESTS_HDR
+    debug.h
     tests.h
 )
 

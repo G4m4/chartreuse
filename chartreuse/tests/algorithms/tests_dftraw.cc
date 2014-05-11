@@ -35,7 +35,7 @@ TEST(DftRaw, WhiteNoise) {
   std::vector<float> out_data(kLargeDFTLength, 0.0f);
   std::generate(data.begin(),
                 data.end(),
-                std::bind(kNormDistribution, kRandomGenerator));
+                [&] {return kNormDistribution(kRandomGenerator);});
 
   const float kExpectedMean = 0.0f;
   const float kEpsilonMean = 1e-3f * out_data.size();

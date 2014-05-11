@@ -37,7 +37,7 @@ TEST(AudioPower, Range) {
     // Fill the frame with random data
     std::generate(frame.begin(),
                   frame.end(),
-                  std::bind(kNormDistribution, kRandomGenerator));
+                  [&] {return kNormDistribution(kRandomGenerator);});
     descriptor(frame, &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
@@ -111,7 +111,7 @@ TEST(AudioPower, Perf) {
     // Fill the frame with random data
     std::generate(frame.begin(),
                   frame.end(),
-                  std::bind(kNormDistribution, kRandomGenerator));
+                  [&] {return kNormDistribution(kRandomGenerator);});
     descriptor(frame, &desc_data[0]);
     mean += desc_data[0] * desc_data[0];
     index += frame.size();

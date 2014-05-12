@@ -63,7 +63,7 @@ void Spectrogram::operator()(const float* const input,
   // Push into ringbuffer for overlap
   scratch_memory_.Push(input, window_length_ / kOverlap);
   // Pop - zero-padding done in the ringbuffer method
-  scratch_memory_.Pop(&tmp_buffer_[0], dft_length_);
+  scratch_memory_.PopOverlapped(&tmp_buffer_[0], dft_length_, kOverlap);
   // Apply the window
   apodizer_.ApplyWindow(&tmp_buffer_[0]);
   // Apply DFT

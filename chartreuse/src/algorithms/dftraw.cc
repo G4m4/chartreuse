@@ -18,17 +18,16 @@
 /// You should have received a copy of the GNU General Public License
 /// along with Chartreuse.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "chartreuse/src/algorithms/dftraw.h"
+
 #include <cmath>
 
 #include <algorithm>
 
-#include "chartreuse/src/algorithms/dftraw.h"
 #include "chartreuse/src/common.h"
+#include "chartreuse/src/algorithms/algorithms_common.h"
 
 namespace chartreuse {
-
-const float Pi(3.1415926535897932384626433832f);
-
 namespace algorithms {
 
 void DftRaw::operator()(const float* const begin,
@@ -39,9 +38,9 @@ void DftRaw::operator()(const float* const begin,
   const unsigned int kInDataLength(end - begin);
   const unsigned int kActualInDataLength = std::min(kInDataLength, dft_length);
   const float kTwiddleBase = (is_inverted) ?
-      (-2.0f * chartreuse::Pi) / dft_length
+      (-2.0f * chartreuse::algorithms::Pi) / dft_length
       :
-      (2.0f * chartreuse::Pi) / dft_length;
+      (2.0f * chartreuse::algorithms::Pi) / dft_length;
 
   for (unsigned int i = 0; i < dft_length / 2; ++i) {
     const float twiddle_factor = i * kTwiddleBase;

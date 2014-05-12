@@ -24,6 +24,8 @@
 namespace chartreuse {
 namespace algorithms {
 
+const float Pi(3.1415926535897932384626433832f);
+
 /// @brief Helper to retrive the nearest power of 2 of the input
 unsigned int GetNearestPowerofTwo(const unsigned int value);
 

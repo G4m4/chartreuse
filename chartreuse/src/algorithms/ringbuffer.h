@@ -35,13 +35,19 @@ class RingBuffer {
   explicit RingBuffer(const unsigned int capacity);
   ~RingBuffer();
 
-  /// @brief Pop elements out of the buffer
+  /// @brief Pop elements out of the buffer, with overlap
   ///
   /// Output may be zero-padded if more elements are poped than those available
   ///
-  /// @param[out]   dest          Buffer to store the elements into
-  /// @param[in]    count         Elements count to retrieve
-  void Pop(float* dest, const unsigned int count);
+  /// In this method the reading cursor will not advance from count,
+  /// but from (count / overlap) only! it allows overlapping stored data
+  ///
+  /// @param[out] dest    Buffer to store the elements into
+  /// @param[in]  count   Elements count to retrieve
+  /// @param[in]  overlap   Number of overlaps for filling the buffer
+  void PopOverlapped(float* dest,
+                     const unsigned int count,
+                     const unsigned int overlap);
 
   /// @brief Push elements into the buffer
   ///

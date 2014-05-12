@@ -45,9 +45,12 @@ RingBuffer::~RingBuffer() {
   data_ = nullptr;
 }
 
-void RingBuffer::Pop(float* dest, const unsigned int count) {
+void RingBuffer::PopOverlapped(float* dest,
+                               const unsigned int count,
+                               const unsigned int overlap) {
   CHARTREUSE_ASSERT(IsGood());
   CHARTREUSE_ASSERT(count > 0);
+  CHARTREUSE_ASSERT(overlap > 0);
 
   // Is zero padding required ?
   // Using "ints" here cause count may be < size, or the opposite
@@ -75,10 +78,10 @@ void RingBuffer::Pop(float* dest, const unsigned int count) {
                 &dest[right_part_size]);
     }
 
-    reading_position_ += copy_count;
+    reading_position_ += copy_count / overlap;
     reading_position_ = reading_position_ % capacity_;
 
-    size_ -= copy_count;
+    size_ -= copy_count / overlap;
   }  // If data needs to be copied...
   // Zero-padding
   if (zeropadding_count) {

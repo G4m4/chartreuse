@@ -73,11 +73,6 @@ if __name__ == "__main__":
         signals.append(signal)
         utilities.WriteWav(signal, filename, 96000.0)
 
-    # pylab.plot((utilities.Diff(signals[0]))[view_beginning:view_beginning + view_length:1], label = "diff")
-    # print(numpy.max(utilities.Diff(signals[0])))
-    # print(utilities.ZeroCrossings(utilities.Diff(signals[0])))
-#     pylab.plot((signals[1] - signals[0])[view_beginning:view_beginning + view_length:1])
-
     # Transforming a flat signal into a 2D one
     data_2D = signals[0].reshape(25, 1024).transpose()
     pylab.imshow(data_2D, aspect = 'auto')

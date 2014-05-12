@@ -38,7 +38,7 @@ Spectrogram::Spectrogram(const unsigned int window_length,
     : window_length_(window_length),
       dft_length_(dft_length),
       sampling_freq_(sampling_freq),
-      apodizer_(window_length, Window::kHamming),
+      apodizer_(window_length, Window::kRectangular),
       dft_(),
       scratch_memory_(window_length),
       tmp_buffer_(dft_length) {

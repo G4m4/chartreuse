@@ -23,6 +23,7 @@
 
 #include <vector>
 
+#include "chartreuse/src/algorithms/apodizer.h"
 #include "chartreuse/src/algorithms/dftraw.h"
 #include "chartreuse/src/algorithms/ringbuffer.h"
 
@@ -62,16 +63,10 @@ class Spectrogram {
   // No assignment operator for this class
   Spectrogram& operator=(const Spectrogram& right);
 
-  /// @brief Processing method: apply a window on the given signal (in-place)
-  ///
-  /// @param[in,out]  input   Input to be windowed
-  /// @return nothing (cannot fail)
-  // TODO(gm): Implement this as a separated class?
-  void ProcessWindow(float* const input) const;
-
    const unsigned int window_length_;  ///< Length of each internal segment
    const unsigned int dft_length_;  ///< Length of the DFT
    const float sampling_freq_;  ///< Input sampling frequency
+   Apodizer apodizer_;  ///< Dedicated object for window function application
    DftRaw dft_;  ///< DFT algorithm wrapper object
    RingBuffer scratch_memory_;  ///< Internal scratch memory
                                 ///< for overlapped data saving

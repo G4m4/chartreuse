@@ -38,6 +38,7 @@ Spectrogram::Spectrogram(const unsigned int window_length,
     : window_length_(window_length),
       dft_length_(dft_length),
       sampling_freq_(sampling_freq),
+      apodizer_(window_length, Window::kHamming),
       dft_(),
       scratch_memory_(window_length),
       tmp_buffer_(dft_length) {
@@ -64,18 +65,13 @@ void Spectrogram::operator()(const float* const input,
   // Pop - zero-padding done in the ringbuffer method
   scratch_memory_.Pop(&tmp_buffer_[0], dft_length_);
   // Apply the window
-  ProcessWindow(&tmp_buffer_[0]);
+  apodizer_.ApplyWindow(&tmp_buffer_[0]);
   // Apply DFT
   dft_(&tmp_buffer_[0],
        &tmp_buffer_[dft_length_ - 1],
        false,
        dft_length_,
        output);
-}
-
-void Spectrogram::ProcessWindow(float* const input) const {
-  // Nothing to do here for now
-  IGNORE(input);
 }
 
 }  // namespace algorithms

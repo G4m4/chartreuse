@@ -32,9 +32,5 @@ void AudioWaveform::operator()(const std::array<float, kHopSizeSamples> frame,
   data[1] = *std::max_element(frame.begin(), frame.end());
 }
 
-unsigned int AudioWaveform::DataLength(void) const {
-  return 2;
-}
-
 }  // namespace descriptors
 }  // namespace chartreuse

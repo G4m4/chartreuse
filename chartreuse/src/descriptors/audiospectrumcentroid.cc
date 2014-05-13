@@ -93,9 +93,5 @@ void AudioSpectrumCentroid::operator()(
   data[0] = kOut / kPowerSum;
 }
 
-unsigned int AudioSpectrumCentroid::DataLength(void) const {
-  return 1;
-}
-
 }  // namespace descriptors
 }  // namespace chartreuse

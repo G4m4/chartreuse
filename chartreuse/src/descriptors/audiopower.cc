@@ -32,9 +32,5 @@ void AudioPower::operator()(const std::array<float, kHopSizeSamples> frame,
   data[0] = power / static_cast<float>(frame.size());
 }
 
-unsigned int AudioPower::DataLength(void) const {
-  return 1;
-}
-
 }  // namespace descriptors
 }  // namespace chartreuse

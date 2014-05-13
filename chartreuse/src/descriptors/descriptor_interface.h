@@ -28,6 +28,32 @@
 namespace chartreuse {
 namespace descriptors {
 
+/// @brief Struct holding a descriptor "metadata",
+/// e.g. various meta informations such as its output bounds
+///
+/// Each descriptor specialization has its own, static one.
+// TODO(gm): find a way to to do this in a 100% static way
+struct Descriptor_Meta {
+  Descriptor_Meta(const unsigned int out_dim,
+                  const float out_min,
+                  const float out_max)
+    : out_dim(out_dim),
+      out_min(out_min),
+      out_max(out_max) {
+    CHARTREUSE_ASSERT(out_dim > 0);
+    // TODO(gm): These have to be static asserts
+    CHARTREUSE_ASSERT(out_min < out_max);
+  };
+
+  const unsigned int out_dim;  ///< Output dimensionality
+  const float out_min;  ///< Lower bound for output
+  const float out_max;  ///< Higher bound for output
+
+ private:
+  // No assignment operator for this class
+  Descriptor_Meta& operator=(const Descriptor_Meta& right);
+};
+
 /// @brief Define all common methods to be implemented by the descriptors
 class Descriptor_Interface {
  public:
@@ -43,9 +69,6 @@ class Descriptor_Interface {
   virtual void operator()(
     const std::array<float, chartreuse::kHopSizeSamples> frame,
     float* const data) = 0;
-
-  /// @brief Retrieve descriptor output length
-  virtual unsigned int DataLength(void) const = 0;
 };
 
 }  // namespace descriptors

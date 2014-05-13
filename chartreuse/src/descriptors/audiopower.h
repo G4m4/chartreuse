@@ -32,7 +32,10 @@ class AudioPower : public Descriptor_Interface {
   void operator()(const std::array<float, chartreuse::kHopSizeSamples> frame,
                   float* const data);
 
-  unsigned int DataLength(void) const;
+  static inline const Descriptor_Meta& Meta(void) {
+    static const Descriptor_Meta metas(1, 0.0f, 1.0f);
+    return metas;
+  }
 };
 
 }  // namespace descriptors

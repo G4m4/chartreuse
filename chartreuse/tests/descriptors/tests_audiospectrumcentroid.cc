@@ -32,7 +32,7 @@ static const float kSamplingFreq(48000.0f);
 /// check that its range lies within [-1.0f ; 1.0f]
 TEST(AudioSpectrumCentroid, Range) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
-  std::vector<float> desc_data(descriptor.DataLength());
+  std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
 
   unsigned int index(0);
   while (index < kDataTestSetSize) {
@@ -45,8 +45,8 @@ TEST(AudioSpectrumCentroid, Range) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GT(5.0f, desc_data[desc_index]);
-      EXPECT_LT(-5.0f, desc_data[desc_index]);
+      EXPECT_GT(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LT(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -56,7 +56,7 @@ TEST(AudioSpectrumCentroid, Range) {
 /// check that its range lies within [-1.0f ; 1.0f]
 TEST(AudioSpectrumCentroid, Sin) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
-  std::vector<float> desc_data(descriptor.DataLength());
+  std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
 
   unsigned int index(0);
   while (index < kDataTestSetSize - 1) {
@@ -69,8 +69,8 @@ TEST(AudioSpectrumCentroid, Sin) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GT(5.0f, desc_data[desc_index]);
-      EXPECT_LT(-5.0f, desc_data[desc_index]);
+      EXPECT_GT(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LT(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -80,7 +80,7 @@ TEST(AudioSpectrumCentroid, Sin) {
 /// check that its range lies within [-1.0f ; 1.0f]
 TEST(AudioSpectrumCentroid, Constant) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
-  std::vector<float> desc_data(descriptor.DataLength());
+  std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
   const float kConstant(1.0f);
 
   unsigned int index(0);
@@ -94,8 +94,8 @@ TEST(AudioSpectrumCentroid, Constant) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GT(5.0f, desc_data[desc_index]);
-      EXPECT_LT(-5.0f, desc_data[desc_index]);
+      EXPECT_GT(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LT(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -104,7 +104,7 @@ TEST(AudioSpectrumCentroid, Constant) {
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioSpectrumCentroid, Perf) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
-  std::vector<float> desc_data(descriptor.DataLength());
+  std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
 
   unsigned int index(0);
   // Computing the mean output prevents the compiler from optimizing out things

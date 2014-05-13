@@ -39,7 +39,7 @@ Spectrogram::Spectrogram(const unsigned int window_length,
       dft_length_(dft_length),
       sampling_freq_(sampling_freq),
       apodizer_(window_length, Window::kRectangular),
-      dft_(),
+      dft_(dft_length),
       scratch_memory_(window_length),
       tmp_buffer_(dft_length) {
   CHARTREUSE_ASSERT(window_length > 0);

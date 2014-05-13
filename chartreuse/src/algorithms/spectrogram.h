@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "chartreuse/src/algorithms/apodizer.h"
-#include "chartreuse/src/algorithms/dftraw.h"
+#include "chartreuse/src/algorithms/kissfft.h"
 #include "chartreuse/src/algorithms/ringbuffer.h"
 
 namespace chartreuse {
@@ -54,7 +54,7 @@ class Spectrogram {
   /// overlapping and such will be automatically taken care of.
   ///
   /// @param[in]  input   First element of the input (length = window / overlap)
-  /// @param[out]  output    Output data (length = dft_length / 2 + 1)
+  /// @param[out]  output    Output data (length = dft_length * 2)
   /// @return nothing (cannot fail)
   void operator()(const float* const input,
                   float* const output);
@@ -67,7 +67,7 @@ class Spectrogram {
    const unsigned int dft_length_;  ///< Length of the DFT
    const float sampling_freq_;  ///< Input sampling frequency
    Apodizer apodizer_;  ///< Dedicated object for window function application
-   DftRaw dft_;  ///< DFT algorithm wrapper object
+   KissFFT dft_;  ///< DFT algorithm wrapper object
    RingBuffer scratch_memory_;  ///< Internal scratch memory
                                 ///< for overlapped data saving
    std::vector<float> tmp_buffer_;  ///< Internal temporary buffer for DFT

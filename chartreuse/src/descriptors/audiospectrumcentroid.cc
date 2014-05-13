@@ -40,7 +40,7 @@ static const unsigned int kSpectrumDFTLength(2048);
 AudioSpectrumCentroid::AudioSpectrumCentroid(const float sampling_freq)
     : sampling_freq_(sampling_freq),
       spectrogram_(kSpectrumWindowLength, kSpectrumDFTLength, sampling_freq),
-      buffer_(kSpectrumDFTLength),
+      buffer_(kSpectrumDFTLength * 2),
       tmp_(kSpectrumDFTLength / 2 + 1) {
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
 }

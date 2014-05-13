@@ -23,6 +23,7 @@
 
 #include <vector>
 
+#include "chartreuse/src/algorithms/scalegenerator.h"
 #include "chartreuse/src/algorithms/spectrogram.h"
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
@@ -43,16 +44,11 @@ class AudioSpectrumCentroid : public Descriptor_Interface {
   // No assignment operator for this class
   AudioSpectrumCentroid& operator=(const AudioSpectrumCentroid& right);
 
-  /// @brief Retrieve log scale frequencies given various parameters
-  // TODO(gm): this should probably be moved in a common file
-  float GetLogFrequencyScale(const unsigned int dft_length,
-                             const float sampling_freq,
-                             const unsigned int bin_index) const;
-
   const float sampling_freq_;  ///< Expected input data sampling frequency
   const unsigned int kLowEdgeIndex_;  ///< Dft index lower bound
   const unsigned int kHighEdgeIndex_;  ///< Dft index higher bound
   algorithms::Spectrogram spectrogram_;  ///< Internal spectrogram
+  algorithms::ScaleGenerator freq_scale_;  ///< Frequency scale generator
   // TODO(gm): this could be actually static
   std::vector<float> buffer_;  ///< Internal temporary buffer
   // TODO(gm): this is useless

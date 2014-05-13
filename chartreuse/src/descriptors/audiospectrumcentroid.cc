@@ -42,12 +42,18 @@ static const unsigned int kSpectrumDFTLength(2048);
 /// @brief Frequency below which all frequencies contribution are summed,
 /// arbitrarily fixed
 static const float kLowEdge(62.5f);
+
 AudioSpectrumCentroid::AudioSpectrumCentroid(const float sampling_freq)
     : sampling_freq_(sampling_freq),
       kLowEdgeIndex_(static_cast<unsigned int>(
                     std::ceil(kLowEdge * kSpectrumDFTLength / sampling_freq_))),
       kHighEdgeIndex_(kSpectrumDFTLength / 2 + 1),
       spectrogram_(kSpectrumWindowLength, kSpectrumDFTLength, sampling_freq),
+      freq_scale_(kHighEdgeIndex_ - kLowEdgeIndex_,
+                  algorithms::Scale::kLogFreq,
+                  kSpectrumDFTLength,
+                  kLowEdgeIndex_,
+                  sampling_freq),
       buffer_(kSpectrumDFTLength * 2),
       tmp_(kSpectrumDFTLength / 2 + 1) {
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
@@ -81,25 +87,14 @@ void AudioSpectrumCentroid::operator()(
   // Weight each DFT bin by the log of the frequency relative to 1000Hz
   // The first bin is the low edge
   float kOut(tmp_[kLowEdgeIndex_ - 1] * -5.0f);
-  for (unsigned int i(kLowEdgeIndex); i < kHighEdgeIndex; ++i) {
-    kOut += tmp_[i] * GetLogFrequencyScale(kSpectrumDFTLength,
-                                           sampling_freq_,
-                                           i);
+  for (unsigned int i(kLowEdgeIndex_); i < kHighEdgeIndex_; ++i) {
+    kOut += tmp_[i] * freq_scale_.GetScaleAtIndex(i - kLowEdgeIndex_);
   }
   data[0] = kOut / kPowerSum;
 }
 
 unsigned int AudioSpectrumCentroid::DataLength(void) const {
   return 1;
-}
-
-float AudioSpectrumCentroid::GetLogFrequencyScale(
-    const unsigned int dft_length,
-    const float sampling_freq,
-    const unsigned int bin_index) const {
-  const float kFftFreq(static_cast<float>(bin_index) * sampling_freq / dft_length);
-  // TODO(gm): move this function in common maths
-  return algorithms::LogTwo(kFftFreq / 1000.0f);
 }
 
 }  // namespace descriptors

@@ -40,7 +40,7 @@ enum Type {
 /// Apply a window function on a signal.
 ///
 /// Various shapes may be generated, although it is fixed for one instance.
-// TODO(gm): tempaltizes this if need be (e.g. performance)
+// TODO(gm): templatizes this if need be (e.g. performance)
 class Apodizer {
  public:
   /// @brief Default constructor, specifies fixed window parameters

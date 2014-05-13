@@ -1,5 +1,5 @@
 /// @file apodizer.cc
-/// @brief Apodizer (window function modulation) algorithm implementation
+/// @brief Apodizer (window function modulation) algorithm definition
 /// @author gm
 /// @copyright gm 2014
 ///

@@ -73,4 +73,7 @@ if __name__ == "__main__":
 #     toto = numpy.fromfile('../build/chartreuse/tests/out.dat', dtype=float, sep='\n')
 #     pylab.plot(toto)
     pylab.plot(numpy.real(data[1]))
+    data = [1.0, 1.0, 1.0, 1.0, 1.0]
+    res = numpy.fft.rfft(data, 4)
+    pylab.plot(numpy.real(res))
     pylab.show()

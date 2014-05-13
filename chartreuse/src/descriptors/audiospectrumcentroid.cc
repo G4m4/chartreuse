@@ -39,12 +39,21 @@ static const unsigned int kSpectrumWindowLength(1440);
 // and usable
 static const unsigned int kSpectrumDFTLength(2048);
 
+/// @brief Frequency below which all frequencies contribution are summed,
+/// arbitrarily fixed
+static const float kLowEdge(62.5f);
 AudioSpectrumCentroid::AudioSpectrumCentroid(const float sampling_freq)
     : sampling_freq_(sampling_freq),
+      kLowEdgeIndex_(static_cast<unsigned int>(
+                    std::ceil(kLowEdge * kSpectrumDFTLength / sampling_freq_))),
+      kHighEdgeIndex_(kSpectrumDFTLength / 2 + 1),
       spectrogram_(kSpectrumWindowLength, kSpectrumDFTLength, sampling_freq),
       buffer_(kSpectrumDFTLength * 2),
       tmp_(kSpectrumDFTLength / 2 + 1) {
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
+  CHARTREUSE_ASSERT(kLowEdgeIndex_ > 0);
+  CHARTREUSE_ASSERT(kHighEdgeIndex_ > 0);
+  CHARTREUSE_ASSERT(kLowEdgeIndex_ < kHighEdgeIndex_);
 }
 
 void AudioSpectrumCentroid::operator()(
@@ -52,10 +61,6 @@ void AudioSpectrumCentroid::operator()(
     float* const data) {
   // Get the DFT of the frame
   spectrogram_(&frame[0], &buffer_[0]);
-  const float kLowEdge(62.5f);
-  const unsigned int kLowEdgeIndex(static_cast<unsigned int>(
-    std::ceil(kLowEdge * kSpectrumDFTLength / sampling_freq_)));
-  const unsigned int kHighEdgeIndex(kSpectrumDFTLength / 2 + 1);
   // Normalization of the DFT
   const float kDFTNorm(2.0f
     / static_cast<float>(kSpectrumDFTLength * kSpectrumWindowLength));
@@ -67,15 +72,15 @@ void AudioSpectrumCentroid::operator()(
   // The DC component is unchanged, everything else is doubled
   tmp_[0] *= 0.5f;
   // Summing the contributions of all frequencies lower than 62.5
-  for (unsigned int i(0); i < kLowEdgeIndex - 1; ++i) {
-    tmp_[kLowEdgeIndex - 1] += tmp_[i];
+  for (unsigned int i(0); i < kLowEdgeIndex_ - 1; ++i) {
+    tmp_[kLowEdgeIndex_ - 1] += tmp_[i];
   }
-  const float kPowerSum(std::accumulate(&tmp_[kLowEdgeIndex - 1],
-                                        &tmp_[kHighEdgeIndex - 1],
-                                        0.0f) + tmp_[kHighEdgeIndex - 1]);
+  const float kPowerSum(std::accumulate(&tmp_[kLowEdgeIndex_ - 1],
+                                        &tmp_[kHighEdgeIndex_ - 1],
+                                        0.0f) + tmp_[kHighEdgeIndex_ - 1]);
   // Weight each DFT bin by the log of the frequency relative to 1000Hz
   // The first bin is the low edge
-  float kOut(tmp_[kLowEdgeIndex - 1] * -5.0f);
+  float kOut(tmp_[kLowEdgeIndex_ - 1] * -5.0f);
   for (unsigned int i(kLowEdgeIndex); i < kHighEdgeIndex; ++i) {
     kOut += tmp_[i] * GetLogFrequencyScale(kSpectrumDFTLength,
                                            sampling_freq_,

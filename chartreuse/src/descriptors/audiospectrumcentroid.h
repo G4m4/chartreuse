@@ -50,6 +50,8 @@ class AudioSpectrumCentroid : public Descriptor_Interface {
                              const unsigned int bin_index) const;
 
   const float sampling_freq_;  ///< Expected input data sampling frequency
+  const unsigned int kLowEdgeIndex_;  ///< Dft index lower bound
+  const unsigned int kHighEdgeIndex_;  ///< Dft index higher bound
   algorithms::Spectrogram spectrogram_;  ///< Internal spectrogram
   // TODO(gm): this could be actually static
   std::vector<float> buffer_;  ///< Internal temporary buffer

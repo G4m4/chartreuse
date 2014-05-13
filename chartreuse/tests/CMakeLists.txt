@@ -28,6 +28,7 @@ source_group("descriptors"
 # Source files
 set(CHARTREUSE_TESTS_SRC
     main.cc
+    tests.cc
     ${CHARTREUSE_TESTS_ALGORITHMS_SRC}
     ${CHARTREUSE_TESTS_DESCRIPTORS_SRC}
 )

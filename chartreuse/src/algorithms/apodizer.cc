@@ -28,13 +28,13 @@
 namespace chartreuse {
 namespace algorithms {
 
-Apodizer::Apodizer(const unsigned int window_length,
-                   const Window::Type window_type)
-    // TODO(gm): check if the window can be generated at compile-time
+Apodizer::Apodizer(const unsigned int length,
+                   const Window::Type type)
+    // TODO(gm): check if the data can be generated at compile-time
     // At least the default version (rectangular) is done here
-    : data_(window_length, 1.0f) {
-  CHARTREUSE_ASSERT(window_length > 0);
-  CreateWindow(window_type);
+    : data_(length, 1.0f) {
+  CHARTREUSE_ASSERT(length > 0);
+  SynthesizeData(type);
 }
 
 void Apodizer::ApplyWindow(float* const buffer) const {
@@ -43,8 +43,8 @@ void Apodizer::ApplyWindow(float* const buffer) const {
   }
 }
 
-void Apodizer::CreateWindow(const Window::Type window_type) {
-  switch (window_type) {
+void Apodizer::SynthesizeData(const Window::Type type) {
+  switch (type) {
     case Window::kRectangular: {
       // Nothing to do, the constructor already took care of that
       break;

@@ -43,12 +43,12 @@ enum Type {
 // TODO(gm): templatizes this if need be (e.g. performance)
 class Apodizer {
  public:
-  /// @brief Default constructor, specifies fixed window parameters
+  /// @brief Default constructor, specifies synthesized data parameters
   ///
-  /// @param[in]  window_length   Length of the window in samples
-  /// @param[in]  window_type   Type of the window
-  explicit Apodizer(const unsigned int window_length,
-                    const Window::Type window_type);
+  /// @param[in]  length   Length of the window in samples
+  /// @param[in]  type   Type of the window
+  explicit Apodizer(const unsigned int length,
+                    const Window::Type type);
 
   /// @brief Actual performing method for a whole buffer, in-place
   ///
@@ -56,12 +56,12 @@ class Apodizer {
   void ApplyWindow(float* const buffer) const;
 
  private:
-  /// @brief Synthesis method: create the window with all given parameters
+  /// @brief Synthesis method: create the data with all given parameters
   ///
-  /// @param[in]  window_type   Type of the window to be created
-  void CreateWindow(const Window::Type window_type);
+  /// @param[in]  type   Type of the window to be created
+  void SynthesizeData(const Window::Type type);
 
-   std::vector<float> data_;  ///< Internal buffer for window data
+   std::vector<float> data_;  ///< Internal buffer for synthesized data
 };
 
 }  // namespace algorithms

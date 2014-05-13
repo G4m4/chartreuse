@@ -22,6 +22,8 @@
 
 // std::min, max
 #include <algorithm>
+// std::log
+#include <cmath>
 
 namespace chartreuse {
 namespace algorithms {
@@ -40,6 +42,12 @@ unsigned int GetNearestPowerofTwo(const unsigned int value) {
 
 bool IsPowerOfTwo(const unsigned int value) {
   return (GetNearestPowerofTwo(value) == value);
+}
+
+float LogTwo(const float value) {
+  // This is 1 / log(2)
+  const float kInvLog2(1.442695040888963f);
+  return static_cast<float>(std::log(value) * kInvLog2);
 }
 
 }  // namespace algorithms

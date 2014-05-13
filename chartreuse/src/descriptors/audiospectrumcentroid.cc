@@ -25,6 +25,8 @@
 // std::accumulate
 #include <numeric>
 
+#include "chartreuse/src/algorithms/algorithms_common.h"
+
 namespace chartreuse {
 namespace descriptors {
 
@@ -91,8 +93,8 @@ float AudioSpectrumCentroid::GetLogFrequencyScale(
     const float sampling_freq,
     const unsigned int bin_index) const {
   const float kFftFreq(static_cast<float>(bin_index) * sampling_freq / dft_length);
-  // Log2 is missing in msvc (C++11)
-  return static_cast<float>(std::log(kFftFreq / 1000.0f) / std::log(2.0f));
+  // TODO(gm): move this function in common maths
+  return algorithms::LogTwo(kFftFreq / 1000.0f);
 }
 
 }  // namespace descriptors

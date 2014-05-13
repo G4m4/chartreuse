@@ -32,6 +32,9 @@ unsigned int GetNearestPowerofTwo(const unsigned int value);
 /// @brief Helper to check if the input is a power of 2 number
 bool IsPowerOfTwo(const unsigned int value);
 
+/// @brief Helper for log2 computation (missing in msvc (C++11))
+float LogTwo(const float value);
+
 }  // namespace algorithms
 }  // namespace chartreuse
 

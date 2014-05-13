@@ -29,6 +29,47 @@ static const unsigned int kFFTDataSize(1024);
 static const unsigned int kDefaultSamplingRate = 48000;
 static const float kDefaultTestFreq = 3520.0f;  // 8 * 440
 
+/// @brief Compute the DFT of a constant odd length short vector
+/// Useful basic sanity check for development purpose
+TEST(DftRaw, BasicOddSize) {
+  const float kValue(1.0f);
+  std::vector<float> data(5, kValue);
+  const unsigned int kDftLength(8);
+  std::vector<float> out_data(kDftLength * 2, 0.0f);
+
+  DftRaw dft;
+  dft(&data[0],
+      &data[data.size() - 1],
+      false,
+      kDftLength,
+      &out_data[0]);
+
+  const float kExpected(kValue * data.size());
+  EXPECT_EQ(kExpected, out_data[0]);
+}
+
+/// @brief Compute the DFT of an alternating even length short vector
+/// Useful basic sanity check for development purpose
+TEST(DftRaw, BasicEvenSize) {
+  const float kValue(1.0f);
+  std::vector<float> data(4, kValue);
+  // Invert every other value
+  data[1] *= -1.0f;
+  data[3] *= -1.0f;
+  const unsigned int kDftLength(8);
+  std::vector<float> out_data(kDftLength * 2, 0.0f);
+
+  DftRaw dft;
+  dft(&data[0],
+      &data[data.size() - 1],
+      false,
+      kDftLength,
+      &out_data[0]);
+
+  const float kExpected(kValue * data.size());
+  EXPECT_EQ(kExpected, out_data[out_data.size() / 2]);
+}
+
 /// @brief Compute the DFT of an uniform white noise
 TEST(DftRaw, WhiteNoise) {
   std::vector<float> data(kFFTDataSize);

@@ -45,8 +45,8 @@ TEST(AudioSpectrumCentroid, Range) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GT(1.0f, desc_data[desc_index]);
-      EXPECT_LT(-1.0f, desc_data[desc_index]);
+      EXPECT_GT(5.0f, desc_data[desc_index]);
+      EXPECT_LT(-5.0f, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -69,8 +69,8 @@ TEST(AudioSpectrumCentroid, Sin) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(1.0f, desc_data[desc_index]);
-      EXPECT_LE(-1.0f, desc_data[desc_index]);
+      EXPECT_GT(5.0f, desc_data[desc_index]);
+      EXPECT_LT(-5.0f, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -94,8 +94,8 @@ TEST(AudioSpectrumCentroid, Constant) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(1.0f, desc_data[desc_index]);
-      EXPECT_LE(-1.0f, desc_data[desc_index]);
+      EXPECT_GT(5.0f, desc_data[desc_index]);
+      EXPECT_LT(-5.0f, desc_data[desc_index]);
     }
     index += frame.size();
   }

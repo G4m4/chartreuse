@@ -52,6 +52,58 @@ TEST(AudioSpectrumCentroid, Range) {
   }
 }
 
+/// @brief Compute the descriptor for a pure sinusoid of very low frequency,
+/// check the descriptor output lower bound
+TEST(AudioSpectrumCentroid, LowerBound) {
+  const float kFrequency(1.0f);
+  AudioSpectrumCentroid descriptor(kSamplingFreq);
+  std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
+
+  unsigned int index(0);
+  SinusGenerator generator(kFrequency, kSamplingFreq);
+  while (index < kDataTestSetSize - 1) {
+    std::array<float, chartreuse::kHopSizeSamples> frame;
+    // Fill the frame with sin data
+    std::generate(frame.begin(),
+                  frame.end(),
+                  generator);
+    descriptor(frame, &desc_data[0]);
+    for (unsigned int desc_index(0);
+         desc_index < desc_data.size();
+         ++desc_index) {
+      EXPECT_GT(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LT(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
+    }
+    index += frame.size();
+  }
+}
+
+/// @brief Compute the descriptor for a pure sinusoid of very high frequency,
+/// check the descriptor output higher bound
+TEST(AudioSpectrumCentroid, HigherBound) {
+  const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
+  AudioSpectrumCentroid descriptor(kSamplingFreq);
+  std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
+
+  unsigned int index(0);
+  SinusGenerator generator(kFrequency, kSamplingFreq);
+  while (index < kDataTestSetSize - 1) {
+    std::array<float, chartreuse::kHopSizeSamples> frame;
+    // Fill the frame with sin data
+    std::generate(frame.begin(),
+                  frame.end(),
+                  generator);
+    descriptor(frame, &desc_data[0]);
+    for (unsigned int desc_index(0);
+         desc_index < desc_data.size();
+         ++desc_index) {
+      EXPECT_GT(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LT(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
+    }
+    index += frame.size();
+  }
+}
+
 /// @brief Compute the descriptor for a pure sinusoid,
 /// check that its range lies within [-1.0f ; 1.0f]
 TEST(AudioSpectrumCentroid, Sin) {

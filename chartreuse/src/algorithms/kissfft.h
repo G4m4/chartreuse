@@ -21,8 +21,10 @@
 #ifndef CHARTREUSE_SRC_ALGORITHMS_KISSFFT_H_
 #define CHARTREUSE_SRC_ALGORITHMS_KISSFFT_H_
 
+#include <vector>
+
 namespace kissfft {
-#include "externals/kiss_fft/tools/kiss_fftr.h"
+#include "externals/kiss_fft/kiss_fft.h"
 }  // namespace kissfft
 
 namespace chartreuse {
@@ -32,6 +34,7 @@ namespace algorithms {
 class KissFFT {
  public:
   explicit KissFFT(const unsigned int dft_length);
+  ~KissFFT();
 
   /// @brief Actual performing method
   /// Apply a N-wide points DFT on the given interval
@@ -49,7 +52,8 @@ class KissFFT {
                   float* const dft_container);
 
  private:
-  kissfft::kiss_fftr_cfg config_;   ///< Internal KissFFT-specific persistent data
+  kissfft::kiss_fft_cfg config_;   ///< Internal KissFFT-specific persistent data
+  std::vector<float> zeropad_;   ///< Temporary buffer for zero-padding
 };
 
 }  // namespace algorithms

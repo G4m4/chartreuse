@@ -20,6 +20,8 @@
 
 #include "chartreuse/src/algorithms/kissfft.h"
 
+#include <algorithm>
+
 #include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/common.h"
 
@@ -27,9 +29,15 @@ namespace chartreuse {
 namespace algorithms {
 
 KissFFT::KissFFT(const unsigned int dft_length)
-    : config_(kissfft::kiss_fftr_alloc(dft_length, 0, NULL, NULL)) {
+    : config_(kissfft::kiss_fft_alloc(dft_length, 0, NULL, NULL)),
+      zeropad_(2 * dft_length, 0.0f) {
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
+}
+
+KissFFT::~KissFFT() {
+  free(config_);
+  kissfft::kiss_fft_cleanup();
 }
 
 void KissFFT::operator()(const float* const begin,
@@ -40,9 +48,17 @@ void KissFFT::operator()(const float* const begin,
   IGNORE(end);
   IGNORE(dft_length);
   IGNORE(is_inverted);
-  return kissfft::kiss_fftr(
+  const unsigned int kInputLength((end - begin) + 1);
+  const unsigned int kActualInputLength(std::min(kInputLength, dft_length));
+  const unsigned int kRemaining(dft_length - kActualInputLength);
+  for (unsigned int i(0); i < std::min(kInputLength, dft_length); ++i) {
+    zeropad_[2 * i] = begin[i];
+  }
+  //std::copy_n(begin, std::min(kInputLength, dft_length), zeropad_.begin());
+  //std::fill_n(zeropad_.begin() + kActualInputLength, kRemaining, 0.0f);
+  return kissfft::kiss_fft(
     config_,
-    begin,
+    reinterpret_cast<kissfft::kiss_fft_cpx*>(&zeropad_[0]),
     reinterpret_cast<kissfft::kiss_fft_cpx*>(dft_container));
 }
 

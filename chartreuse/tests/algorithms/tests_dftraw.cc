@@ -74,13 +74,13 @@ TEST(DftRaw, BasicEvenSize) {
 TEST(DftRaw, WhiteNoise) {
   std::vector<float> data(kFFTDataSize);
   const unsigned int kDftLength(kLargeDFTLength);
-  std::vector<float> out_data(kDftLength, 0.0f);
+  std::vector<float> out_data(kDftLength * 2, 0.0f);
   std::generate(data.begin(),
                 data.end(),
                 [&] {return kNormDistribution(kRandomGenerator);});
 
   const float kExpectedMean = 0.0f;
-  const float kEpsilonMean = 1e-3f * kDftLength;
+  const float kEpsilonMean = 1e-3f * out_data.size();
 
   DftRaw dft;
   dft(&data[0],

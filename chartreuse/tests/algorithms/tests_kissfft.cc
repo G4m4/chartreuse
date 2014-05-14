@@ -103,8 +103,8 @@ TEST(KissFFT, WhiteNoise) {
 /// @brief Check normalization factor by retrieving the DFT
 /// for an unitary vector
 TEST(KissFFT, Normalization) {
-  std::vector<float> data(kDataInSinLength, 1.0f);
   const unsigned int kDftLength(kMediumDFTLength);
+  std::vector<float> data(kDataInSinLength, 1.0f);
   std::vector<float> out_data(kDftLength * 2, 0.0f);
 
   // Input buffer normalized
@@ -130,7 +130,7 @@ TEST(KissFFT, MagSinMedLengthProperties) {
   const unsigned int kDftLength(kMediumDFTLength);
   std::vector<float> out_data(kDftLength * 2, 0.0f);
 
-  const float kExpected = (kMediumDFTLength * kDefaultTestFreq)
+  const float kExpected = (kDftLength * kDefaultTestFreq)
                           / static_cast<float>(kDefaultSamplingRate);
   const float kEpsilon = 1.0f;  // Due to resolution issues
 
@@ -154,7 +154,7 @@ TEST(KissFFT, MagSinMedLengthProperties) {
 TEST(KissFFT, SinSmallLength) {
   const unsigned int kDftLength(kSmallDFTLength);
   std::vector<float> out_data(kDftLength * 2, 0.0f);
-  const float kEpsilon = 1e-3f * kSmallDFTLength;
+  const float kEpsilon = 1e-3f * kDftLength;
 
   KissFFT dft(kDftLength);
   dft(&kInSin[0],
@@ -163,7 +163,7 @@ TEST(KissFFT, SinSmallLength) {
       kDftLength,
       &out_data[0]);
 
-  for (unsigned int i = 0; i < kSmallDFTLength; i += 2) {
+  for (unsigned int i = 0; i < kDftLength; i += 2) {
     EXPECT_NEAR(kDataSmallSinDFT[i / 2], out_data[i], kEpsilon);
   }
 }
@@ -173,7 +173,7 @@ TEST(KissFFT, SinSmallLength) {
 TEST(KissFFT, SinMedLength) {
   const unsigned int kDftLength(kMediumDFTLength);
   std::vector<float> out_data(kDftLength * 2, 0.0f);
-  const float kEpsilon = 1e-3f * kMediumDFTLength;
+  const float kEpsilon = 1e-3f * kDftLength;
 
   KissFFT dft(kDftLength);
   dft(&kInSin[0],
@@ -182,7 +182,7 @@ TEST(KissFFT, SinMedLength) {
       kDftLength,
       &out_data[0]);
 
-  for (unsigned int i = 0; i < kMediumDFTLength; i += 2) {
+  for (unsigned int i = 0; i < kDftLength; i += 2) {
     EXPECT_NEAR(kDataMediumSinDFT[i / 2], out_data[i], kEpsilon);
   }
 }
@@ -194,7 +194,7 @@ TEST(KissFFT, SinLargeLength) {
   std::vector<float> out_data(kDftLength * 2, 0.0f);
   // Greater error for this DFT length
   // TODO: find out why?
-  const float kEpsilon = 1e-2f * kLargeDFTLength;
+  const float kEpsilon = 1e-2f * kDftLength;
 
   KissFFT dft(kDftLength);
   dft(&kInSin[0],
@@ -203,7 +203,7 @@ TEST(KissFFT, SinLargeLength) {
       kDftLength,
       &out_data[0]);
 
-  for (unsigned int i = 0; i < kLargeDFTLength; i += 2) {
+  for (unsigned int i = 0; i < kDftLength; i += 2) {
     EXPECT_NEAR(kDataLargeSinDFT[i / 2], out_data[i], kEpsilon);
   }
 }

@@ -13,13 +13,19 @@ set(CHARTREUSE_EXTERNALS_KISSFFT_SRC
   ${KISSFFT_INCLUDE_DIRS}/tools/kiss_fftr.c
   ${KISSFFT_INCLUDE_DIRS}/kiss_fft.c
 )
+
 set(CHARTREUSE_EXTERNALS_KISSFFT_HDR
   ${KISSFFT_INCLUDE_DIRS}/tools/kiss_fftr.h
   ${KISSFFT_INCLUDE_DIRS}/kiss_fft.h
 )
+
 # Ignoring warnings for external source files
 foreach(src_file ${CHARTREUSE_EXTERNALS_KISSFFT_SRC})
   disable_warnings_list(${src_file})
+  # These are C files, so -std=c++11 should not apply to them
+  SET_SOURCE_FILES_PROPERTIES(${src_file}
+                              PROPERTIES COMPILE_FLAGS "-std=c11"
+                              )
 endforeach()
 
 # Retrieve source files from subdirectories

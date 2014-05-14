@@ -59,8 +59,11 @@ TEST(AudioPower, Sin) {
   while (index < kDataTestSetSize - 1) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with sin data
+    const std::size_t kRightIndex(
+      std::min(index + frame.size(),
+      static_cast<std::size_t>(kDataInSinLength - 1)));
     std::copy(&kInSin[index],
-              &kInSin[std::min(index + frame.size(), kDataInSinLength - 1)],
+              &kInSin[kRightIndex],
               frame.begin());
     descriptor(frame, &desc_data[0]);
     for (unsigned int desc_index(0);

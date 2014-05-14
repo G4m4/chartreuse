@@ -56,7 +56,7 @@ Spectrogram::Spectrogram(const unsigned int window_length,
 
 Spectrogram::~Spectrogram() {
   // Nothing to do here for now
-};
+}
 
 void Spectrogram::operator()(const float* const input,
                              float* const output) {

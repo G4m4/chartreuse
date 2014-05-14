@@ -36,9 +36,9 @@
 
 // Smaller performance test sets in debug
 #if (_BUILD_CONFIGURATION_DEBUG)
-static const int kDataPerfSetSize = 64 * 1024;
+static const unsigned int kDataPerfSetSize = 64 * 1024;
 #else  // (_BUILD_CONFIGURATION_DEBUG)
-static const int kDataPerfSetSize = 64 * 1024 * 1024;
+static const unsigned int kDataPerfSetSize = 64 * 1024 * 1024;
 #endif  // (_BUILD_CONFIGURATION_DEBUG)
 
 static const unsigned int kSmallDFTLength = 64;
@@ -62,12 +62,12 @@ static const float kDataLargeSinDFT[] = {
 // Smaller input data set in debug
 #if (_BUILD_CONFIGURATION_DEBUG)
 /// @brief Sinusoid data length
-static const size_t kDataInSinLength(sizeof(kDataInSin)
-                                       / (4 * sizeof(kDataInSin[0])));
+static const unsigned int kDataInSinLength(sizeof(kDataInSin)
+                                           / (4 * sizeof(kDataInSin[0])));
 #else  // (_BUILD_CONFIGURATION_DEBUG)
 /// @brief Sinusoid data length
-static const size_t kDataInSinLength(sizeof(kDataInSin)
-                                     / sizeof(kDataInSin[0]));
+static const unsigned int kDataInSinLength(sizeof(kDataInSin)
+                                           / sizeof(kDataInSin[0]));
 #endif  // (_BUILD_CONFIGURATION_DEBUG)
 
 /// @brief Helper wrapper around the sinusoid data

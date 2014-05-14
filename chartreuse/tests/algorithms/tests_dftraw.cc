@@ -105,7 +105,7 @@ TEST(DftRaw, WhiteNoise) {
 TEST(DftRaw, Normalization) {
   const unsigned int kDftLength(kMediumDFTLength);
   std::vector<float> data(kDataInSinLength, 1.0f);
-  std::vector<float> out_data(kDftLength, 0.0f);
+  std::vector<float> out_data(kDftLength * 2, 0.0f);
 
   // Input buffer normalized
   // Note that whatever the input data size is,
@@ -128,7 +128,7 @@ TEST(DftRaw, Normalization) {
 /// @brief Check properties of a medium-length DFT for a pure sinusoid
 TEST(DftRaw, MagSinMedLengthProperties) {
   const unsigned int kDftLength(kMediumDFTLength);
-  std::vector<float> out_data(kDftLength, 0.0f);
+  std::vector<float> out_data(kDftLength * 2, 0.0f);
 
   const float kExpected = (kDftLength * kDefaultTestFreq)
                           / static_cast<float>(kDefaultSamplingRate);
@@ -153,7 +153,7 @@ TEST(DftRaw, MagSinMedLengthProperties) {
 /// with externally precomputed reference data
 TEST(DftRaw, SinSmallLength) {
   const unsigned int kDftLength(kSmallDFTLength);
-  std::vector<float> out_data(kDftLength, 0.0f);
+  std::vector<float> out_data(kDftLength * 2, 0.0f);
   const float kEpsilon = 1e-3f * kDftLength;
 
   DftRaw dft;
@@ -172,7 +172,7 @@ TEST(DftRaw, SinSmallLength) {
 /// with externally precomputed reference data
 TEST(DftRaw, SinMedLength) {
   const unsigned int kDftLength(kMediumDFTLength);
-  std::vector<float> out_data(kDftLength, 0.0f);
+  std::vector<float> out_data(kDftLength * 2, 0.0f);
   const float kEpsilon = 1e-3f * kDftLength;
 
   DftRaw dft;
@@ -191,7 +191,7 @@ TEST(DftRaw, SinMedLength) {
 /// with externally precomputed reference data
 TEST(DftRaw, SinLargeLength) {
   const unsigned int kDftLength(kLargeDFTLength);
-  std::vector<float> out_data(kDftLength, 0.0f);
+  std::vector<float> out_data(kDftLength * 2, 0.0f);
   // Greater error for this DFT length
   // TODO: find out why?
   const float kEpsilon = 1e-2f * kDftLength;

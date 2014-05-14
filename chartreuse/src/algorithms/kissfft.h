@@ -23,9 +23,7 @@
 
 #include <vector>
 
-namespace kissfft {
 #include "externals/kiss_fft/kiss_fft.h"
-}  // namespace kissfft
 
 namespace chartreuse {
 namespace algorithms {
@@ -52,7 +50,7 @@ class KissFFT {
                   float* const dft_container);
 
  private:
-  kissfft::kiss_fft_cfg config_;   ///< Internal KissFFT-specific persistent data
+  kiss_fft_cfg config_;   ///< Internal KissFFT-specific persistent data
   std::vector<float> zeropad_;   ///< Temporary buffer for zero-padding
 };
 

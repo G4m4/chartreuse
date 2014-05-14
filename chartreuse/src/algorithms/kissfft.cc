@@ -29,15 +29,15 @@ namespace chartreuse {
 namespace algorithms {
 
 KissFFT::KissFFT(const unsigned int dft_length)
-    : config_(kissfft::kiss_fft_alloc(dft_length, 0, NULL, NULL)),
+    : config_(kiss_fft_alloc(dft_length, 0, NULL, NULL)),
       zeropad_(2 * dft_length, 0.0f) {
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
 }
 
 KissFFT::~KissFFT() {
-  free(config_);
-  kissfft::kiss_fft_cleanup();
+  ::free(config_);
+  kiss_fft_cleanup();
 }
 
 void KissFFT::operator()(const float* const begin,
@@ -56,10 +56,11 @@ void KissFFT::operator()(const float* const begin,
   }
   //std::copy_n(begin, std::min(kInputLength, dft_length), zeropad_.begin());
   //std::fill_n(zeropad_.begin() + kActualInputLength, kRemaining, 0.0f);
-  return kissfft::kiss_fft(
+  return kiss_fft(
     config_,
-    reinterpret_cast<kissfft::kiss_fft_cpx*>(&zeropad_[0]),
-    reinterpret_cast<kissfft::kiss_fft_cpx*>(dft_container));
+    // TODO(gm): something cleaner?
+    reinterpret_cast<kiss_fft_cpx*>(&zeropad_[0]),
+    reinterpret_cast<kiss_fft_cpx*>(dft_container));
 }
 
 }  // namespace algorithms

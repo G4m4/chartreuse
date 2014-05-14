@@ -23,9 +23,12 @@ set(CHARTREUSE_EXTERNALS_KISSFFT_HDR
 foreach(src_file ${CHARTREUSE_EXTERNALS_KISSFFT_SRC})
   disable_warnings_list(${src_file})
   # These are C files, so -std=c++11 should not apply to them
-  SET_SOURCE_FILES_PROPERTIES(${src_file}
-                              PROPERTIES COMPILE_FLAGS "-std=c11"
-                              )
+  # Clang issue only
+  if (${COMPILER_IS_CLANG})
+    SET_SOURCE_FILES_PROPERTIES(${src_file}
+                                PROPERTIES COMPILE_FLAGS "-std=c11"
+                                )
+  endif (${COMPILER_IS_CLANG})
 endforeach()
 
 # Retrieve source files from subdirectories

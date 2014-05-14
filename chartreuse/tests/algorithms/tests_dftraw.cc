@@ -143,7 +143,10 @@ TEST(DftRaw, MagSinMedLengthProperties) {
 
   const unsigned int kActual(
     std::distance(out_data.begin(),
-                  std::min_element(out_data.begin(), out_data.end()))
+                  std::min_element(out_data.begin(),
+                                   // Only searching on half the data,
+                                   // since this output is complex!
+                                   out_data.begin() + kDftLength))
     / 2);
 
   EXPECT_NEAR(kExpected, kActual, kEpsilon);

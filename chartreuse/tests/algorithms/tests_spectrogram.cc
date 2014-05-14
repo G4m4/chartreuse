@@ -60,8 +60,11 @@ TEST(Spectrogram, Sin) {
   while (index < kDataTestSetSize) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with sin data
+    const std::size_t kRightIndex(
+      std::min(index + frame.size(),
+      static_cast<std::size_t>(kDataInSinLength - 1)));
     std::copy(&kInSin[index],
-              &kInSin[std::min(index + frame.size(), kDataInSinLength - 1)],
+              &kInSin[kRightIndex],
               frame.begin());
     spectrogram(&frame[0],
                 &out_data[0]);

@@ -35,14 +35,14 @@ void DftRaw::operator()(const float* const begin,
                         const bool is_inverted,
                         const unsigned int dft_length,
                         float* const dft_container) {
-  const unsigned int kInDataLength(end - begin);
+  const unsigned int kInDataLength(end - begin + 1);
   const unsigned int kActualInDataLength = std::min(kInDataLength, dft_length);
   const float kTwiddleBase = (is_inverted) ?
       (-2.0f * chartreuse::algorithms::Pi) / dft_length
       :
       (2.0f * chartreuse::algorithms::Pi) / dft_length;
 
-  for (unsigned int i = 0; i < dft_length / 2; ++i) {
+  for (unsigned int i = 0; i < dft_length; ++i) {
     const float twiddle_factor = i * kTwiddleBase;
 
     float real = 0.0f;

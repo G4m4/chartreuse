@@ -29,8 +29,8 @@ using chartreuse::descriptors::AudioSpectrumCentroid;
 static const float kSamplingFreq(48000.0f);
 
 /// @brief Compute the descriptor for an uniform white noise,
-/// check that its range lies within [-1.0f ; 1.0f]
-TEST(AudioSpectrumCentroid, Range) {
+/// check that its range lies within [out_min ; out_max]
+TEST(AudioSpectrumCentroid, WhiteNoise) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
   std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
 
@@ -132,7 +132,7 @@ TEST(AudioSpectrumCentroid, Sin) {
 }
 
 /// @brief Compute the descriptor for a constant value,
-/// check that its range lies within [-1.0f ; 1.0f]
+/// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumCentroid, Constant) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
   std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);

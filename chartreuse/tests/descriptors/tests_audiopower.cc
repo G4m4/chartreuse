@@ -26,8 +26,8 @@
 using chartreuse::descriptors::AudioPower;
 
 /// @brief Compute the descriptor for an uniform white noise,
-/// check that its range lies within [AudioPower::Meta().out_min ; AudioPower::Meta().out_max]
-TEST(AudioPower, Range) {
+/// check that its range lies within [out_min ; out_max]
+TEST(AudioPower, WhiteNoise) {
   AudioPower descriptor;
   std::vector<float> desc_data(AudioPower::Meta().out_dim);
 
@@ -50,7 +50,7 @@ TEST(AudioPower, Range) {
 }
 
 /// @brief Compute the descriptor for a pure sinusoid,
-/// check that its range lies within [AudioPower::Meta().out_min ; AudioPower::Meta().out_max]
+/// check that its range lies within [out_min ; out_max]
 TEST(AudioPower, Sin) {
   AudioPower descriptor;
   std::vector<float> desc_data(AudioPower::Meta().out_dim);
@@ -77,7 +77,7 @@ TEST(AudioPower, Sin) {
 }
 
 /// @brief Compute the descriptor for a constant value,
-/// check that its range lies within [AudioPower::Meta().out_min ; AudioPower::Meta().out_max]
+/// check that its range lies within [out_min ; out_max]
 TEST(AudioPower, Constant) {
   AudioPower descriptor;
   std::vector<float> desc_data(AudioPower::Meta().out_dim);

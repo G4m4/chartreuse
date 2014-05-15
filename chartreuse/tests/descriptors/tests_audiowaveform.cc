@@ -26,8 +26,8 @@
 using chartreuse::descriptors::AudioWaveform;
 
 /// @brief Compute the descriptor for an uniform white noise,
-/// check that its range lies within [AudioWaveform::Meta().out_min ; AudioWaveform::Meta().out_max]
-TEST(AudioWaveform, Range) {
+/// check that its range lies within [out_min ; out_max]
+TEST(AudioWaveform, WhiteNoise) {
   AudioWaveform descriptor;
   std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
 
@@ -50,7 +50,7 @@ TEST(AudioWaveform, Range) {
 }
 
 /// @brief Compute the descriptor for a pure sinusoid,
-/// check that its range lies within [AudioWaveform::Meta().out_min ; AudioWaveform::Meta().out_max]
+/// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, Sin) {
   AudioWaveform descriptor;
   std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
@@ -77,7 +77,7 @@ TEST(AudioWaveform, Sin) {
 }
 
 /// @brief Compute the descriptor for a constant value,
-/// check that its range lies within [AudioWaveform::Meta().out_min ; AudioWaveform::Meta().out_max]
+/// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, Constant) {
   AudioWaveform descriptor;
   std::vector<float> desc_data(AudioWaveform::Meta().out_dim);

@@ -86,7 +86,11 @@ void AudioSpectrumCentroid::operator()(const float* const frame,
   }
   const float kPowerSum(std::accumulate(&tmp_[kLowEdgeIndex_ - 1],
                                         &tmp_[kHighEdgeIndex_ - 1],
-                                        0.0f) + tmp_[kHighEdgeIndex_ - 1]);
+                                        0.0f)
+                        + tmp_[kHighEdgeIndex_ - 1]
+                        // Prevent divide by zero
+                        + 1e-7f);
+  CHARTREUSE_ASSERT(kPowerSum > 0.0f);
   // Weight each DFT bin by the log of the frequency relative to 1000Hz
   // The first bin is the low edge
   float kOut(tmp_[kLowEdgeIndex_ - 1] * -5.0f);

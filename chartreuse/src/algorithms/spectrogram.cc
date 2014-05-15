@@ -32,17 +32,14 @@ namespace algorithms {
 // TODO(gm): this should probably not be fixed
 static const unsigned int kOverlap(3);
 
-Spectrogram::Spectrogram(const unsigned int window_length,
-                         const unsigned int dft_length,
+Spectrogram::Spectrogram(const unsigned int dft_length,
                          const float sampling_freq)
-    : window_length_(window_length),
-      dft_length_(dft_length),
+    : dft_length_(dft_length),
       sampling_freq_(sampling_freq),
-      apodizer_(window_length, Window::kRectangular),
+      apodizer_(kHopSizeSamples * kOverlap, Window::kRectangular),
       dft_(dft_length),
-      scratch_memory_(window_length),
+      scratch_memory_(kHopSizeSamples * kOverlap),
       tmp_buffer_(dft_length) {
-  CHARTREUSE_ASSERT(window_length > 0);
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
@@ -51,27 +48,31 @@ Spectrogram::Spectrogram(const unsigned int window_length,
   // Hence, the first 2 parts ("past" and "present") have to be filled in order
   // for the internal buffer writing cursor to be at the right position
   // TODO(gm): Find a better way using an "overlap" parameter to do this
-  scratch_memory_.Fill(0.0f, window_length * (kOverlap - 1) / kOverlap);
+  scratch_memory_.Fill(0.0f,
+                       kHopSizeSamples * kOverlap * (kOverlap - 1) / kOverlap);
 }
 
 Spectrogram::~Spectrogram() {
   // Nothing to do here for now
 }
 
-void Spectrogram::operator()(const float* const input,
-                             float* const output) {
+void Spectrogram::operator()(const float* const frame,
+                             const std::size_t frame_length,
+                             float* const data) {
+  CHARTREUSE_ASSERT(frame != nullptr);
+  CHARTREUSE_ASSERT(frame_length > 0);
+  CHARTREUSE_ASSERT(data != nullptr);
+
   // Push into ringbuffer for overlap
-  scratch_memory_.Push(input, window_length_ / kOverlap);
+  scratch_memory_.Push(frame, frame_length);
   // Pop - zero-padding done in the ringbuffer method
   scratch_memory_.PopOverlapped(&tmp_buffer_[0], dft_length_, kOverlap);
   // Apply the window
   apodizer_.ApplyWindow(&tmp_buffer_[0]);
   // Apply DFT
   dft_(&tmp_buffer_[0],
-       &tmp_buffer_[dft_length_ - 1],
-       false,
-       dft_length_,
-       output);
+       tmp_buffer_.size(),
+       data);
 }
 
 }  // namespace algorithms

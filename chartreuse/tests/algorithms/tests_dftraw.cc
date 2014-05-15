@@ -39,9 +39,7 @@ TEST(DftRaw, BasicOddSize) {
 
   DftRaw dft(kDftLength);
   dft(&data[0],
-      &data[data.size() - 1],
-      false,
-      kDftLength,
+      data.size(),
       &out_data[0]);
 
   const float kExpected(kValue * data.size());
@@ -61,9 +59,7 @@ TEST(DftRaw, BasicEvenSize) {
 
   DftRaw dft(kDftLength);
   dft(&data[0],
-      &data[data.size() - 1],
-      false,
-      kDftLength,
+      data.size(),
       &out_data[0]);
 
   const float kExpected(kValue * data.size());
@@ -84,9 +80,7 @@ TEST(DftRaw, WhiteNoise) {
 
   DftRaw dft(kDftLength);
   dft(&data[0],
-      &data[data.size() - 1],
-      false,
-      kDftLength,
+      data.size(),
       &out_data[0]);
 
   float mean(0.0f);
@@ -115,9 +109,7 @@ TEST(DftRaw, Normalization) {
 
   DftRaw dft(kDftLength);
   dft(&data[0],
-      &data[data.size() - 1],
-      false,
-      kDftLength,
+      data.size(),
       &out_data[0]);
 
   const float kActual = out_data[0];
@@ -136,9 +128,7 @@ TEST(DftRaw, MagSinMedLengthProperties) {
 
   DftRaw dft(kDftLength);
   dft(&kInSin[0],
-      &kInSin[kInSin.size() - 1],
-      false,
-      kDftLength,
+      kInSin.size(),
       &out_data[0]);
 
   const unsigned int kActual(
@@ -161,9 +151,7 @@ TEST(DftRaw, SinSmallLength) {
 
   DftRaw dft(kDftLength);
   dft(&kInSin[0],
-      &kInSin[kInSin.size() - 1],
-      false,
-      kDftLength,
+      kInSin.size(),
       &out_data[0]);
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
@@ -180,9 +168,7 @@ TEST(DftRaw, SinMedLength) {
 
   DftRaw dft(kDftLength);
   dft(&kInSin[0],
-      &kInSin[kInSin.size() - 1],
-      false,
-      kDftLength,
+      kInSin.size(),
       &out_data[0]);
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
@@ -201,9 +187,7 @@ TEST(DftRaw, SinLargeLength) {
 
   DftRaw dft(kDftLength);
   dft(&kInSin[0],
-      &kInSin[kInSin.size() - 1],
-      false,
-      kDftLength,
+      kInSin.size(),
       &out_data[0]);
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {

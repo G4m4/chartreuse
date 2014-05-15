@@ -22,30 +22,23 @@
 #define CHARTREUSE_SRC_ALGORITHMS_DFTRAW_H_
 
 #include "chartreuse/src/common.h"
+#include "chartreuse/src/descriptors/descriptor_interface.h"
 
 namespace chartreuse {
 namespace algorithms {
 
 /// @brief Dft "raw" algorithm implementation class
-class DftRaw {
+class DftRaw : public descriptors::Descriptor_Interface {
  public:
   /// Constructor, parameterizes analysis
-
-  /// @brief Actual performing method
-  /// Apply a N-wide points DFT on the given interval
   ///
-  /// @param[in]  container      First element of the container
-  /// @param[in]  length         Interval length
-  /// @param[in]  is_inverted    Is DFT inverted?
   /// @param[in]  dft_length     DFT points count
   explicit DftRaw(const unsigned int dft_length);
-  /// @param[out] dft_container  First element of the DFT container
-  /// @return nothing (cannot fail)
-  void operator()(const float* const begin,
-                  const float* const end,
-                  const bool is_inverted,
-                  const unsigned int dft_length,
-                  float* const dft_container);
+
+  void operator()(const float* const frame,
+                  const std::size_t frame_length,
+                  float* const data);
+
  private:
   // No assignment operator for this class
   DftRaw& operator=(const DftRaw& right);

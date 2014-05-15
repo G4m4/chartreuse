@@ -35,19 +35,18 @@ DftRaw::DftRaw(const unsigned int dft_length)
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
 }
-void DftRaw::operator()(const float* const begin,
-                        const float* const end,
-                        const bool is_inverted,
-                        const unsigned int dft_length,
-                        float* const dft_container) {
-  const unsigned int kInDataLength(end - begin + 1);
-  const unsigned int kActualInDataLength = std::min(kInDataLength, dft_length);
-  const float kTwiddleBase = (is_inverted) ?
-      (-2.0f * chartreuse::algorithms::Pi) / dft_length
-      :
-      (2.0f * chartreuse::algorithms::Pi) / dft_length;
 
-  for (unsigned int i = 0; i < dft_length; ++i) {
+void DftRaw::operator()(const float* const frame,
+                        const std::size_t frame_length,
+                        float* const data) {
+  CHARTREUSE_ASSERT(frame != nullptr);
+  CHARTREUSE_ASSERT(frame_length > 0);
+  CHARTREUSE_ASSERT(data != nullptr);
+
+  const unsigned int kActualInDataLength = std::min(frame_length, dft_length_);
+  const float kTwiddleBase((2.0f * chartreuse::algorithms::Pi) / dft_length_);
+
+  for (unsigned int i = 0; i < dft_length_; ++i) {
     const float twiddle_factor = i * kTwiddleBase;
 
     float real = 0.0f;
@@ -57,15 +56,11 @@ void DftRaw::operator()(const float* const begin,
       const float c = std::cos(j * twiddle_factor);
       const float s = std::sin(j * twiddle_factor);
 
-      real += begin[j] * c;
-      imag -= begin[j] * s;
+      real += frame[j] * c;
+      imag -= frame[j] * s;
     }  // iterating on input
-    if (is_inverted) {
-      // divide by DFT length for IDFT
-      real /= dft_length;
-    }
-    dft_container[2 * i] = real;
-    dft_container[2 * i + 1] = imag;
+    data[2 * i] = real;
+    data[2 * i + 1] = imag;
   }  // iterating on output
 }
 

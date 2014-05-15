@@ -41,19 +41,17 @@ KissFFT::~KissFFT() {
   kiss_fft_cleanup();
 }
 
-void KissFFT::operator()(const float* const begin,
-                         const float* const end,
-                         const bool is_inverted,
-                         const unsigned int dft_length,
-                         float* const dft_container) {
-  IGNORE(end);
-  IGNORE(dft_length);
-  IGNORE(is_inverted);
-  const unsigned int kInputLength((end - begin) + 1);
-  const unsigned int kActualInputLength(std::min(kInputLength, dft_length));
-  const unsigned int kRemaining(dft_length - kActualInputLength);
-  for (unsigned int i(0); i < std::min(kInputLength, dft_length); ++i) {
-    zeropad_[2 * i] = begin[i];
+void KissFFT::operator()(const float* const frame,
+                         const std::size_t frame_length,
+                         float* const data) {
+  CHARTREUSE_ASSERT(frame != nullptr);
+  CHARTREUSE_ASSERT(frame_length > 0);
+  CHARTREUSE_ASSERT(data != nullptr);
+
+  const unsigned int kActualInputLength(std::min(frame_length, dft_length_));
+  const unsigned int kRemaining(dft_length_ - kActualInputLength);
+  for (unsigned int i(0); i < std::min(frame_length, dft_length_); ++i) {
+    zeropad_[2 * i] = frame[i];
   }
   //std::copy_n(begin, std::min(kInputLength, dft_length), zeropad_.begin());
   //std::fill_n(zeropad_.begin() + kActualInputLength, kRemaining, 0.0f);
@@ -61,7 +59,7 @@ void KissFFT::operator()(const float* const begin,
     config_,
     // TODO(gm): something cleaner?
     reinterpret_cast<kiss_fft_cpx*>(&zeropad_[0]),
-    reinterpret_cast<kiss_fft_cpx*>(dft_container));
+    reinterpret_cast<kiss_fft_cpx*>(data));
 }
 
 }  // namespace algorithms

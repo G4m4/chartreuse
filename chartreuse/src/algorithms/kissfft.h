@@ -25,11 +25,13 @@
 
 #include "externals/kiss_fft/kiss_fft.h"
 
+#include "chartreuse/src/descriptors/descriptor_interface.h"
+
 namespace chartreuse {
 namespace algorithms {
 
 /// @brief Kiss FFT algorithm wrapper class
-class KissFFT {
+class KissFFT : public descriptors::Descriptor_Interface {
  public:
   /// Constructor, parameterizes analysis
   ///
@@ -37,20 +39,9 @@ class KissFFT {
   explicit KissFFT(const unsigned int dft_length);
   ~KissFFT();
 
-  /// @brief Actual performing method
-  /// Apply a N-wide points DFT on the given interval
-  ///
-  /// @param[in]  container      First element of the container
-  /// @param[in]  length         Interval length
-  /// @param[in]  is_inverted    Is DFT inverted?
-  /// @param[in]  dft_length     DFT points count
-  /// @param[out] dft_container  First element of the DFT container
-  /// @return nothing (cannot fail)
-  void operator()(const float* const begin,
-                  const float* const end,
-                  const bool is_inverted,
-                  const unsigned int dft_length,
-                  float* const dft_container);
+  void operator()(const float* const frame,
+                  const std::size_t frame_length,
+                  float* const data);
 
  private:
   // No assignment operator for this class
@@ -58,6 +49,7 @@ class KissFFT {
 
   // TODO(gm): this is useless (already present in the config), remove it
   const unsigned int dft_length_;
+
   kiss_fft_cfg config_;   ///< Internal KissFFT-specific persistent data
   std::vector<float> zeropad_;   ///< Temporary buffer for zero-padding
 };

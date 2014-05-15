@@ -27,12 +27,11 @@ using chartreuse::algorithms::Spectrogram;
 
 /// @brief Compute the spectrogram for white noise
 TEST(Spectrogram, WhiteNoise) {
-  const unsigned int kWindowLength(1440);
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
   std::vector<float> out_data(kDftLength * 2);
 
-  Spectrogram spectrogram(kWindowLength, kDftLength, kSamplingFreq);
+  Spectrogram spectrogram(kDftLength, kSamplingFreq);
 
   unsigned int index(0);
   while (index < kDataTestSetSize) {
@@ -42,6 +41,7 @@ TEST(Spectrogram, WhiteNoise) {
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
     spectrogram(&frame[0],
+                frame.size(),
                 &out_data[0]);
     index += frame.size();
   }
@@ -49,12 +49,11 @@ TEST(Spectrogram, WhiteNoise) {
 
 /// @brief Compute the spectrogram for a sinus
 TEST(Spectrogram, Sin) {
-  const unsigned int kWindowLength(1440);
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
   std::vector<float> out_data(kDftLength * 2);
 
-  Spectrogram spectrogram(kWindowLength, kDftLength, kSamplingFreq);
+  Spectrogram spectrogram(kDftLength, kSamplingFreq);
 
   unsigned int index(0);
   while (index < kDataTestSetSize) {
@@ -67,6 +66,7 @@ TEST(Spectrogram, Sin) {
               &kInSin[kRightIndex],
               frame.begin());
     spectrogram(&frame[0],
+                frame.size(),
                 &out_data[0]);
     index += frame.size();
   }

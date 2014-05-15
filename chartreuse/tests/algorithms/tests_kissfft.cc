@@ -39,9 +39,7 @@ TEST(KissFFT, BasicOddSize) {
 
   KissFFT dft(kDftLength);
   dft(&data[0],
-      &data[data.size() - 1],
-      false,
-      kDftLength,
+      data.size(),
       &out_data[0]);
 
   const float kExpected(kValue * data.size());
@@ -61,9 +59,7 @@ TEST(KissFFT, BasicEvenSize) {
 
   KissFFT dft(kDftLength);
   dft(&data[0],
-      &data[data.size() - 1],
-      false,
-      kDftLength,
+      data.size(),
       &out_data[0]);
 
   const float kExpected(kValue * data.size());
@@ -84,9 +80,7 @@ TEST(KissFFT, WhiteNoise) {
 
   KissFFT dft(kDftLength);
   dft(&data[0],
-      &data[data.size() - 1],
-      false,
-      kDftLength,
+      data.size(),
       &out_data[0]);
 
   float mean(0.0f);
@@ -115,9 +109,7 @@ TEST(KissFFT, Normalization) {
 
   KissFFT dft(kDftLength);
   dft(&data[0],
-      &data[data.size() - 1],
-      false,
-      kDftLength,
+      data.size(),
       &out_data[0]);
 
   const float kActual = out_data[0];
@@ -136,9 +128,7 @@ TEST(KissFFT, MagSinMedLengthProperties) {
 
   KissFFT dft(kDftLength);
   dft(&kInSin[0],
-      &kInSin[kInSin.size() - 1],
-      false,
-      kDftLength,
+      kInSin.size(),
       &out_data[0]);
 
   const unsigned int kActual(
@@ -161,9 +151,7 @@ TEST(KissFFT, SinSmallLength) {
 
   KissFFT dft(kDftLength);
   dft(&kInSin[0],
-      &kInSin[kInSin.size() - 1],
-      false,
-      kDftLength,
+      kInSin.size(),
       &out_data[0]);
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
@@ -180,9 +168,7 @@ TEST(KissFFT, SinMedLength) {
 
   KissFFT dft(kDftLength);
   dft(&kInSin[0],
-      &kInSin[kInSin.size() - 1],
-      false,
-      kDftLength,
+      kInSin.size(),
       &out_data[0]);
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
@@ -201,9 +187,7 @@ TEST(KissFFT, SinLargeLength) {
 
   KissFFT dft(kDftLength);
   dft(&kInSin[0],
-      &kInSin[kInSin.size() - 1],
-      false,
-      kDftLength,
+      kInSin.size(),
       &out_data[0]);
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {

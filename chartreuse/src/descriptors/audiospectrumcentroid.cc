@@ -48,7 +48,7 @@ AudioSpectrumCentroid::AudioSpectrumCentroid(const float sampling_freq)
       kLowEdgeIndex_(static_cast<unsigned int>(
                     std::ceil(kLowEdge * kSpectrumDFTLength / sampling_freq_))),
       kHighEdgeIndex_(kSpectrumDFTLength / 2 + 1),
-      spectrogram_(kSpectrumWindowLength, kSpectrumDFTLength, sampling_freq),
+      spectrogram_(kSpectrumDFTLength, sampling_freq),
       freq_scale_(kHighEdgeIndex_ - kLowEdgeIndex_,
                   algorithms::Scale::kLogFreq,
                   kSpectrumDFTLength,

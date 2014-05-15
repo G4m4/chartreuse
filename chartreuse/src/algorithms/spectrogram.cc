@@ -29,8 +29,7 @@
 namespace chartreuse {
 namespace algorithms {
 
-// TODO(gm): this should probably not be fixed
-static const unsigned int kOverlap(3);
+const unsigned int Spectrogram::kOverlap(3);
 
 Spectrogram::Spectrogram(const unsigned int dft_length,
                          const float sampling_freq)

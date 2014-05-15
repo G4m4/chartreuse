@@ -21,8 +21,6 @@
 #ifndef CHARTREUSE_SRC_DESCRIPTORS_DESCRIPTOR_INTERFACE_H_
 #define CHARTREUSE_SRC_DESCRIPTORS_DESCRIPTOR_INTERFACE_H_
 
-#include <array>
-
 #include "chartreuse/src/common.h"
 
 namespace chartreuse {
@@ -64,10 +62,12 @@ class Descriptor_Interface {
   /// @brief Actual processing method for one frame
   ///
   /// @param[in]  frame    Frame to be analysed
+  /// @param[in]  frame_length    Input frame length
   /// @param[out]  data     Descriptor output data
   /// @return nothing (not allowed to fail)
   virtual void operator()(
-    const std::array<float, chartreuse::kHopSizeSamples> frame,
+    const float* const frame,
+    const std::size_t frame_length,
     float* const data) = 0;
 };
 

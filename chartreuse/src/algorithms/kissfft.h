@@ -47,6 +47,8 @@ class KissFFT : public descriptors::Descriptor_Interface {
  private:
   // No assignment operator for this class
   KissFFT& operator=(const KissFFT& right);
+  // No copy constructor for this class
+  KissFFT(const KissFFT& right);
 
   // TODO(gm): this is useless (already present in the config), remove it
   const unsigned int dft_length_;

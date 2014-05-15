@@ -78,6 +78,11 @@ class RingBuffer {
   std::size_t Size(void) const;
 
  private:
+  // No assignment operator for this class
+  RingBuffer& operator=(const RingBuffer& right);
+  // No copy constructor for this class
+  RingBuffer(const RingBuffer& right);
+
   float* data_;  ///< Internal elements buffer
   std::size_t capacity_;  ///< Internal buffer length
   std::size_t size_;  ///< Count of elements currently held within the buffer

@@ -37,7 +37,7 @@ TEST(DftRaw, BasicOddSize) {
   const unsigned int kDftLength(8);
   std::vector<float> out_data(kDftLength * 2, 0.0f);
 
-  DftRaw dft;
+  DftRaw dft(kDftLength);
   dft(&data[0],
       &data[data.size() - 1],
       false,
@@ -59,7 +59,7 @@ TEST(DftRaw, BasicEvenSize) {
   const unsigned int kDftLength(8);
   std::vector<float> out_data(kDftLength * 2, 0.0f);
 
-  DftRaw dft;
+  DftRaw dft(kDftLength);
   dft(&data[0],
       &data[data.size() - 1],
       false,
@@ -82,7 +82,7 @@ TEST(DftRaw, WhiteNoise) {
   const float kExpectedMean = 0.0f;
   const float kEpsilonMean = 1e-3f * out_data.size();
 
-  DftRaw dft;
+  DftRaw dft(kDftLength);
   dft(&data[0],
       &data[data.size() - 1],
       false,
@@ -113,7 +113,7 @@ TEST(DftRaw, Normalization) {
   const float kExpected = static_cast<float>(kDftLength);
   const float kEpsilon = 1e-5f;
 
-  DftRaw dft;
+  DftRaw dft(kDftLength);
   dft(&data[0],
       &data[data.size() - 1],
       false,
@@ -134,7 +134,7 @@ TEST(DftRaw, MagSinMedLengthProperties) {
                           / static_cast<float>(kDefaultSamplingRate);
   const float kEpsilon = 1.0f;  // Due to resolution issues
 
-  DftRaw dft;
+  DftRaw dft(kDftLength);
   dft(&kInSin[0],
       &kInSin[kInSin.size() - 1],
       false,
@@ -159,7 +159,7 @@ TEST(DftRaw, SinSmallLength) {
   std::vector<float> out_data(kDftLength * 2, 0.0f);
   const float kEpsilon = 1e-3f * kDftLength;
 
-  DftRaw dft;
+  DftRaw dft(kDftLength);
   dft(&kInSin[0],
       &kInSin[kInSin.size() - 1],
       false,
@@ -178,7 +178,7 @@ TEST(DftRaw, SinMedLength) {
   std::vector<float> out_data(kDftLength * 2, 0.0f);
   const float kEpsilon = 1e-3f * kDftLength;
 
-  DftRaw dft;
+  DftRaw dft(kDftLength);
   dft(&kInSin[0],
       &kInSin[kInSin.size() - 1],
       false,
@@ -199,7 +199,7 @@ TEST(DftRaw, SinLargeLength) {
   // TODO: find out why?
   const float kEpsilon = 1e-2f * kDftLength;
 
-  DftRaw dft;
+  DftRaw dft(kDftLength);
   dft(&kInSin[0],
       &kInSin[kInSin.size() - 1],
       false,

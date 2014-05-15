@@ -29,9 +29,7 @@ namespace algorithms {
 /// @brief Dft "raw" algorithm implementation class
 class DftRaw {
  public:
-  explicit DftRaw(void) {
-    // Nothing to do here for now
-  };
+  /// Constructor, parameterizes analysis
 
   /// @brief Actual performing method
   /// Apply a N-wide points DFT on the given interval
@@ -40,6 +38,7 @@ class DftRaw {
   /// @param[in]  length         Interval length
   /// @param[in]  is_inverted    Is DFT inverted?
   /// @param[in]  dft_length     DFT points count
+  explicit DftRaw(const unsigned int dft_length);
   /// @param[out] dft_container  First element of the DFT container
   /// @return nothing (cannot fail)
   void operator()(const float* const begin,
@@ -47,6 +46,11 @@ class DftRaw {
                   const bool is_inverted,
                   const unsigned int dft_length,
                   float* const dft_container);
+ private:
+  // No assignment operator for this class
+  DftRaw& operator=(const DftRaw& right);
+
+  const unsigned int dft_length_;
 };
 
 }  // namespace algorithms

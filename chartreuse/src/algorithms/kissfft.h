@@ -31,6 +31,9 @@ namespace algorithms {
 /// @brief Kiss FFT algorithm wrapper class
 class KissFFT {
  public:
+  /// Constructor, parameterizes analysis
+  ///
+  /// @param[in]  dft_length     DFT points count
   explicit KissFFT(const unsigned int dft_length);
   ~KissFFT();
 
@@ -50,6 +53,11 @@ class KissFFT {
                   float* const dft_container);
 
  private:
+  // No assignment operator for this class
+  KissFFT& operator=(const KissFFT& right);
+
+  // TODO(gm): this is useless (already present in the config), remove it
+  const unsigned int dft_length_;
   kiss_fft_cfg config_;   ///< Internal KissFFT-specific persistent data
   std::vector<float> zeropad_;   ///< Temporary buffer for zero-padding
 };

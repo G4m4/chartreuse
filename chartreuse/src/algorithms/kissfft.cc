@@ -29,7 +29,8 @@ namespace chartreuse {
 namespace algorithms {
 
 KissFFT::KissFFT(const unsigned int dft_length)
-    : config_(kiss_fft_alloc(dft_length, 0, NULL, NULL)),
+    : dft_length_(dft_length),
+      config_(kiss_fft_alloc(dft_length, 0, NULL, NULL)),
       zeropad_(2 * dft_length, 0.0f) {
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));

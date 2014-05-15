@@ -51,15 +51,9 @@ void KissFFT::operator()(const float* const frame,
   const unsigned int kActualInputLength(
     // Cast for 64b systems
     std::min(static_cast<unsigned int>(frame_length), dft_length_));
-  const unsigned int kRemaining(dft_length_ - kActualInputLength);
   std::copy_n(&frame[0],
               kActualInputLength,
               &zeropad_[0]);
-  //for (unsigned int i(0); i < std::min(frame_length, dft_length_); ++i) {
-  //  zeropad_[2 * i] = frame[i];
-  //}
-  //std::copy_n(begin, std::min(kInputLength, dft_length), zeropad_.begin());
-  //std::fill_n(zeropad_.begin() + kActualInputLength, kRemaining, 0.0f);
   return kiss_fftr(
     config_,
     &zeropad_[0],

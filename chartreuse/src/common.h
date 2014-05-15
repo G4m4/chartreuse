@@ -22,6 +22,7 @@
 #define CHARTREUSE_SRC_COMMON_H_
 
 #include <cassert>
+#include <cstddef>
 
 #include "chartreuse/src/configuration.h"
 

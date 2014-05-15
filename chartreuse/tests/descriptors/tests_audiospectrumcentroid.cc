@@ -34,7 +34,7 @@ TEST(AudioSpectrumCentroid, Range) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
   std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with random data
@@ -59,7 +59,7 @@ TEST(AudioSpectrumCentroid, LowerBound) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
   std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
   while (index < kDataTestSetSize - 1) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
@@ -85,7 +85,7 @@ TEST(AudioSpectrumCentroid, HigherBound) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
   std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
   while (index < kDataTestSetSize - 1) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
@@ -110,7 +110,7 @@ TEST(AudioSpectrumCentroid, Sin) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
   std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with sin data
@@ -138,7 +138,7 @@ TEST(AudioSpectrumCentroid, Constant) {
   std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
   const float kConstant(1.0f);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with sin data
@@ -161,7 +161,7 @@ TEST(AudioSpectrumCentroid, Perf) {
   AudioSpectrumCentroid descriptor(kSamplingFreq);
   std::vector<float> desc_data(AudioSpectrumCentroid::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   // Computing the mean output prevents the compiler from optimizing out things
   float mean(0.0f);
   while (index < kDataPerfSetSize) {

@@ -31,7 +31,7 @@ void AudioPower::operator()(const float* const frame,
   CHARTREUSE_ASSERT(data != nullptr);
 
   float power(0.0f);
-  for (unsigned int i(0); i < frame_length; ++i) {
+  for (std::size_t i(0); i < frame_length; ++i) {
     power += frame[i] * frame[i];
   }
   const float kNormFactor(1 / static_cast<float>(frame_length));

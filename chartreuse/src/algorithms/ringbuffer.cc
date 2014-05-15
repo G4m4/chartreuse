@@ -27,7 +27,7 @@
 namespace chartreuse {
 namespace algorithms {
 
-RingBuffer::RingBuffer(const unsigned int capacity)
+RingBuffer::RingBuffer(const std::size_t capacity)
     : data_(nullptr),
       capacity_(capacity),
       size_(0),
@@ -46,7 +46,7 @@ RingBuffer::~RingBuffer() {
 }
 
 void RingBuffer::PopOverlapped(float* dest,
-                               const unsigned int count,
+                               const std::size_t count,
                                const unsigned int overlap) {
   CHARTREUSE_ASSERT(IsGood());
   CHARTREUSE_ASSERT(count > 0);
@@ -54,18 +54,18 @@ void RingBuffer::PopOverlapped(float* dest,
 
   // Is zero padding required ?
   // Using "ints" here cause count may be < size, or the opposite
-  const unsigned int zeropadding_count(static_cast<unsigned int>(
+  const std::size_t zeropadding_count(static_cast<std::size_t>(
     (std::max(static_cast<int>(count - size_), 0))));
   // Actual elements count to be copied
-  const unsigned int copy_count(count - zeropadding_count);
+  const std::size_t copy_count(count - zeropadding_count);
   // If data needs to be copied...(e.g. ringbuffer size > 0)
   if (copy_count > 0) {
     // Length of the "right" part: from reading cursor to the buffer end
-    const unsigned int right_part_size(std::min(capacity_ - reading_position_,
+    const std::size_t right_part_size(std::min(capacity_ - reading_position_,
                                        copy_count));
     // Length of the "left" part: from the buffer beginning
     // to the last element to be copied
-    const unsigned int left_part_size(copy_count - right_part_size);
+    const std::size_t left_part_size(copy_count - right_part_size);
 
     //  Copying the first part
     std::copy(&data_[reading_position_],
@@ -91,16 +91,16 @@ void RingBuffer::PopOverlapped(float* dest,
   }
 }
 
-void RingBuffer::Push(const float* const src, const unsigned int count) {
+void RingBuffer::Push(const float* const src, const std::size_t count) {
   CHARTREUSE_ASSERT(IsGood());
   CHARTREUSE_ASSERT(count > 0);
   CHARTREUSE_ASSERT(count <= Capacity() - Size());
   // Length of the "right" part: from writing cursor to the buffer end
-  const unsigned int right_part_size(std::min(capacity_ - writing_position_,
+  const std::size_t right_part_size(std::min(capacity_ - writing_position_,
                                               count));
   // Length of the "left" part: from the buffer beginning
   // to the last element to be pushed
-  const unsigned int left_part_size(count - right_part_size);
+  const std::size_t left_part_size(count - right_part_size);
 
   //  Copying the first part
   std::copy(&src[0],
@@ -119,16 +119,16 @@ void RingBuffer::Push(const float* const src, const unsigned int count) {
   size_ += count;
 }
 
-void RingBuffer::Fill(const float value, const unsigned int count) {
+void RingBuffer::Fill(const float value, const std::size_t count) {
   CHARTREUSE_ASSERT(IsGood());
   CHARTREUSE_ASSERT(count > 0);
   CHARTREUSE_ASSERT(count <= Capacity() - Size());
   // Length of the "right" part: from writing cursor to the buffer end
-  const unsigned int right_part_size(std::min(capacity_ - writing_position_,
+  const std::size_t right_part_size(std::min(capacity_ - writing_position_,
                                               count));
   // Length of the "left" part: from the buffer beginning
   // to the last element to be pushed
-  const unsigned int left_part_size(count - right_part_size);
+  const std::size_t left_part_size(count - right_part_size);
 
   // Filling the first part
   std::fill(&data_[writing_position_],
@@ -162,12 +162,12 @@ bool RingBuffer::IsGood(void) const {
   return data_ != nullptr;
 }
 
-unsigned int RingBuffer::Capacity(void) const {
+std::size_t RingBuffer::Capacity(void) const {
   CHARTREUSE_ASSERT(IsGood());
   return capacity_;
 }
 
-unsigned int RingBuffer::Size(void) const {
+std::size_t RingBuffer::Size(void) const {
   CHARTREUSE_ASSERT(IsGood());
   return size_;
 }

@@ -33,7 +33,7 @@ TEST(Spectrogram, WhiteNoise) {
 
   Spectrogram spectrogram(kDftLength, kSamplingFreq);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with random data
@@ -55,7 +55,7 @@ TEST(Spectrogram, Sin) {
 
   Spectrogram spectrogram(kDftLength, kSamplingFreq);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with sin data

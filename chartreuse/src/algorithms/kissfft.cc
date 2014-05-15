@@ -48,7 +48,9 @@ void KissFFT::operator()(const float* const frame,
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
 
-  const unsigned int kActualInputLength(std::min(frame_length, dft_length_));
+  const unsigned int kActualInputLength(
+    // Cast for 64b systems
+    std::min(static_cast<unsigned int>(frame_length), dft_length_));
   const unsigned int kRemaining(dft_length_ - kActualInputLength);
   std::copy_n(&frame[0],
               kActualInputLength,

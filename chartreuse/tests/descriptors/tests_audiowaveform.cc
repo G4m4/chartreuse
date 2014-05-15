@@ -31,7 +31,7 @@ TEST(AudioWaveform, Range) {
   AudioWaveform descriptor;
   std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with random data
@@ -55,7 +55,7 @@ TEST(AudioWaveform, Sin) {
   AudioWaveform descriptor;
   std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with sin data
@@ -83,7 +83,7 @@ TEST(AudioWaveform, Constant) {
   std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
   const float kConstant(AudioWaveform::Meta().out_max);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with sin data
@@ -106,7 +106,7 @@ TEST(AudioWaveform, Perf) {
   AudioWaveform descriptor;
   std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   // Computing the mean output prevents the compiler from optimizing out things
   float mean(0.0f);
   while (index < kDataPerfSetSize) {

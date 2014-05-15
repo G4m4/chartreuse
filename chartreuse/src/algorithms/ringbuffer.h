@@ -21,6 +21,8 @@
 #ifndef CHARTREUSE_SRC_ALGORITHMS_RINGBUFFER_H_
 #define CHARTREUSE_SRC_ALGORITHMS_RINGBUFFER_H_
 
+#include "chartreuse/src/common.h"
+
 namespace chartreuse {
 namespace algorithms {
 
@@ -32,7 +34,7 @@ namespace algorithms {
 class RingBuffer {
  public:
   /// @brief Default constructor: the user has to provide a fixed buffer length
-  explicit RingBuffer(const unsigned int capacity);
+  explicit RingBuffer(const std::size_t capacity);
   ~RingBuffer();
 
   /// @brief Pop elements out of the buffer, with overlap
@@ -46,20 +48,20 @@ class RingBuffer {
   /// @param[in]  count   Elements count to retrieve
   /// @param[in]  overlap   Number of overlaps for filling the buffer
   void PopOverlapped(float* dest,
-                     const unsigned int count,
+                     const std::size_t count,
                      const unsigned int overlap);
 
   /// @brief Push elements into the buffer
   ///
   /// @param[in]  src   Buffer to push
   /// @param[in]  count   Buffer elements count
-  void Push(const float* const src, const unsigned int count);
+  void Push(const float* const src, const std::size_t count);
 
   /// @brief Fill "count" elements with the constant value "value"
   ///
   /// @param[in]  value   Value to push
   /// @param[in]  count   Buffer elements count
-  void Fill(const float value, const unsigned int count);
+  void Fill(const float value, const std::size_t count);
 
   /// @brief Explicitly clear buffer content but does not deallocate it
   void Clear(void);
@@ -70,17 +72,17 @@ class RingBuffer {
   bool IsGood(void) const;
 
   /// @brief How many elements may be pushed into the buffer
-  unsigned int Capacity(void) const;
+  std::size_t Capacity(void) const;
 
   /// @brief How many elements may be popped from the buffer
-  unsigned int Size(void) const;
+  std::size_t Size(void) const;
 
  private:
   float* data_;  ///< Internal elements buffer
-  unsigned int capacity_;  ///< Internal buffer length
-  unsigned int size_;  ///< Count of elements currently held within the buffer
-  unsigned int writing_position_;  ///< Beginning of the writing part
-  unsigned int reading_position_;  ///< Beginning of the reading part
+  std::size_t capacity_;  ///< Internal buffer length
+  std::size_t size_;  ///< Count of elements currently held within the buffer
+  std::size_t writing_position_;  ///< Beginning of the writing part
+  std::size_t reading_position_;  ///< Beginning of the reading part
 };
 
 }  // namespace algorithms

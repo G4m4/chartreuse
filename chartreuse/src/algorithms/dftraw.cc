@@ -43,7 +43,9 @@ void DftRaw::operator()(const float* const frame,
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
 
-  const unsigned int kActualInDataLength = std::min(frame_length, dft_length_);
+  const unsigned int kActualInDataLength
+    // Cast for 64b systems
+    = std::min(static_cast<unsigned int>(frame_length), dft_length_);
   const float kTwiddleBase((2.0f * chartreuse::algorithms::Pi) / dft_length_);
 
   for (unsigned int i = 0; i < dft_length_ / 2 + 1; ++i) {

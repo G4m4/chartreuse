@@ -31,7 +31,7 @@ TEST(AudioPower, Range) {
   AudioPower descriptor;
   std::vector<float> desc_data(AudioPower::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with random data
@@ -55,7 +55,7 @@ TEST(AudioPower, Sin) {
   AudioPower descriptor;
   std::vector<float> desc_data(AudioPower::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with sin data
@@ -83,7 +83,7 @@ TEST(AudioPower, Constant) {
   std::vector<float> desc_data(AudioPower::Meta().out_dim);
   const float kConstant(AudioPower::Meta().out_max);
 
-  unsigned int index(0);
+  std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
     // Fill the frame with sin data
@@ -106,7 +106,7 @@ TEST(AudioPower, Perf) {
   AudioPower descriptor;
   std::vector<float> desc_data(AudioPower::Meta().out_dim);
 
-  unsigned int index(0);
+  std::size_t index(0);
   // Computing the mean output prevents the compiler from optimizing out things
   float mean(0.0f);
   while (index < kDataPerfSetSize) {

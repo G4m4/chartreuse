@@ -55,7 +55,7 @@ AudioSpectrumCentroid::AudioSpectrumCentroid(const float sampling_freq)
                   kLowEdgeIndex_,
                   sampling_freq),
       buffer_(kSpectrumDFTLength + 2),
-      tmp_(kSpectrumDFTLength / 2 + 1) {
+      power_(kSpectrumDFTLength / 2 + 1) {
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
   CHARTREUSE_ASSERT(kLowEdgeIndex_ > 0);
   CHARTREUSE_ASSERT(kHighEdgeIndex_ > 0);
@@ -75,27 +75,27 @@ void AudioSpectrumCentroid::operator()(const float* const frame,
     / static_cast<float>(kSpectrumDFTLength * kSpectrumWindowLength));
   // Retrieving the squared magnitude of the DFT
   for (std::size_t i(0); i < buffer_.size(); i += 2) {
-    tmp_[i / 2] = buffer_[i] * buffer_[i] + buffer_[i + 1] * buffer_[i + 1];
-    tmp_[i / 2] *= kDFTNorm;
+    power_[i / 2] = buffer_[i] * buffer_[i] + buffer_[i + 1] * buffer_[i + 1];
+    power_[i / 2] *= kDFTNorm;
   }
   // The DC component is unchanged, everything else is doubled
-  tmp_[0] *= 0.5f;
+  power_[0] *= 0.5f;
   // Summing the contributions of all frequencies lower than 62.5
   for (unsigned int i(0); i < kLowEdgeIndex_ - 1; ++i) {
-    tmp_[kLowEdgeIndex_ - 1] += tmp_[i];
+    power_[kLowEdgeIndex_ - 1] += power_[i];
   }
-  const float kPowerSum(std::accumulate(&tmp_[kLowEdgeIndex_ - 1],
-                                        &tmp_[kHighEdgeIndex_ - 1],
+  const float kPowerSum(std::accumulate(&power_[kLowEdgeIndex_ - 1],
+                                        &power_[kHighEdgeIndex_ - 1],
                                         0.0f)
-                        + tmp_[kHighEdgeIndex_ - 1]
+                        + power_[kHighEdgeIndex_ - 1]
                         // Prevent divide by zero
                         + 1e-7f);
   CHARTREUSE_ASSERT(kPowerSum > 0.0f);
   // Weight each DFT bin by the log of the frequency relative to 1000Hz
   // The first bin is the low edge
-  float kOut(tmp_[kLowEdgeIndex_ - 1] * -5.0f);
+  float kOut(power_[kLowEdgeIndex_ - 1] * -5.0f);
   for (unsigned int i(kLowEdgeIndex_); i < kHighEdgeIndex_; ++i) {
-    kOut += tmp_[i] * freq_scale_.GetScaleAtIndex(i - kLowEdgeIndex_);
+    kOut += power_[i] * freq_scale_.GetScaleAtIndex(i - kLowEdgeIndex_);
   }
   data[0] = kOut / kPowerSum;
 }

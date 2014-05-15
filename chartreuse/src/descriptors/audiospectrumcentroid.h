@@ -56,7 +56,7 @@ class AudioSpectrumCentroid : public Descriptor_Interface {
   // TODO(gm): this could be actually static
   std::vector<float> buffer_;  ///< Internal temporary buffer
   // TODO(gm): this is useless
-  std::vector<float> tmp_;  ///< Internal temporary buffer
+  std::vector<float> power_;  ///< Internal power of the signal
 };
 
 }  // namespace descriptors

@@ -74,7 +74,7 @@ void AudioSpectrumCentroid::operator()(const float* const frame,
   const float kDFTNorm(2.0f
     / static_cast<float>(kSpectrumDFTLength * kSpectrumWindowLength));
   // Retrieving the squared magnitude of the DFT
-  for (unsigned int i(0); i < kSpectrumDFTLength; i += 2) {
+  for (std::size_t i(0); i < buffer_.size(); i += 2) {
     tmp_[i / 2] = buffer_[i] * buffer_[i] + buffer_[i + 1] * buffer_[i + 1];
     tmp_[i / 2] *= kDFTNorm;
   }

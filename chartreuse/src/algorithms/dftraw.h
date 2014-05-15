@@ -35,6 +35,7 @@ class DftRaw : public descriptors::Descriptor_Interface {
   /// @param[in]  dft_length     DFT points count
   explicit DftRaw(const unsigned int dft_length);
 
+  /// Output size: dft_length / 2 + 1
   void operator()(const float* const frame,
                   const std::size_t frame_length,
                   float* const data);

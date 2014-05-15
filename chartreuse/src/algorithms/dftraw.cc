@@ -46,7 +46,7 @@ void DftRaw::operator()(const float* const frame,
   const unsigned int kActualInDataLength = std::min(frame_length, dft_length_);
   const float kTwiddleBase((2.0f * chartreuse::algorithms::Pi) / dft_length_);
 
-  for (unsigned int i = 0; i < dft_length_; ++i) {
+  for (unsigned int i = 0; i < dft_length_ / 2 + 1; ++i) {
     const float twiddle_factor = i * kTwiddleBase;
 
     float real = 0.0f;

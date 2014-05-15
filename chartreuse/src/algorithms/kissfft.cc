@@ -30,8 +30,8 @@ namespace algorithms {
 
 KissFFT::KissFFT(const unsigned int dft_length)
     : dft_length_(dft_length),
-      config_(kiss_fft_alloc(dft_length, 0, NULL, NULL)),
-      zeropad_(2 * dft_length, 0.0f) {
+      config_(kiss_fftr_alloc(dft_length, 0, NULL, NULL)),
+      zeropad_(dft_length + 2, 0.0f) {
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
 }
@@ -50,15 +50,18 @@ void KissFFT::operator()(const float* const frame,
 
   const unsigned int kActualInputLength(std::min(frame_length, dft_length_));
   const unsigned int kRemaining(dft_length_ - kActualInputLength);
-  for (unsigned int i(0); i < std::min(frame_length, dft_length_); ++i) {
-    zeropad_[2 * i] = frame[i];
-  }
+  std::copy_n(&frame[0],
+              kActualInputLength,
+              &zeropad_[0]);
+  //for (unsigned int i(0); i < std::min(frame_length, dft_length_); ++i) {
+  //  zeropad_[2 * i] = frame[i];
+  //}
   //std::copy_n(begin, std::min(kInputLength, dft_length), zeropad_.begin());
   //std::fill_n(zeropad_.begin() + kActualInputLength, kRemaining, 0.0f);
-  return kiss_fft(
+  return kiss_fftr(
     config_,
+    &zeropad_[0],
     // TODO(gm): something cleaner?
-    reinterpret_cast<kiss_fft_cpx*>(&zeropad_[0]),
     reinterpret_cast<kiss_fft_cpx*>(data));
 }
 

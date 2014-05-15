@@ -23,7 +23,7 @@
 
 #include <vector>
 
-#include "externals/kiss_fft/kiss_fft.h"
+#include "externals/kiss_fft/tools/kiss_fftr.h"
 
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
@@ -39,6 +39,7 @@ class KissFFT : public descriptors::Descriptor_Interface {
   explicit KissFFT(const unsigned int dft_length);
   ~KissFFT();
 
+  /// Output size: dft_length / 2 + 1
   void operator()(const float* const frame,
                   const std::size_t frame_length,
                   float* const data);
@@ -50,7 +51,7 @@ class KissFFT : public descriptors::Descriptor_Interface {
   // TODO(gm): this is useless (already present in the config), remove it
   const unsigned int dft_length_;
 
-  kiss_fft_cfg config_;   ///< Internal KissFFT-specific persistent data
+  kiss_fftr_cfg config_;   ///< Internal KissFFT-specific persistent data
   std::vector<float> zeropad_;   ///< Temporary buffer for zero-padding
 };
 

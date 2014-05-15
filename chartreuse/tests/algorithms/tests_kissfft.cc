@@ -35,7 +35,7 @@ TEST(KissFFT, BasicOddSize) {
   const float kValue(1.0f);
   std::vector<float> data(5, kValue);
   const unsigned int kDftLength(8);
-  std::vector<float> out_data(kDftLength * 2, 0.0f);
+  std::vector<float> out_data(kDftLength + 2, 0.0f);
 
   KissFFT dft(kDftLength);
   dft(&data[0],
@@ -55,7 +55,7 @@ TEST(KissFFT, BasicEvenSize) {
   data[1] *= -1.0f;
   data[3] *= -1.0f;
   const unsigned int kDftLength(8);
-  std::vector<float> out_data(kDftLength * 2, 0.0f);
+  std::vector<float> out_data(kDftLength + 2, 0.0f);
 
   KissFFT dft(kDftLength);
   dft(&data[0],
@@ -63,14 +63,14 @@ TEST(KissFFT, BasicEvenSize) {
       &out_data[0]);
 
   const float kExpected(kValue * data.size());
-  EXPECT_EQ(kExpected, out_data[out_data.size() / 2]);
+  EXPECT_EQ(kExpected, out_data[out_data.size() - 2]);
 }
 
 /// @brief Compute the DFT of an uniform white noise
 TEST(KissFFT, WhiteNoise) {
   std::vector<float> data(kFFTDataSize);
   const unsigned int kDftLength(kLargeDFTLength);
-  std::vector<float> out_data(kDftLength * 2, 0.0f);
+  std::vector<float> out_data(kDftLength + 2, 0.0f);
   std::generate(data.begin(),
                 data.end(),
                 [&] {return kNormDistribution(kRandomGenerator);});
@@ -86,10 +86,10 @@ TEST(KissFFT, WhiteNoise) {
   float mean(0.0f);
   for (std::vector<float>::const_iterator iter(out_data.begin());
        iter != out_data.end();
-       iter += 2) {
+       iter += 1) {
     mean += *iter;
   }
-  mean /= out_data.size() / 2.0f;
+  mean /= out_data.size() - 2.0f;
 
   EXPECT_NEAR(kExpectedMean, mean, kEpsilonMean);
 }
@@ -99,7 +99,7 @@ TEST(KissFFT, WhiteNoise) {
 TEST(KissFFT, Normalization) {
   const unsigned int kDftLength(kMediumDFTLength);
   std::vector<float> data(kDataInSinLength, 1.0f);
-  std::vector<float> out_data(kDftLength * 2, 0.0f);
+  std::vector<float> out_data(kDftLength + 2, 0.0f);
 
   // Input buffer normalized
   // Note that whatever the input data size is,
@@ -120,7 +120,7 @@ TEST(KissFFT, Normalization) {
 /// @brief Check properties of a medium-length DFT for a pure sinusoid
 TEST(KissFFT, MagSinMedLengthProperties) {
   const unsigned int kDftLength(kMediumDFTLength);
-  std::vector<float> out_data(kDftLength * 2, 0.0f);
+  std::vector<float> out_data(kDftLength + 2, 0.0f);
 
   const float kExpected = (kDftLength * kDefaultTestFreq)
                           / static_cast<float>(kDefaultSamplingRate);
@@ -146,7 +146,7 @@ TEST(KissFFT, MagSinMedLengthProperties) {
 /// with externally precomputed reference data
 TEST(KissFFT, SinSmallLength) {
   const unsigned int kDftLength(kSmallDFTLength);
-  std::vector<float> out_data(kDftLength * 2, 0.0f);
+  std::vector<float> out_data(kDftLength + 2, 0.0f);
   const float kEpsilon = 1e-3f * kDftLength;
 
   KissFFT dft(kDftLength);
@@ -163,7 +163,7 @@ TEST(KissFFT, SinSmallLength) {
 /// with externally precomputed reference data
 TEST(KissFFT, SinMedLength) {
   const unsigned int kDftLength(kMediumDFTLength);
-  std::vector<float> out_data(kDftLength * 2, 0.0f);
+  std::vector<float> out_data(kDftLength + 2, 0.0f);
   const float kEpsilon = 1e-3f * kDftLength;
 
   KissFFT dft(kDftLength);
@@ -180,7 +180,7 @@ TEST(KissFFT, SinMedLength) {
 /// with externally precomputed reference data
 TEST(KissFFT, SinLargeLength) {
   const unsigned int kDftLength(kLargeDFTLength);
-  std::vector<float> out_data(kDftLength * 2, 0.0f);
+  std::vector<float> out_data(kDftLength + 2, 0.0f);
   // Greater error for this DFT length
   // TODO: find out why?
   const float kEpsilon = 1e-2f * kDftLength;

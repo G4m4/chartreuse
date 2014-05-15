@@ -54,7 +54,7 @@ AudioSpectrumCentroid::AudioSpectrumCentroid(const float sampling_freq)
                   kSpectrumDFTLength,
                   kLowEdgeIndex_,
                   sampling_freq),
-      buffer_(kSpectrumDFTLength * 2),
+      buffer_(kSpectrumDFTLength + 2),
       tmp_(kSpectrumDFTLength / 2 + 1) {
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
   CHARTREUSE_ASSERT(kLowEdgeIndex_ > 0);

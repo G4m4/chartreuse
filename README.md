@@ -1,7 +1,7 @@
 Chartreuse
 ==================================
 
-Chartreuse is an audio descriptor library
+Chartreuse is an audio descriptors library, (for now) based on [MPEG-7](https://en.wikipedia.org/wiki/MPEG-7).
 
 Tests
 -----
@@ -20,13 +20,14 @@ The build system is based on Cmake.
 It comes with two boolean (ON/OFF) options:
 - CHARTREUSE_HAS_GTEST to indicate that GTest framework can be used (see above)
 
-A Travis configuration file is provided in order to be used with [Travis CI](https://travis-ci.org/).
-
 Building is done with:
 
     mkdir build && cd build
     cmake ..
     cmake --build .
+
+Builds are continuously tested on gcc and Clang with [Travis CI](https://travis-ci.org/).
+[![Build Status](https://travis-ci.org/G4m4/chartreuse.svg?branch=master)](https://travis-ci.org/G4m4/chartreuse)
 
 License
 ==================================

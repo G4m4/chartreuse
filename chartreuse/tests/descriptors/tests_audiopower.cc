@@ -25,6 +25,30 @@
 // Using declarations for tested class
 using chartreuse::descriptors::AudioPower;
 
+/// @brief Compute the descriptor for a null signal,
+/// check its output
+TEST(AudioPower, Null) {
+  AudioPower descriptor;
+  std::vector<float> desc_data(AudioPower::Meta().out_dim);
+
+  std::size_t index(0);
+  while (index < kDataTestSetSize) {
+    std::array<float, chartreuse::kHopSizeSamples> frame;
+    // Fill the frame with random data
+    std::fill(frame.begin(),
+              frame.end(),
+              0.0f);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
+    for (unsigned int desc_index(0);
+         desc_index < desc_data.size();
+         ++desc_index) {
+      EXPECT_GE(AudioPower::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(AudioPower::Meta().out_min, desc_data[desc_index]);
+    }
+    index += frame.size();
+  }
+}
+
 /// @brief Compute the descriptor for an uniform white noise,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioPower, WhiteNoise) {

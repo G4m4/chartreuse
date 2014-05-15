@@ -25,9 +25,6 @@
 // Using declarations for tested class
 using chartreuse::descriptors::AudioSpectrumCentroid;
 
-// TODO(gm): move this in a common file
-static const float kSamplingFreq(48000.0f);
-
 /// @brief Compute the descriptor for an uniform white noise,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumCentroid, WhiteNoise) {

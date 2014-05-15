@@ -81,6 +81,9 @@ static std::uniform_real_distribution<float> kNormDistribution(-1.0f, 1.0f);
 /// @brief Random generator
 static std::default_random_engine kRandomGenerator;
 
+// TODO(gm): move this in a common file
+static const float kSamplingFreq(48000.0f);
+
 /// @brief Basic sinus generator
 ///
 /// No special care has been taken performance or quality-wise

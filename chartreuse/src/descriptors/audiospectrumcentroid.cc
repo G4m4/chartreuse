@@ -62,11 +62,14 @@ AudioSpectrumCentroid::AudioSpectrumCentroid(const float sampling_freq)
   CHARTREUSE_ASSERT(kLowEdgeIndex_ < kHighEdgeIndex_);
 }
 
-void AudioSpectrumCentroid::operator()(
-    const std::array<float, kHopSizeSamples> frame,
-    float* const data) {
+void AudioSpectrumCentroid::operator()(const float* const frame,
+                                       const std::size_t frame_length,
+                                       float* const data) {
+  CHARTREUSE_ASSERT(frame != nullptr);
+  CHARTREUSE_ASSERT(frame_length > 0);
+  CHARTREUSE_ASSERT(data != nullptr);
   // Get the DFT of the frame
-  spectrogram_(&frame[0], &buffer_[0]);
+  spectrogram_(&frame[0], frame_length, &buffer_[0]);
   // Normalization of the DFT
   const float kDFTNorm(2.0f
     / static_cast<float>(kSpectrumDFTLength * kSpectrumWindowLength));

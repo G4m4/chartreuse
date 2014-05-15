@@ -26,10 +26,15 @@
 namespace chartreuse {
 namespace descriptors {
 
-void AudioWaveform::operator()(const std::array<float, kHopSizeSamples> frame,
+void AudioWaveform::operator()(const float* const frame,
+                               const std::size_t frame_length,
                                float* const data) {
-  data[0] = *std::min_element(frame.begin(), frame.end());
-  data[1] = *std::max_element(frame.begin(), frame.end());
+  CHARTREUSE_ASSERT(frame != nullptr);
+  CHARTREUSE_ASSERT(frame_length > 0);
+  CHARTREUSE_ASSERT(data != nullptr);
+
+  data[0] = *std::min_element(&frame[0], &frame[frame_length]);
+  data[1] = *std::max_element(&frame[0], &frame[frame_length]);
 }
 
 }  // namespace descriptors

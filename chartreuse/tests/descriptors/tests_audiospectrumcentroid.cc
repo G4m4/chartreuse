@@ -41,7 +41,7 @@ TEST(AudioSpectrumCentroid, Range) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    descriptor(frame, &desc_data[0]);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
@@ -67,7 +67,7 @@ TEST(AudioSpectrumCentroid, LowerBound) {
     std::generate(frame.begin(),
                   frame.end(),
                   generator);
-    descriptor(frame, &desc_data[0]);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
@@ -93,7 +93,7 @@ TEST(AudioSpectrumCentroid, HigherBound) {
     std::generate(frame.begin(),
                   frame.end(),
                   generator);
-    descriptor(frame, &desc_data[0]);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
@@ -120,7 +120,7 @@ TEST(AudioSpectrumCentroid, Sin) {
     std::copy(&kInSin[index],
               &kInSin[kRightIndex],
               frame.begin());
-    descriptor(frame, &desc_data[0]);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
@@ -145,7 +145,7 @@ TEST(AudioSpectrumCentroid, Constant) {
     std::fill(frame.begin(),
               frame.end(),
               kConstant);
-    descriptor(frame, &desc_data[0]);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
@@ -170,7 +170,7 @@ TEST(AudioSpectrumCentroid, Perf) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    descriptor(frame, &desc_data[0]);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
     mean += desc_data[0] * desc_data[0];
     index += frame.size();
   }

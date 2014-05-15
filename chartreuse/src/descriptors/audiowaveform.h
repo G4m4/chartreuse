@@ -29,7 +29,8 @@ namespace descriptors {
 /// @brief AudioWaveform descriptor: for each frame, retrieve min and max
 class AudioWaveform : public Descriptor_Interface {
  public:
-  void operator()(const std::array<float, chartreuse::kHopSizeSamples> frame,
+  void operator()(const float* const frame,
+                  const std::size_t frame_length,
                   float* const data);
 
   static inline const Descriptor_Meta& Meta(void) {

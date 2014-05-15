@@ -29,7 +29,8 @@ namespace descriptors {
 /// @brief AudioPower descriptor: for each frame, retrieve its square mean
 class AudioPower : public Descriptor_Interface {
  public:
-  void operator()(const std::array<float, chartreuse::kHopSizeSamples> frame,
+  void operator()(const float* const frame,
+                  const std::size_t frame_length,
                   float* const data);
 
   static inline const Descriptor_Meta& Meta(void) {

@@ -38,7 +38,7 @@ TEST(AudioPower, Range) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    descriptor(frame, &desc_data[0]);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
@@ -65,7 +65,7 @@ TEST(AudioPower, Sin) {
     std::copy(&kInSin[index],
               &kInSin[kRightIndex],
               frame.begin());
-    descriptor(frame, &desc_data[0]);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
@@ -90,7 +90,7 @@ TEST(AudioPower, Constant) {
     std::fill(frame.begin(),
               frame.end(),
               kConstant);
-    descriptor(frame, &desc_data[0]);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
@@ -115,7 +115,7 @@ TEST(AudioPower, Perf) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    descriptor(frame, &desc_data[0]);
+    descriptor(&frame[0], frame.size(), &desc_data[0]);
     mean += desc_data[0] * desc_data[0];
     index += frame.size();
   }

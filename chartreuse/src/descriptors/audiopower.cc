@@ -23,13 +23,19 @@
 namespace chartreuse {
 namespace descriptors {
 
-void AudioPower::operator()(const std::array<float, kHopSizeSamples> frame,
+void AudioPower::operator()(const float* const frame,
+                            const std::size_t frame_length,
                             float* const data) {
+  CHARTREUSE_ASSERT(frame != nullptr);
+  CHARTREUSE_ASSERT(frame_length > 0);
+  CHARTREUSE_ASSERT(data != nullptr);
+
   float power(0.0f);
-  for (const float sample : frame) {
-    power += sample * sample;
+  for (unsigned int i(0); i < frame_length; ++i) {
+    power += frame[i] * frame[i];
   }
-  data[0] = power / static_cast<float>(frame.size());
+  const float kNormFactor(1 / static_cast<float>(frame_length));
+  data[0] = power * kNormFactor;
 }
 
 }  // namespace descriptors

@@ -42,8 +42,8 @@ TEST(AudioSpectrumCentroid, WhiteNoise) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GT(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LT(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -68,8 +68,8 @@ TEST(AudioSpectrumCentroid, LowerBound) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GT(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LT(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -94,8 +94,8 @@ TEST(AudioSpectrumCentroid, HigherBound) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GT(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LT(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -121,8 +121,8 @@ TEST(AudioSpectrumCentroid, Sin) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GT(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LT(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -146,8 +146,8 @@ TEST(AudioSpectrumCentroid, Constant) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GT(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LT(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(AudioSpectrumCentroid::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(AudioSpectrumCentroid::Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -171,5 +171,5 @@ TEST(AudioSpectrumCentroid, Perf) {
     mean += desc_data[0] * desc_data[0];
     index += frame.size();
   }
-  EXPECT_LT(-1.0f, mean);
+  EXPECT_LE(-1.0f, mean);
 }

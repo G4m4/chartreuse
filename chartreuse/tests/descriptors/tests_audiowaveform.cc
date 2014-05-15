@@ -42,8 +42,8 @@ TEST(AudioWaveform, WhiteNoise) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GT(AudioWaveform::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LT(AudioWaveform::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(AudioWaveform::Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(AudioWaveform::Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -119,5 +119,5 @@ TEST(AudioWaveform, Perf) {
     mean += desc_data[0] * desc_data[0];
     index += frame.size();
   }
-  EXPECT_LT(AudioWaveform::Meta().out_min, mean);
+  EXPECT_LE(AudioWaveform::Meta().out_min, mean);
 }

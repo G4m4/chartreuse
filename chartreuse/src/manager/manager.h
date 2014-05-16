@@ -91,6 +91,7 @@ class Manager {
   Manager& operator=(const Manager& right);
 
   std::array<bool, DescriptorId::kCount> enabled_descriptors_;
+  // TODO(gm): use a smarter factory
   descriptors::AudioPower audio_power_;
   descriptors::AudioSpectrumCentroid audio_spectrum_centroid_;
   descriptors::AudioSpectrumSpread audio_spectrum_spread_;

@@ -38,5 +38,9 @@ void AudioPower::operator()(const float* const frame,
   data[0] = power * kNormFactor;
 }
 
+Descriptor_Meta AudioPower::Meta(void) const {
+  return Descriptor_Meta(1, 0.0f, 1.0f);
+}
+
 }  // namespace descriptors
 }  // namespace chartreuse

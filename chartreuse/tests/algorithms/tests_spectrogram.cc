@@ -29,9 +29,9 @@ using chartreuse::algorithms::Spectrogram;
 TEST(Spectrogram, WhiteNoise) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
-  std::vector<float> out_data(kDftLength * 2);
 
   Spectrogram spectrogram(kDftLength, kSamplingFreq);
+  std::vector<float> out_data(spectrogram.Meta().out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -51,9 +51,9 @@ TEST(Spectrogram, WhiteNoise) {
 TEST(Spectrogram, Sin) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
-  std::vector<float> out_data(kDftLength * 2);
 
   Spectrogram spectrogram(kDftLength, kSamplingFreq);
+  std::vector<float> out_data(spectrogram.Meta().out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {

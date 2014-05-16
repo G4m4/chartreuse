@@ -35,9 +35,10 @@ TEST(KissFFT, BasicOddSize) {
   const float kValue(1.0f);
   std::vector<float> data(5, kValue);
   const unsigned int kDftLength(8);
-  std::vector<float> out_data(kDftLength + 2, 0.0f);
 
   KissFFT dft(kDftLength);
+  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
+
   dft(&data[0],
       data.size(),
       &out_data[0]);
@@ -55,9 +56,10 @@ TEST(KissFFT, BasicEvenSize) {
   data[1] *= -1.0f;
   data[3] *= -1.0f;
   const unsigned int kDftLength(8);
-  std::vector<float> out_data(kDftLength + 2, 0.0f);
 
   KissFFT dft(kDftLength);
+  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
+
   dft(&data[0],
       data.size(),
       &out_data[0]);
@@ -69,16 +71,18 @@ TEST(KissFFT, BasicEvenSize) {
 /// @brief Compute the DFT of an uniform white noise
 TEST(KissFFT, WhiteNoise) {
   std::vector<float> data(kFFTDataSize);
-  const unsigned int kDftLength(kLargeDFTLength);
-  std::vector<float> out_data(kDftLength + 2, 0.0f);
   std::generate(data.begin(),
                 data.end(),
                 [&] {return kNormDistribution(kRandomGenerator);});
 
+  const unsigned int kDftLength(kLargeDFTLength);
+
+  KissFFT dft(kDftLength);
+  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
+
   const float kExpectedMean = 0.0f;
   const float kEpsilonMean = 1e-3f * out_data.size();
 
-  KissFFT dft(kDftLength);
   dft(&data[0],
       data.size(),
       &out_data[0]);
@@ -99,7 +103,9 @@ TEST(KissFFT, WhiteNoise) {
 TEST(KissFFT, Normalization) {
   const unsigned int kDftLength(kMediumDFTLength);
   std::vector<float> data(kDataInSinLength, 1.0f);
-  std::vector<float> out_data(kDftLength + 2, 0.0f);
+
+  KissFFT dft(kDftLength);
+  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   // Input buffer normalized
   // Note that whatever the input data size is,
@@ -107,7 +113,6 @@ TEST(KissFFT, Normalization) {
   const float kExpected = static_cast<float>(kDftLength);
   const float kEpsilon = 1e-5f;
 
-  KissFFT dft(kDftLength);
   dft(&data[0],
       data.size(),
       &out_data[0]);
@@ -120,13 +125,14 @@ TEST(KissFFT, Normalization) {
 /// @brief Check properties of a medium-length DFT for a pure sinusoid
 TEST(KissFFT, MagSinMedLengthProperties) {
   const unsigned int kDftLength(kMediumDFTLength);
-  std::vector<float> out_data(kDftLength + 2, 0.0f);
+
+  KissFFT dft(kDftLength);
+  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   const float kExpected = (kDftLength * kDefaultTestFreq)
                           / static_cast<float>(kDefaultSamplingRate);
   const float kEpsilon = 1.0f;  // Due to resolution issues
 
-  KissFFT dft(kDftLength);
   dft(&kInSin[0],
       kInSin.size(),
       &out_data[0]);
@@ -146,10 +152,12 @@ TEST(KissFFT, MagSinMedLengthProperties) {
 /// with externally precomputed reference data
 TEST(KissFFT, SinSmallLength) {
   const unsigned int kDftLength(kSmallDFTLength);
-  std::vector<float> out_data(kDftLength + 2, 0.0f);
-  const float kEpsilon = 1e-3f * kDftLength;
 
   KissFFT dft(kDftLength);
+  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
+
+  const float kEpsilon = 1e-3f * kDftLength;
+
   dft(&kInSin[0],
       kInSin.size(),
       &out_data[0]);
@@ -163,10 +171,12 @@ TEST(KissFFT, SinSmallLength) {
 /// with externally precomputed reference data
 TEST(KissFFT, SinMedLength) {
   const unsigned int kDftLength(kMediumDFTLength);
-  std::vector<float> out_data(kDftLength + 2, 0.0f);
-  const float kEpsilon = 1e-3f * kDftLength;
 
   KissFFT dft(kDftLength);
+  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
+
+  const float kEpsilon = 1e-3f * kDftLength;
+
   dft(&kInSin[0],
       kInSin.size(),
       &out_data[0]);
@@ -180,12 +190,14 @@ TEST(KissFFT, SinMedLength) {
 /// with externally precomputed reference data
 TEST(KissFFT, SinLargeLength) {
   const unsigned int kDftLength(kLargeDFTLength);
-  std::vector<float> out_data(kDftLength + 2, 0.0f);
+
+  KissFFT dft(kDftLength);
+  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
+
   // Greater error for this DFT length
   // TODO: find out why?
   const float kEpsilon = 1e-2f * kDftLength;
 
-  KissFFT dft(kDftLength);
   dft(&kInSin[0],
       kInSin.size(),
       &out_data[0]);

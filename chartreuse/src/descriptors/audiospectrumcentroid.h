@@ -39,10 +39,7 @@ class AudioSpectrumCentroid : public Descriptor_Interface {
                   const std::size_t frame_length,
                   float* const data);
 
-  static inline const Descriptor_Meta& Meta(void) {
-    static const Descriptor_Meta metas(1, -5.0f, 5.0f);
-    return metas;
-  }
+  Descriptor_Meta Meta(void) const;
 
  private:
   // No assignment operator for this class

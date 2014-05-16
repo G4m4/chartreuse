@@ -29,7 +29,7 @@ using chartreuse::descriptors::AudioSpectrumSpread;
 /// check its output
 TEST(AudioSpectrumSpread, Null) {
   AudioSpectrumSpread descriptor(kSamplingFreq);
-  std::vector<float> desc_data(AudioSpectrumSpread::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -42,8 +42,8 @@ TEST(AudioSpectrumSpread, Null) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioSpectrumSpread::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioSpectrumSpread::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -53,7 +53,7 @@ TEST(AudioSpectrumSpread, Null) {
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumSpread, WhiteNoise) {
   AudioSpectrumSpread descriptor(kSamplingFreq);
-  std::vector<float> desc_data(AudioSpectrumSpread::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -66,8 +66,8 @@ TEST(AudioSpectrumSpread, WhiteNoise) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioSpectrumSpread::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioSpectrumSpread::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -77,7 +77,7 @@ TEST(AudioSpectrumSpread, WhiteNoise) {
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumSpread, Sin) {
   AudioSpectrumSpread descriptor(kSamplingFreq);
-  std::vector<float> desc_data(AudioSpectrumSpread::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
@@ -93,8 +93,8 @@ TEST(AudioSpectrumSpread, Sin) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioSpectrumSpread::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioSpectrumSpread::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -105,7 +105,7 @@ TEST(AudioSpectrumSpread, Sin) {
 TEST(AudioSpectrumSpread, LowFreq) {
   const float kFrequency(1.0f);
   AudioSpectrumSpread descriptor(kSamplingFreq);
-  std::vector<float> desc_data(AudioSpectrumSpread::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -119,8 +119,8 @@ TEST(AudioSpectrumSpread, LowFreq) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioSpectrumSpread::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioSpectrumSpread::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -131,7 +131,7 @@ TEST(AudioSpectrumSpread, LowFreq) {
 TEST(AudioSpectrumSpread, HighFreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
   AudioSpectrumSpread descriptor(kSamplingFreq);
-  std::vector<float> desc_data(AudioSpectrumSpread::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -145,8 +145,8 @@ TEST(AudioSpectrumSpread, HighFreq) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioSpectrumSpread::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioSpectrumSpread::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -156,7 +156,7 @@ TEST(AudioSpectrumSpread, HighFreq) {
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumSpread, Constant) {
   AudioSpectrumSpread descriptor(kSamplingFreq);
-  std::vector<float> desc_data(AudioSpectrumSpread::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
   const float kConstant(1.0f);
 
   std::size_t index(0);
@@ -170,8 +170,8 @@ TEST(AudioSpectrumSpread, Constant) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioSpectrumSpread::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioSpectrumSpread::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -180,7 +180,7 @@ TEST(AudioSpectrumSpread, Constant) {
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioSpectrumSpread, Perf) {
   AudioSpectrumSpread descriptor(kSamplingFreq);
-  std::vector<float> desc_data(AudioSpectrumSpread::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   // Computing the mean output prevents the compiler from optimizing out things

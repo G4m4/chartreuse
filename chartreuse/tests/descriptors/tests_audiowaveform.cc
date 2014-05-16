@@ -29,7 +29,7 @@ using chartreuse::descriptors::AudioWaveform;
 /// check its output
 TEST(AudioWaveform, Null) {
   AudioWaveform descriptor;
-  std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -42,8 +42,8 @@ TEST(AudioWaveform, Null) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioWaveform::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioWaveform::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -53,7 +53,7 @@ TEST(AudioWaveform, Null) {
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, WhiteNoise) {
   AudioWaveform descriptor;
-  std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -66,8 +66,8 @@ TEST(AudioWaveform, WhiteNoise) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioWaveform::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioWaveform::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -77,7 +77,7 @@ TEST(AudioWaveform, WhiteNoise) {
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, Sin) {
   AudioWaveform descriptor;
-  std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
@@ -93,8 +93,8 @@ TEST(AudioWaveform, Sin) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioWaveform::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioWaveform::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -105,7 +105,7 @@ TEST(AudioWaveform, Sin) {
 TEST(AudioWaveform, LowFreq) {
   const float kFrequency(1.0f);
   AudioWaveform descriptor;
-  std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -119,8 +119,8 @@ TEST(AudioWaveform, LowFreq) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioWaveform::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioWaveform::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -131,7 +131,7 @@ TEST(AudioWaveform, LowFreq) {
 TEST(AudioWaveform, Highfreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
   AudioWaveform descriptor;
-  std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -145,8 +145,8 @@ TEST(AudioWaveform, Highfreq) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioWaveform::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioWaveform::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -156,8 +156,8 @@ TEST(AudioWaveform, Highfreq) {
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, Constant) {
   AudioWaveform descriptor;
-  std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
-  const float kConstant(AudioWaveform::Meta().out_max);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
+  const float kConstant(descriptor.Meta().out_max);
 
   std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
@@ -170,8 +170,8 @@ TEST(AudioWaveform, Constant) {
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(AudioWaveform::Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(AudioWaveform::Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
+      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -180,7 +180,7 @@ TEST(AudioWaveform, Constant) {
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioWaveform, Perf) {
   AudioWaveform descriptor;
-  std::vector<float> desc_data(AudioWaveform::Meta().out_dim);
+  std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
   // Computing the mean output prevents the compiler from optimizing out things
@@ -195,5 +195,5 @@ TEST(AudioWaveform, Perf) {
     mean += desc_data[0] * desc_data[0];
     index += frame.size();
   }
-  EXPECT_LE(AudioWaveform::Meta().out_min, mean);
+  EXPECT_LE(descriptor.Meta().out_min, mean);
 }

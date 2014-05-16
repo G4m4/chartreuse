@@ -74,5 +74,16 @@ void Spectrogram::operator()(const float* const frame,
        data);
 }
 
+descriptors::Descriptor_Meta Spectrogram::Meta(void) const {
+  return descriptors::Descriptor_Meta(
+    // Not that this is the actual total length
+    // (e.g. it should be half of it considering it's complex data)
+    dft_length_ + 2,
+    // Actually the input frame_length...
+    -static_cast<float>(dft_length_),
+    // Actually the input frame_length...
+    static_cast<float>(dft_length_));
+}
+
 }  // namespace algorithms
 }  // namespace chartreuse

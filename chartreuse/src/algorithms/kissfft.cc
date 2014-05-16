@@ -61,5 +61,16 @@ void KissFFT::operator()(const float* const frame,
     reinterpret_cast<kiss_fft_cpx*>(data));
 }
 
+descriptors::Descriptor_Meta KissFFT::Meta(void) const {
+  return descriptors::Descriptor_Meta(
+    // Not that this is the actual total length
+    // (e.g. it should be half of it considering it's complex data)
+    dft_length_ + 2,
+    // Actually the input frame_length...
+    -static_cast<float>(dft_length_),
+    // Actually the input frame_length...
+    static_cast<float>(dft_length_));
+}
+
 }  // namespace algorithms
 }  // namespace chartreuse

@@ -100,5 +100,9 @@ void AudioSpectrumCentroid::operator()(const float* const frame,
   data[0] = kOut / kPowerSum;
 }
 
+Descriptor_Meta AudioSpectrumCentroid::Meta(void) const {
+  return Descriptor_Meta(1, -5.0f, 5.0f);
+}
+
 }  // namespace descriptors
 }  // namespace chartreuse

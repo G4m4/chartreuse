@@ -69,6 +69,9 @@ class Descriptor_Interface {
     const float* const frame,
     const std::size_t frame_length,
     float* const data) = 0;
+
+  /// @brief Retrieve descriptor metadata
+  virtual Descriptor_Meta Meta(void) const = 0;
 };
 
 }  // namespace descriptors

@@ -37,5 +37,9 @@ void AudioWaveform::operator()(const float* const frame,
   data[1] = *std::max_element(&frame[0], &frame[frame_length]);
 }
 
+Descriptor_Meta AudioWaveform::Meta(void) const {
+  return Descriptor_Meta(2, -1.0f, 1.0f);
+}
+
 }  // namespace descriptors
 }  // namespace chartreuse

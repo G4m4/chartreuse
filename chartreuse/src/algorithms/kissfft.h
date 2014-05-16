@@ -44,6 +44,8 @@ class KissFFT : public descriptors::Descriptor_Interface {
                   const std::size_t frame_length,
                   float* const data);
 
+  descriptors::Descriptor_Meta Meta(void) const;
+
  private:
   // No assignment operator for this class
   KissFFT& operator=(const KissFFT& right);

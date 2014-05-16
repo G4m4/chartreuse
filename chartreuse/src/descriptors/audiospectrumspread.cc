@@ -107,5 +107,9 @@ void AudioSpectrumSpread::operator()(const float* const frame,
   data[0] = std::sqrt(out / kPowerSum);
 }
 
+Descriptor_Meta AudioSpectrumSpread::Meta(void) const {
+  return Descriptor_Meta(1, 0.0f, 4.0f);
+}
+
 }  // namespace descriptors
 }  // namespace chartreuse

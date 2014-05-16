@@ -43,6 +43,12 @@ TEST(Spectrogram, WhiteNoise) {
     spectrogram(&frame[0],
                 frame.size(),
                 &out_data[0]);
+    for (unsigned int desc_index(0);
+         desc_index < out_data.size();
+         ++desc_index) {
+      EXPECT_GE(spectrogram.Meta().out_max, out_data[desc_index]);
+      EXPECT_LE(spectrogram.Meta().out_min, out_data[desc_index]);
+    }
     index += frame.size();
   }
 }
@@ -68,6 +74,12 @@ TEST(Spectrogram, Sin) {
     spectrogram(&frame[0],
                 frame.size(),
                 &out_data[0]);
+    for (unsigned int desc_index(0);
+         desc_index < out_data.size();
+         ++desc_index) {
+      EXPECT_GE(spectrogram.Meta().out_max, out_data[desc_index]);
+      EXPECT_LE(spectrogram.Meta().out_min, out_data[desc_index]);
+    }
     index += frame.size();
   }
 }

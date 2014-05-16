@@ -34,6 +34,7 @@ endforeach()
 # Retrieve source files from subdirectories
 add_subdirectory(algorithms)
 add_subdirectory(descriptors)
+add_subdirectory(manager)
 
 # Group sources
 source_group("algorithms"
@@ -46,6 +47,11 @@ source_group("descriptors"
   ${CHARTREUSE_DESCRIPTORS_SRC}
   ${CHARTREUSE_DESCRIPTORS_HDR}
 )
+source_group("manager"
+  FILES
+  ${CHARTREUSE_MANAGER_SRC}
+  ${CHARTREUSE_MANAGER_HDR}
+)
 source_group("kissfft"
   FILES
   ${CHARTREUSE_EXTERNALS_KISSFFT_SRC}
@@ -56,6 +62,7 @@ source_group("kissfft"
 set(CHARTREUSE_SRC
   ${CHARTREUSE_ALGORITHMS_SRC}
   ${CHARTREUSE_DESCRIPTORS_SRC}
+  ${CHARTREUSE_MANAGER_SRC}
   ${CHARTREUSE_EXTERNALS_KISSFFT_SRC}
 )
 set(CHARTREUSE_HDR
@@ -63,6 +70,7 @@ set(CHARTREUSE_HDR
   common.h
   ${CHARTREUSE_ALGORITHMS_HDR}
   ${CHARTREUSE_DESCRIPTORS_HDR}
+  ${CHARTREUSE_MANAGER_HDR}
   ${CHARTREUSE_EXTERNALS_KISSFFT_HDR}
 )
 

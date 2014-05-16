@@ -31,12 +31,14 @@ namespace algorithms {
 
 const unsigned int Spectrogram::kOverlap(3);
 
-Spectrogram::Spectrogram(const unsigned int dft_length,
+Spectrogram::Spectrogram(manager::Manager* manager,
+                         const unsigned int dft_length,
                          const float sampling_freq)
-    : dft_length_(dft_length),
+    : Descriptor_Interface(manager),
+      dft_length_(dft_length),
       sampling_freq_(sampling_freq),
       apodizer_(kHopSizeSamples * kOverlap, Window::kRectangular),
-      dft_(dft_length),
+      dft_(manager, dft_length),
       scratch_memory_(kHopSizeSamples * kOverlap),
       tmp_buffer_(dft_length) {
   CHARTREUSE_ASSERT(dft_length > 0);

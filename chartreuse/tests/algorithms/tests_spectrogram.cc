@@ -30,7 +30,7 @@ TEST(Spectrogram, WhiteNoise) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
 
-  Spectrogram spectrogram(kDftLength, kSamplingFreq);
+  Spectrogram spectrogram(nullptr, kDftLength, kSamplingFreq);
   std::vector<float> out_data(spectrogram.Meta().out_dim);
 
   std::size_t index(0);
@@ -58,7 +58,7 @@ TEST(Spectrogram, Sin) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
 
-  Spectrogram spectrogram(kDftLength, kSamplingFreq);
+  Spectrogram spectrogram(nullptr, kDftLength, kSamplingFreq);
   std::vector<float> out_data(spectrogram.Meta().out_dim);
 
   std::size_t index(0);

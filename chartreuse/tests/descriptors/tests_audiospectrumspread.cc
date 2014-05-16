@@ -28,7 +28,7 @@ using chartreuse::descriptors::AudioSpectrumSpread;
 /// @brief Compute the descriptor for a null signal,
 /// check its output
 TEST(AudioSpectrumSpread, Null) {
-  AudioSpectrumSpread descriptor(kSamplingFreq);
+  AudioSpectrumSpread descriptor(nullptr, kSamplingFreq);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -52,7 +52,7 @@ TEST(AudioSpectrumSpread, Null) {
 /// @brief Compute the descriptor for an uniform white noise,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumSpread, WhiteNoise) {
-  AudioSpectrumSpread descriptor(kSamplingFreq);
+  AudioSpectrumSpread descriptor(nullptr, kSamplingFreq);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -76,7 +76,7 @@ TEST(AudioSpectrumSpread, WhiteNoise) {
 /// @brief Compute the descriptor for a pure sinusoid,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumSpread, Sin) {
-  AudioSpectrumSpread descriptor(kSamplingFreq);
+  AudioSpectrumSpread descriptor(nullptr, kSamplingFreq);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -104,7 +104,7 @@ TEST(AudioSpectrumSpread, Sin) {
 /// check the descriptor output
 TEST(AudioSpectrumSpread, LowFreq) {
   const float kFrequency(1.0f);
-  AudioSpectrumSpread descriptor(kSamplingFreq);
+  AudioSpectrumSpread descriptor(nullptr, kSamplingFreq);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -130,7 +130,7 @@ TEST(AudioSpectrumSpread, LowFreq) {
 /// check the descriptor output
 TEST(AudioSpectrumSpread, HighFreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
-  AudioSpectrumSpread descriptor(kSamplingFreq);
+  AudioSpectrumSpread descriptor(nullptr, kSamplingFreq);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -155,7 +155,7 @@ TEST(AudioSpectrumSpread, HighFreq) {
 /// @brief Compute the descriptor for a constant value,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumSpread, Constant) {
-  AudioSpectrumSpread descriptor(kSamplingFreq);
+  AudioSpectrumSpread descriptor(nullptr, kSamplingFreq);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
   const float kConstant(1.0f);
 
@@ -179,7 +179,7 @@ TEST(AudioSpectrumSpread, Constant) {
 
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioSpectrumSpread, Perf) {
-  AudioSpectrumSpread descriptor(kSamplingFreq);
+  AudioSpectrumSpread descriptor(nullptr, kSamplingFreq);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);

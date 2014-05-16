@@ -23,6 +23,11 @@
 namespace chartreuse {
 namespace descriptors {
 
+AudioPower::AudioPower(manager::Manager* manager)
+    : Descriptor_Interface(manager) {
+  // Nothing to do here!
+}
+
 void AudioPower::operator()(const float* const frame,
                             const std::size_t frame_length,
                             float* const data) {

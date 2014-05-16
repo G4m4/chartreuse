@@ -28,8 +28,10 @@
 namespace chartreuse {
 namespace algorithms {
 
-KissFFT::KissFFT(const unsigned int dft_length)
-    : dft_length_(dft_length),
+KissFFT::KissFFT(manager::Manager* manager,
+                 const unsigned int dft_length)
+    : Descriptor_Interface(manager),
+      dft_length_(dft_length),
       config_(kiss_fftr_alloc(dft_length, 0, NULL, NULL)),
       zeropad_(dft_length + 2, 0.0f) {
   CHARTREUSE_ASSERT(dft_length > 0);

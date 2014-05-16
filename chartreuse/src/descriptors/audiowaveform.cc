@@ -26,6 +26,11 @@
 namespace chartreuse {
 namespace descriptors {
 
+AudioWaveform::AudioWaveform(manager::Manager* manager)
+    : Descriptor_Interface(manager) {
+  // Nothing to do here!
+}
+
 void AudioWaveform::operator()(const float* const frame,
                                const std::size_t frame_length,
                                float* const data) {

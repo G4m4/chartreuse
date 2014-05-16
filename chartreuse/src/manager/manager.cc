@@ -31,8 +31,10 @@ DescriptorId::Type DescriptorId::operator++(const DescriptorId::Type value) {
 }
 
 Manager::Manager(const float sampling_freq)
-    : audio_spectrum_centroid_(sampling_freq),
-      audio_spectrum_spread_(sampling_freq) {
+    : audio_power_(this),
+      audio_spectrum_centroid_(this, sampling_freq),
+      audio_spectrum_spread_(this, sampling_freq),
+      audio_waveform_(this) {
   enabled_descriptors_.fill(false);
 }
 

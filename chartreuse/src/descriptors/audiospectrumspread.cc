@@ -43,12 +43,14 @@ static const unsigned int kSpectrumDFTLength(2048);
 /// arbitrarily fixed
 static const float kLowEdge(62.5f);
 
-AudioSpectrumSpread::AudioSpectrumSpread(const float sampling_freq)
-    : sampling_freq_(sampling_freq),
+AudioSpectrumSpread::AudioSpectrumSpread(manager::Manager* manager,
+                                         const float sampling_freq)
+    : Descriptor_Interface(manager),
+      sampling_freq_(sampling_freq),
       kLowEdgeIndex_(static_cast<unsigned int>(
                     std::ceil(kLowEdge * kSpectrumDFTLength / sampling_freq_))),
       kHighEdgeIndex_(kSpectrumDFTLength / 2 + 1),
-      spectrogram_(kSpectrumDFTLength, sampling_freq),
+      spectrogram_(manager, kSpectrumDFTLength, sampling_freq),
       freq_scale_(kHighEdgeIndex_ - kLowEdgeIndex_,
                   algorithms::Scale::kLogFreq,
                   kSpectrumDFTLength,

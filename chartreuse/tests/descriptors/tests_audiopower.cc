@@ -28,7 +28,7 @@ using chartreuse::descriptors::AudioPower;
 /// @brief Compute the descriptor for a null signal,
 /// check its output
 TEST(AudioPower, Null) {
-  AudioPower descriptor;
+  AudioPower descriptor(nullptr);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -52,7 +52,7 @@ TEST(AudioPower, Null) {
 /// @brief Compute the descriptor for an uniform white noise,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioPower, WhiteNoise) {
-  AudioPower descriptor;
+  AudioPower descriptor(nullptr);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -76,7 +76,7 @@ TEST(AudioPower, WhiteNoise) {
 /// @brief Compute the descriptor for a pure sinusoid,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioPower, Sin) {
-  AudioPower descriptor;
+  AudioPower descriptor(nullptr);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -104,7 +104,7 @@ TEST(AudioPower, Sin) {
 /// check the descriptor output
 TEST(AudioPower, LowFreq) {
   const float kFrequency(1.0f);
-  AudioPower descriptor;
+  AudioPower descriptor(nullptr);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -130,7 +130,7 @@ TEST(AudioPower, LowFreq) {
 /// check the descriptor output
 TEST(AudioPower, Highfreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
-  AudioPower descriptor;
+  AudioPower descriptor(nullptr);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -155,7 +155,7 @@ TEST(AudioPower, Highfreq) {
 /// @brief Compute the descriptor for a constant value,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioPower, Constant) {
-  AudioPower descriptor;
+  AudioPower descriptor(nullptr);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
   const float kConstant(descriptor.Meta().out_max);
 
@@ -179,7 +179,7 @@ TEST(AudioPower, Constant) {
 
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioPower, Perf) {
-  AudioPower descriptor;
+  AudioPower descriptor(nullptr);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);

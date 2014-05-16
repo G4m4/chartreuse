@@ -36,7 +36,7 @@ TEST(KissFFT, BasicOddSize) {
   std::vector<float> data(5, kValue);
   const unsigned int kDftLength(8);
 
-  KissFFT dft(kDftLength);
+  KissFFT dft(nullptr, kDftLength);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   dft(&data[0],
@@ -57,7 +57,7 @@ TEST(KissFFT, BasicEvenSize) {
   data[3] *= -1.0f;
   const unsigned int kDftLength(8);
 
-  KissFFT dft(kDftLength);
+  KissFFT dft(nullptr, kDftLength);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   dft(&data[0],
@@ -77,7 +77,7 @@ TEST(KissFFT, WhiteNoise) {
 
   const unsigned int kDftLength(kLargeDFTLength);
 
-  KissFFT dft(kDftLength);
+  KissFFT dft(nullptr, kDftLength);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   const float kExpectedMean = 0.0f;
@@ -104,7 +104,7 @@ TEST(KissFFT, Normalization) {
   const unsigned int kDftLength(kMediumDFTLength);
   std::vector<float> data(kDataInSinLength, 1.0f);
 
-  KissFFT dft(kDftLength);
+  KissFFT dft(nullptr, kDftLength);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   // Input buffer normalized
@@ -126,7 +126,7 @@ TEST(KissFFT, Normalization) {
 TEST(KissFFT, MagSinMedLengthProperties) {
   const unsigned int kDftLength(kMediumDFTLength);
 
-  KissFFT dft(kDftLength);
+  KissFFT dft(nullptr, kDftLength);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   const float kExpected = (kDftLength * kDefaultTestFreq)
@@ -153,7 +153,7 @@ TEST(KissFFT, MagSinMedLengthProperties) {
 TEST(KissFFT, SinSmallLength) {
   const unsigned int kDftLength(kSmallDFTLength);
 
-  KissFFT dft(kDftLength);
+  KissFFT dft(nullptr, kDftLength);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   const float kEpsilon = 1e-3f * kDftLength;
@@ -172,7 +172,7 @@ TEST(KissFFT, SinSmallLength) {
 TEST(KissFFT, SinMedLength) {
   const unsigned int kDftLength(kMediumDFTLength);
 
-  KissFFT dft(kDftLength);
+  KissFFT dft(nullptr, kDftLength);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   const float kEpsilon = 1e-3f * kDftLength;
@@ -191,7 +191,7 @@ TEST(KissFFT, SinMedLength) {
 TEST(KissFFT, SinLargeLength) {
   const unsigned int kDftLength(kLargeDFTLength);
 
-  KissFFT dft(kDftLength);
+  KissFFT dft(nullptr, kDftLength);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   // Greater error for this DFT length

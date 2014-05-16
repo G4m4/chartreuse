@@ -46,7 +46,8 @@ class Spectrogram : public descriptors::Descriptor_Interface {
   /// @param[in]  sampling_freq   Sampling frequency (required by the DFT)
   // TODO(gm): an "overlap" parameter should be parameterized too
   // (for now it is fixed at 3)
-  explicit Spectrogram(const unsigned int dft_length,
+  explicit Spectrogram(manager::Manager* manager,
+                       const unsigned int dft_length,
                        const float sampling_freq);
   ~Spectrogram();
 

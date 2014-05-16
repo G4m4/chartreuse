@@ -24,6 +24,12 @@
 #include "chartreuse/src/common.h"
 
 namespace chartreuse {
+
+// Internal forward declaration
+namespace manager {
+class Manager;
+}  // namespace manager
+
 namespace descriptors {
 
 /// @brief Struct holding a descriptor "metadata",
@@ -55,6 +61,12 @@ struct Descriptor_Meta {
 /// @brief Define all common methods to be implemented by the descriptors
 class Descriptor_Interface {
  public:
+   /// @brief Constructor, mandatory requires to give the manager to be used
+  explicit Descriptor_Interface(manager::Manager* manager)
+      : manager_(manager) {
+    // Nothing to do here for now
+  }
+
   virtual ~Descriptor_Interface() {
     // Nothing to do here for now
   }
@@ -72,6 +84,9 @@ class Descriptor_Interface {
 
   /// @brief Retrieve descriptor metadata
   virtual Descriptor_Meta Meta(void) const = 0;
+
+ protected:
+  manager::Manager* manager_;  ///< Internal access to common manager
 };
 
 }  // namespace descriptors

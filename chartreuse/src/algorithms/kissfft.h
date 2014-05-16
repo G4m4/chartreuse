@@ -33,10 +33,8 @@ namespace algorithms {
 /// @brief Kiss FFT algorithm wrapper class
 class KissFFT : public descriptors::Descriptor_Interface {
  public:
-  /// Constructor, parameterizes analysis
-  ///
-  /// @param[in]  dft_length     DFT points count
-  explicit KissFFT(const unsigned int dft_length);
+  explicit KissFFT(manager::Manager* manager,
+                   const unsigned int dft_length);
   ~KissFFT();
 
   /// Output size: dft_length / 2 + 1

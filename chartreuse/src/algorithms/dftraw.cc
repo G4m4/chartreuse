@@ -30,8 +30,10 @@
 namespace chartreuse {
 namespace algorithms {
 
-DftRaw::DftRaw(const unsigned int dft_length)
-    : dft_length_(dft_length) {
+DftRaw::DftRaw(manager::Manager* manager,
+               const unsigned int dft_length)
+    : Descriptor_Interface(manager),
+      dft_length_(dft_length) {
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
 }

@@ -44,6 +44,13 @@ Manager::Manager(const float sampling_freq,
                  const unsigned int dft_length)
     : sampling_freq_(sampling_freq),
       dft_length_(dft_length),
+      // TODO(gm): this could be computed at compile-time
+      descriptors_data_(dft_length + 2
+                        + dft_length + 2
+                        + 1
+                        + 1
+                        + 1
+                        + 2, 0.0f),
       audio_power_(this),
       audio_spectrum_centroid_(this),
       audio_spectrum_spread_(this),
@@ -54,6 +61,7 @@ Manager::Manager(const float sampling_freq,
   CHARTREUSE_ASSERT(dft_length_ > 0);
   CHARTREUSE_ASSERT(algorithms::IsPowerOfTwo(dft_length_));
   enabled_descriptors_.fill(false);
+  computed_descriptors_.fill(false);
 }
 
 Manager::~Manager() {
@@ -80,6 +88,14 @@ unsigned int Manager::operator()(const float* const frame,
     }  // for (const bool enabled_descriptor : enabled_descriptors_)
     current_id = static_cast<DescriptorId::Type>(++current_id);
   }
+  // Invalidate all previous computation (this has to be done after all
+  // decriptors retrieval, since there may be dependencies between them)
+  for (unsigned int descriptor_idx(0);
+       descriptor_idx < DescriptorId::kCount;
+       ++descriptor_idx) {
+    DescriptorIsComputed(static_cast<DescriptorId::Type>(descriptor_idx),
+                         false);
+  }
   return descriptors;
 }
 
@@ -93,8 +109,52 @@ std::size_t Manager::GetDescriptor(const DescriptorId::Type descriptor,
                                    const float* const frame,
                                    const std::size_t frame_length,
                                    float* const data) {
-  // TODO(gm): a cleaner code!
+  // TODO(gm): this cast is ugly, remove it
+  float* const internal_data_ptr(const_cast<float* const>(DescriptorDataPtr(descriptor)));
   descriptors::Descriptor_Interface* instance(nullptr);
+  if (!IsDescriptorComputed(descriptor)) {
+    // TODO(gm): a cleaner code!
+    switch (descriptor) {
+      case DescriptorId::kAudioPower: {
+          instance = &audio_power_;
+          break;
+        }
+      case DescriptorId::kAudioSpectrumCentroid: {
+          instance = &audio_spectrum_centroid_;
+          break;
+        }
+      case DescriptorId::kAudioSpectrumSpread: {
+          instance = &audio_spectrum_spread_;
+          break;
+        }
+      case DescriptorId::kAudioWaveform: {
+          instance = &audio_waveform_;
+          break;
+        }
+      case DescriptorId::kDft: {
+          instance = &dft_;
+          break;
+        }
+      case DescriptorId::kSpectrogram: {
+          instance = &spectrogram_;
+          break;
+        }
+      case DescriptorId::kCount:
+      default: {
+          // Should never happen
+          CHARTREUSE_ASSERT(false);
+          break;
+        }
+    }  // switch (descriptor)
+    CHARTREUSE_ASSERT(instance != nullptr);
+    instance->operator()(frame, frame_length, internal_data_ptr);
+    DescriptorIsComputed(descriptor, true);
+  }
+  const std::size_t desc_dim(GetDescriptorSize(descriptor));
+  std::copy(internal_data_ptr, internal_data_ptr + desc_dim, data);
+  return desc_dim;
+}
+
 std::size_t Manager::GetDescriptorSize(
     const DescriptorId::Type descriptor) const {
   // TODO(gm): a cleaner code!
@@ -132,7 +192,6 @@ std::size_t Manager::GetDescriptorSize(
       }
   }  // switch (descriptor)
   CHARTREUSE_ASSERT(instance != nullptr);
-  instance->operator()(frame, frame_length, data);
   return instance->Meta().out_dim;
 }
 
@@ -154,6 +213,60 @@ unsigned int Manager::DftLength(void) const {
 
 float Manager::SamplingFrequency(void) const {
   return sampling_freq_;
+}
+
+bool Manager::IsDescriptorComputed(const DescriptorId::Type descriptor) const {
+  return computed_descriptors_[static_cast<int>(descriptor)];
+}
+
+void Manager::DescriptorIsComputed(const DescriptorId::Type descriptor,
+                                   const bool is_computed) {
+  computed_descriptors_[static_cast<int>(descriptor)] = is_computed;
+}
+
+const float* const Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) const {
+  DescriptorId::Type current_id(DescriptorId::kAudioPower);
+  std::size_t data_offset(0);
+  while (current_id != descriptor) {
+    const descriptors::Descriptor_Interface* instance(nullptr);
+    switch (current_id) {
+      case DescriptorId::kAudioPower: {
+          instance = &audio_power_;
+          break;
+        }
+      case DescriptorId::kAudioSpectrumCentroid: {
+          instance = &audio_spectrum_centroid_;
+          break;
+        }
+      case DescriptorId::kAudioSpectrumSpread: {
+          instance = &audio_spectrum_spread_;
+          break;
+        }
+      case DescriptorId::kAudioWaveform: {
+          instance = &audio_waveform_;
+          break;
+        }
+      case DescriptorId::kDft: {
+          instance = &dft_;
+          break;
+        }
+      case DescriptorId::kSpectrogram: {
+          instance = &spectrogram_;
+          break;
+        }
+      case DescriptorId::kCount:
+      default: {
+          // Should never happen
+          CHARTREUSE_ASSERT(false);
+          break;
+        }
+    }  // switch (descriptor)
+    CHARTREUSE_ASSERT(instance != nullptr);
+    data_offset += instance->Meta().out_dim;
+    current_id = static_cast<DescriptorId::Type>(++current_id);
+  }  // while (current_id != descriptor)
+  CHARTREUSE_ASSERT(data_offset < descriptors_data_.size());
+  return &descriptors_data_[0] + data_offset;
 }
 
 }  // namespace manager

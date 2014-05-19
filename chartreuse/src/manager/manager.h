@@ -22,6 +22,7 @@
 #define CHARTREUSE_SRC_MANAGER_MANAGER_H_
 
 #include <array>
+#include <vector>
 
 #include "chartreuse/src/common.h"
 
@@ -70,7 +71,11 @@ class Manager {
   /// Retrieve all activated descriptors, for the given frame.
   ///
   /// Descriptors value will be stored in the output data array,
-  /// in their order of declaration in DescriptorId
+  /// in their order of declaration in DescriptorId.
+  ///
+  /// Note that calling this function will invalidate all previously computed
+  /// data, e.g. after calling this function all descriptors will be evaluated
+  /// on the new given frame
   ///
   /// @param[in]  frame    Frame to be analysed
   /// @param[in]  frame_length    Input frame length
@@ -110,6 +115,9 @@ class Manager {
   /// @brief Retrieve the given descirptor output size
   std::size_t GetDescriptorSize(const DescriptorId::Type descriptor) const;
 
+  /// @brief Check if the given descriptor was computed for the current frame
+  bool IsDescriptorComputed(const DescriptorId::Type descriptor) const;
+
   /// @brief Descriptor output size
   ///
   /// Retrieve total size of all enabled descriptors
@@ -128,9 +136,19 @@ class Manager {
   // No assignment operator for this class
   Manager& operator=(const Manager& right);
 
+  /// @brief Set a descriptor as "computed" for the current frame
+  void DescriptorIsComputed(const DescriptorId::Type descriptor,
+                            const bool is_computed);
+
+  /// @brief Retrieve the pointer for internal data buffer given the descriptor
+  const float* const DescriptorDataPtr(const DescriptorId::Type descriptor) const;
+
   std::array<bool, DescriptorId::kCount> enabled_descriptors_;
+  std::array<bool, DescriptorId::kCount> computed_descriptors_;
   const float sampling_freq_;  ///< Current sampling frequency
   const unsigned int dft_length_;  ///< Current Dft length
+  std::vector<float> descriptors_data_;  ///< Temporary buffer
+                                         ///< holding descriptors data result
 
   // TODO(gm): use a smarter factory
   descriptors::AudioPower audio_power_;

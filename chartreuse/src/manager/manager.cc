@@ -95,6 +95,10 @@ std::size_t Manager::GetDescriptor(const DescriptorId::Type descriptor,
                                    float* const data) {
   // TODO(gm): a cleaner code!
   descriptors::Descriptor_Interface* instance(nullptr);
+std::size_t Manager::GetDescriptorSize(
+    const DescriptorId::Type descriptor) const {
+  // TODO(gm): a cleaner code!
+  const descriptors::Descriptor_Interface* instance(nullptr);
   switch (descriptor) {
     case DescriptorId::kAudioPower: {
         instance = &audio_power_;
@@ -135,44 +139,9 @@ std::size_t Manager::GetDescriptor(const DescriptorId::Type descriptor,
 std::size_t Manager::DescriptorsOutputSize(void) const {
   std::size_t out(0);
   DescriptorId::Type current_id(DescriptorId::kAudioPower);
-  // TODO(gm): a cleaner code!
-  const descriptors::Descriptor_Interface* instance(nullptr);
   for (const bool enabled_descriptor : enabled_descriptors_) {
     if(enabled_descriptor) {
-      switch (current_id) {
-        case DescriptorId::kAudioPower: {
-            instance = &audio_power_;
-            break;
-          }
-        case DescriptorId::kAudioSpectrumCentroid: {
-            instance = &audio_spectrum_centroid_;
-            break;
-          }
-        case DescriptorId::kAudioSpectrumSpread: {
-            instance = &audio_spectrum_spread_;
-            break;
-          }
-        case DescriptorId::kAudioWaveform: {
-            instance = &audio_waveform_;
-            break;
-          }
-        case DescriptorId::kDft: {
-            instance = &dft_;
-            break;
-          }
-        case DescriptorId::kSpectrogram: {
-            instance = &spectrogram_;
-            break;
-          }
-        case DescriptorId::kCount:
-        default: {
-            // Should never happen
-            CHARTREUSE_ASSERT(false);
-            break;
-          }
-      }  // switch (descriptor)
-      CHARTREUSE_ASSERT(instance != nullptr);
-      out += instance->Meta().out_dim;
+      out += GetDescriptorSize(current_id);
     }  // for (const bool enabled_descriptor : enabled_descriptors_)
     current_id = static_cast<DescriptorId::Type>(++current_id);
   }

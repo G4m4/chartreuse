@@ -25,6 +25,9 @@
 
 #include "chartreuse/src/common.h"
 
+#include "chartreuse/src/algorithms/kissfft.h"
+#include "chartreuse/src/algorithms/spectrogram.h"
+
 #include "chartreuse/src/descriptors/audiopower.h"
 #include "chartreuse/src/descriptors/audiospectrumcentroid.h"
 #include "chartreuse/src/descriptors/audiospectrumspread.h"
@@ -41,6 +44,8 @@ enum Type {
   kAudioSpectrumCentroid,
   kAudioSpectrumSpread,
   kAudioWaveform,
+  kDft,
+  kSpectrogram,
   kCount
 };
 
@@ -114,6 +119,8 @@ class Manager {
   descriptors::AudioSpectrumCentroid audio_spectrum_centroid_;
   descriptors::AudioSpectrumSpread audio_spectrum_spread_;
   descriptors::AudioWaveform audio_waveform_;
+  algorithms::KissFFT dft_;
+  algorithms::Spectrogram spectrogram_;
 };
 
 }  // namespace manager

@@ -43,7 +43,9 @@ Manager::Manager(const float sampling_freq)
     : audio_power_(this),
       audio_spectrum_centroid_(this, sampling_freq),
       audio_spectrum_spread_(this, sampling_freq),
-      audio_waveform_(this) {
+      audio_waveform_(this),
+      dft_(this, kSpectrumDftLength),
+      spectrogram_(this, kSpectrumDftLength, sampling_freq) {
   enabled_descriptors_.fill(false);
 }
 

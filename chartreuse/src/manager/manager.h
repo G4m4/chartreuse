@@ -106,6 +106,11 @@ class Manager {
                             const std::size_t frame_length,
                             float* const data);
 
+  /// @brief Descriptor output size
+  ///
+  /// Retrieve total size of all enabled descriptors
+  std::size_t DescriptorsOutputSize(void) const;
+
   static const unsigned int kSpectrumWindowLength;
   static const unsigned int kSpectrumDftLength;
 

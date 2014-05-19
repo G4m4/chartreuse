@@ -21,16 +21,20 @@
 #include "chartreuse/tests/tests.h"
 
 #include "chartreuse/src/algorithms/spectrogram.h"
+#include "chartreuse/src/manager/manager.h"
 
 // Using declarations for tested class
 using chartreuse::algorithms::Spectrogram;
+// Useful using declarations
+using chartreuse::manager::Manager;
 
 /// @brief Compute the spectrogram for white noise
 TEST(Spectrogram, WhiteNoise) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
 
-  Spectrogram spectrogram(nullptr, kDftLength, kSamplingFreq);
+  Manager manager(kSamplingFreq, kDftLength);
+  Spectrogram spectrogram(&manager);
   std::vector<float> out_data(spectrogram.Meta().out_dim);
 
   std::size_t index(0);
@@ -58,7 +62,8 @@ TEST(Spectrogram, Sin) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
 
-  Spectrogram spectrogram(nullptr, kDftLength, kSamplingFreq);
+  Manager manager(kSamplingFreq, kDftLength);
+  Spectrogram spectrogram(&manager);
   std::vector<float> out_data(spectrogram.Meta().out_dim);
 
   std::size_t index(0);

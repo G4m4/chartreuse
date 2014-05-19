@@ -64,7 +64,7 @@ class Descriptor_Interface {
    /// @brief Constructor, mandatory requires to give the manager to be used
   explicit Descriptor_Interface(manager::Manager* manager)
       : manager_(manager) {
-    // Nothing to do here for now
+    CHARTREUSE_ASSERT(manager != nullptr);
   }
 
   virtual ~Descriptor_Interface() {

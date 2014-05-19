@@ -49,39 +49,16 @@ unsigned int Manager::operator()(const float* const frame,
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
 
-  unsigned int descriptors(0);
+  std::size_t descriptors(0);
   DescriptorId::Type current_id(DescriptorId::kAudioPower);
   float* current_data(data);
-  descriptors::Descriptor_Interface* current_descriptor(nullptr);
   for (const bool enabled_descriptor : enabled_descriptors_) {
     if(enabled_descriptor) {
-      switch (current_id) {
-        case DescriptorId::kAudioPower: {
-            current_descriptor = &audio_power_;
-            break;
-          }
-        case DescriptorId::kAudioSpectrumCentroid: {
-            current_descriptor = &audio_spectrum_centroid_;
-            break;
-          }
-        case DescriptorId::kAudioSpectrumSpread: {
-            current_descriptor = &audio_spectrum_spread_;
-            break;
-          }
-        case DescriptorId::kAudioWaveform: {
-            current_descriptor = &audio_waveform_;
-            break;
-          }
-        case DescriptorId::kCount:
-        default: {
-          // Should never happen
-          CHARTREUSE_ASSERT(false);
-            break;
-          }
-      }  // switch (current_descriptor)
-      current_descriptor->operator()(frame, frame_length, current_data);
+      current_data += GetDescriptor(current_id,
+                                    frame,
+                                    frame_length,
+                                    current_data);
       descriptors += 1;
-      current_data += current_descriptor->Meta().out_dim;
     }
     current_id = static_cast<DescriptorId::Type>(++current_id);
   }
@@ -92,6 +69,39 @@ void Manager::EnableDescriptor(const DescriptorId::Type descriptor,
                                const bool enable) {
   CHARTREUSE_ASSERT(descriptor != DescriptorId::kCount);
   enabled_descriptors_[descriptor] = enable;
+}
+
+std::size_t Manager::GetDescriptor(const DescriptorId::Type descriptor,
+                                   const float* const frame,
+                                   const std::size_t frame_length,
+                                   float* const data) {
+  descriptors::Descriptor_Interface* descriptor_instance(nullptr);
+  switch (descriptor) {
+    case DescriptorId::kAudioPower: {
+        descriptor_instance = &audio_power_;
+        break;
+      }
+    case DescriptorId::kAudioSpectrumCentroid: {
+        descriptor_instance = &audio_spectrum_centroid_;
+        break;
+      }
+    case DescriptorId::kAudioSpectrumSpread: {
+        descriptor_instance = &audio_spectrum_spread_;
+        break;
+      }
+    case DescriptorId::kAudioWaveform: {
+        descriptor_instance = &audio_waveform_;
+        break;
+      }
+    case DescriptorId::kCount:
+    default: {
+      // Should never happen
+      CHARTREUSE_ASSERT(false);
+        break;
+      }
+  }  // switch (descriptor)
+  descriptor_instance->operator()(frame, frame_length, data);
+  return descriptor_instance->Meta().out_dim;
 }
 
 }  // namespace manager

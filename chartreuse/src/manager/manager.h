@@ -86,6 +86,21 @@ class Manager {
   void EnableDescriptor(const DescriptorId::Type descriptor,
                         const bool enable);
 
+  /// @brief Per-descriptor processing function
+  ///
+  /// Retrieve the descriptor, even if not previously activated.
+  ///
+  /// @param[in]  descriptor    Descriptor to be retrieved
+  /// @param[in]  frame    Frame to be analysed
+  /// @param[in]  frame_length    Input frame length
+  /// @param[out]  data     Descriptor output data
+  ///
+  /// @return Chosen descriptor output data length
+  std::size_t GetDescriptor(const DescriptorId::Type descriptor,
+                            const float* const frame,
+                            const std::size_t frame_length,
+                            float* const data);
+
  private:
   // No assignment operator for this class
   Manager& operator=(const Manager& right);

@@ -21,14 +21,18 @@
 #include "chartreuse/tests/tests.h"
 
 #include "chartreuse/src/descriptors/audiospectrumcentroid.h"
+#include "chartreuse/src/manager/manager.h"
 
 // Using declarations for tested class
 using chartreuse::descriptors::AudioSpectrumCentroid;
+// Useful using declarations
+using chartreuse::manager::Manager;
 
 /// @brief Compute the descriptor for a null signal,
 /// check its output
 TEST(AudioSpectrumCentroid, Null) {
-  AudioSpectrumCentroid descriptor(nullptr, kSamplingFreq);
+  Manager manager(kSamplingFreq);
+  AudioSpectrumCentroid descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -52,7 +56,8 @@ TEST(AudioSpectrumCentroid, Null) {
 /// @brief Compute the descriptor for an uniform white noise,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumCentroid, WhiteNoise) {
-  AudioSpectrumCentroid descriptor(nullptr, kSamplingFreq);
+  Manager manager(kSamplingFreq);
+  AudioSpectrumCentroid descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -76,7 +81,8 @@ TEST(AudioSpectrumCentroid, WhiteNoise) {
 /// @brief Compute the descriptor for a pure sinusoid,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumCentroid, Sin) {
-  AudioSpectrumCentroid descriptor(nullptr, kSamplingFreq);
+  Manager manager(kSamplingFreq);
+  AudioSpectrumCentroid descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -104,7 +110,8 @@ TEST(AudioSpectrumCentroid, Sin) {
 /// check the descriptor output
 TEST(AudioSpectrumCentroid, LowFreq) {
   const float kFrequency(1.0f);
-  AudioSpectrumCentroid descriptor(nullptr, kSamplingFreq);
+  Manager manager(kSamplingFreq);
+  AudioSpectrumCentroid descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -130,7 +137,8 @@ TEST(AudioSpectrumCentroid, LowFreq) {
 /// check the descriptor output
 TEST(AudioSpectrumCentroid, HighFreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
-  AudioSpectrumCentroid descriptor(nullptr, kSamplingFreq);
+  Manager manager(kSamplingFreq);
+  AudioSpectrumCentroid descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -155,7 +163,8 @@ TEST(AudioSpectrumCentroid, HighFreq) {
 /// @brief Compute the descriptor for a constant value,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumCentroid, Constant) {
-  AudioSpectrumCentroid descriptor(nullptr, kSamplingFreq);
+  Manager manager(kSamplingFreq);
+  AudioSpectrumCentroid descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
   const float kConstant(1.0f);
 
@@ -179,7 +188,8 @@ TEST(AudioSpectrumCentroid, Constant) {
 
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioSpectrumCentroid, Perf) {
-  AudioSpectrumCentroid descriptor(nullptr, kSamplingFreq);
+  Manager manager(kSamplingFreq);
+  AudioSpectrumCentroid descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);

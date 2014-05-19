@@ -21,14 +21,18 @@
 #include "chartreuse/tests/tests.h"
 
 #include "chartreuse/src/descriptors/audiowaveform.h"
+#include "chartreuse/src/manager/manager.h"
 
 // Using declarations for tested class
 using chartreuse::descriptors::AudioWaveform;
+// Useful using declarations
+using chartreuse::manager::Manager;
 
 /// @brief Compute the descriptor for a null signal,
 /// check its output
 TEST(AudioWaveform, Null) {
-  AudioWaveform descriptor(nullptr);
+  Manager manager(kSamplingFreq);
+  AudioWaveform descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -52,7 +56,8 @@ TEST(AudioWaveform, Null) {
 /// @brief Compute the descriptor for an uniform white noise,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, WhiteNoise) {
-  AudioWaveform descriptor(nullptr);
+  Manager manager(kSamplingFreq);
+  AudioWaveform descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -76,7 +81,8 @@ TEST(AudioWaveform, WhiteNoise) {
 /// @brief Compute the descriptor for a pure sinusoid,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, Sin) {
-  AudioWaveform descriptor(nullptr);
+  Manager manager(kSamplingFreq);
+  AudioWaveform descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -104,7 +110,8 @@ TEST(AudioWaveform, Sin) {
 /// check the descriptor output
 TEST(AudioWaveform, LowFreq) {
   const float kFrequency(1.0f);
-  AudioWaveform descriptor(nullptr);
+  Manager manager(kSamplingFreq);
+  AudioWaveform descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -130,7 +137,8 @@ TEST(AudioWaveform, LowFreq) {
 /// check the descriptor output
 TEST(AudioWaveform, Highfreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
-  AudioWaveform descriptor(nullptr);
+  Manager manager(kSamplingFreq);
+  AudioWaveform descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);
@@ -155,7 +163,8 @@ TEST(AudioWaveform, Highfreq) {
 /// @brief Compute the descriptor for a constant value,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, Constant) {
-  AudioWaveform descriptor(nullptr);
+  Manager manager(kSamplingFreq);
+  AudioWaveform descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
   const float kConstant(descriptor.Meta().out_max);
 
@@ -179,7 +188,8 @@ TEST(AudioWaveform, Constant) {
 
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioWaveform, Perf) {
-  AudioWaveform descriptor(nullptr);
+  Manager manager(kSamplingFreq);
+  AudioWaveform descriptor(&manager);
   std::vector<float> desc_data(descriptor.Meta().out_dim);
 
   std::size_t index(0);

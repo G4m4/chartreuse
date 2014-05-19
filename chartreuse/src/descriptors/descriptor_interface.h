@@ -62,7 +62,7 @@ struct Descriptor_Meta {
 class Descriptor_Interface {
  public:
    /// @brief Constructor, mandatory requires to give the manager to be used
-  explicit Descriptor_Interface(manager::Manager* manager)
+  explicit Descriptor_Interface(manager::Manager* const manager)
       : manager_(manager) {
     CHARTREUSE_ASSERT(manager != nullptr);
   }
@@ -86,7 +86,11 @@ class Descriptor_Interface {
   virtual Descriptor_Meta Meta(void) const = 0;
 
  protected:
-  manager::Manager* manager_;  ///< Internal access to common manager
+  manager::Manager* const manager_;  ///< Internal access to common manager
+
+ private:
+  // No assignment operator for this class
+  Descriptor_Interface& operator=(const Descriptor_Interface& right);
 };
 
 }  // namespace descriptors

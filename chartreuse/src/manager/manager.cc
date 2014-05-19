@@ -25,6 +25,15 @@
 namespace chartreuse {
 namespace manager {
 
+/// @brief Internal window length for the spectrogram, arbitrarily fixed
+// TODO(gm): check were this should be put in order to be both efficient
+// and usable
+const unsigned int Manager::kSpectrumWindowLength(1440);
+/// @brief Internal window length for the spectrogram, arbitrarily fixed
+// TODO(gm): check were this should be put in order to be both efficient
+// and usable
+const unsigned int Manager::kSpectrumDftLength(2048);
+
 DescriptorId::Type DescriptorId::operator++(const DescriptorId::Type value) {
   const unsigned int value_int(static_cast<unsigned int>(value));
   return static_cast<DescriptorId::Type>(value_int + 1);

@@ -26,18 +26,10 @@
 #include <numeric>
 
 #include "chartreuse/src/algorithms/algorithms_common.h"
+#include "chartreuse/src/manager/manager.h"
 
 namespace chartreuse {
 namespace descriptors {
-
-/// @brief Internal window length for the spectrogram, arbitrarily fixed
-// TODO(gm): check were this should be put in order to be both efficient
-// and usable
-static const unsigned int kSpectrumWindowLength(1440);
-/// @brief Internal window length for the spectrogram, arbitrarily fixed
-// TODO(gm): check were this should be put in order to be both efficient
-// and usable
-static const unsigned int kSpectrumDFTLength(2048);
 
 /// @brief Frequency below which all frequencies contribution are summed,
 /// arbitrarily fixed
@@ -48,16 +40,16 @@ AudioSpectrumSpread::AudioSpectrumSpread(manager::Manager* manager,
     : Descriptor_Interface(manager),
       sampling_freq_(sampling_freq),
       kLowEdgeIndex_(static_cast<unsigned int>(
-                    std::ceil(kLowEdge * kSpectrumDFTLength / sampling_freq_))),
-      kHighEdgeIndex_(kSpectrumDFTLength / 2 + 1),
-      spectrogram_(manager, kSpectrumDFTLength, sampling_freq),
+                    std::ceil(kLowEdge * manager::Manager::kSpectrumDftLength / sampling_freq_))),
+      kHighEdgeIndex_(manager::Manager::kSpectrumDftLength / 2 + 1),
+      spectrogram_(manager, manager::Manager::kSpectrumDftLength, sampling_freq),
       freq_scale_(kHighEdgeIndex_ - kLowEdgeIndex_,
                   algorithms::Scale::kLogFreq,
-                  kSpectrumDFTLength,
+                  manager::Manager::kSpectrumDftLength,
                   kLowEdgeIndex_,
                   sampling_freq),
-      buffer_(kSpectrumDFTLength + 2),
-      power_(kSpectrumDFTLength / 2 + 1) {
+      buffer_(manager::Manager::kSpectrumDftLength + 2),
+      power_(manager::Manager::kSpectrumDftLength / 2 + 1) {
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
   CHARTREUSE_ASSERT(kLowEdgeIndex_ > 0);
   CHARTREUSE_ASSERT(kHighEdgeIndex_ > 0);
@@ -74,7 +66,7 @@ void AudioSpectrumSpread::operator()(const float* const frame,
   spectrogram_(&frame[0], frame_length, &buffer_[0]);
   // Normalization of the DFT
   const float kDFTNorm(2.0f
-    / static_cast<float>(kSpectrumDFTLength * kSpectrumWindowLength));
+    / static_cast<float>(manager::Manager::kSpectrumDftLength * manager::Manager::kSpectrumWindowLength));
   // Retrieving the squared magnitude of the DFT
   for (std::size_t i(0); i < buffer_.size(); i += 2) {
     power_[i / 2] = buffer_[i] * buffer_[i] + buffer_[i + 1] * buffer_[i + 1];

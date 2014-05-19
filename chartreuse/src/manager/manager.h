@@ -101,6 +101,9 @@ class Manager {
                             const std::size_t frame_length,
                             float* const data);
 
+  static const unsigned int kSpectrumWindowLength;
+  static const unsigned int kSpectrumDftLength;
+
  private:
   // No assignment operator for this class
   Manager& operator=(const Manager& right);

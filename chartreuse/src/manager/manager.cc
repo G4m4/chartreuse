@@ -70,7 +70,7 @@ unsigned int Manager::operator()(const float* const frame,
                                     frame_length,
                                     current_data);
       descriptors += 1;
-    }
+    }  // for (const bool enabled_descriptor : enabled_descriptors_)
     current_id = static_cast<DescriptorId::Type>(++current_id);
   }
   return descriptors;
@@ -86,33 +86,45 @@ std::size_t Manager::GetDescriptor(const DescriptorId::Type descriptor,
                                    const float* const frame,
                                    const std::size_t frame_length,
                                    float* const data) {
-  descriptors::Descriptor_Interface* descriptor_instance(nullptr);
+  // TODO(gm): a cleaner code!
+  descriptors::Descriptor_Interface* instance(nullptr);
   switch (descriptor) {
     case DescriptorId::kAudioPower: {
-        descriptor_instance = &audio_power_;
+        instance = &audio_power_;
         break;
       }
     case DescriptorId::kAudioSpectrumCentroid: {
-        descriptor_instance = &audio_spectrum_centroid_;
+        instance = &audio_spectrum_centroid_;
         break;
       }
     case DescriptorId::kAudioSpectrumSpread: {
-        descriptor_instance = &audio_spectrum_spread_;
+        instance = &audio_spectrum_spread_;
         break;
       }
     case DescriptorId::kAudioWaveform: {
-        descriptor_instance = &audio_waveform_;
+        instance = &audio_waveform_;
+        break;
+      }
+    case DescriptorId::kDft: {
+        instance = &dft_;
+        break;
+      }
+    case DescriptorId::kSpectrogram: {
+        instance = &spectrogram_;
         break;
       }
     case DescriptorId::kCount:
     default: {
-      // Should never happen
-      CHARTREUSE_ASSERT(false);
+        // Should never happen
+        CHARTREUSE_ASSERT(false);
         break;
       }
   }  // switch (descriptor)
-  descriptor_instance->operator()(frame, frame_length, data);
-  return descriptor_instance->Meta().out_dim;
+  CHARTREUSE_ASSERT(instance != nullptr);
+  instance->operator()(frame, frame_length, data);
+  return instance->Meta().out_dim;
+}
+
 std::size_t Manager::DescriptorsOutputSize(void) const {
   std::size_t out(0);
   DescriptorId::Type current_id(DescriptorId::kAudioPower);

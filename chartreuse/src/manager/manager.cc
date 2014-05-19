@@ -20,6 +20,7 @@
 
 #include "chartreuse/src/manager/manager.h"
 
+#include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
 namespace chartreuse {
@@ -39,13 +40,19 @@ DescriptorId::Type DescriptorId::operator++(const DescriptorId::Type value) {
   return static_cast<DescriptorId::Type>(value_int + 1);
 }
 
-Manager::Manager(const float sampling_freq)
-    : audio_power_(this),
-      audio_spectrum_centroid_(this, sampling_freq),
-      audio_spectrum_spread_(this, sampling_freq),
+Manager::Manager(const float sampling_freq,
+                 const unsigned int dft_length)
+    : sampling_freq_(sampling_freq),
+      dft_length_(dft_length),
+      audio_power_(this),
+      audio_spectrum_centroid_(this),
+      audio_spectrum_spread_(this),
       audio_waveform_(this),
-      dft_(this, kSpectrumDftLength),
-      spectrogram_(this, kSpectrumDftLength, sampling_freq) {
+      dft_(this),
+      spectrogram_(this) {
+  CHARTREUSE_ASSERT(sampling_freq > 0.0f);
+  CHARTREUSE_ASSERT(dft_length_ > 0);
+  CHARTREUSE_ASSERT(algorithms::IsPowerOfTwo(dft_length_));
   enabled_descriptors_.fill(false);
 }
 
@@ -170,6 +177,14 @@ std::size_t Manager::DescriptorsOutputSize(void) const {
     current_id = static_cast<DescriptorId::Type>(++current_id);
   }
   return out;
+}
+
+unsigned int Manager::DftLength(void) const {
+  return dft_length_;
+}
+
+float Manager::SamplingFrequency(void) const {
+  return sampling_freq_;
 }
 
 }  // namespace manager

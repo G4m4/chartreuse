@@ -61,7 +61,8 @@ Type operator++(const Type value);
 /// This should be your preferred way to retrieve descriptors from any input.
 class Manager {
  public:
-  explicit Manager(const float sampling_freq);
+  explicit Manager(const float sampling_freq,
+                   const unsigned int dft_length = kSpectrumDftLength);
   ~Manager();
 
   /// @brief Main processing function
@@ -111,6 +112,12 @@ class Manager {
   /// Retrieve total size of all enabled descriptors
   std::size_t DescriptorsOutputSize(void) const;
 
+  /// @brief Current Dft length getter
+  unsigned int DftLength(void) const;
+
+  /// @brief Current Dft length getter
+  float SamplingFrequency(void) const;
+
   static const unsigned int kSpectrumWindowLength;
   static const unsigned int kSpectrumDftLength;
 
@@ -119,6 +126,9 @@ class Manager {
   Manager& operator=(const Manager& right);
 
   std::array<bool, DescriptorId::kCount> enabled_descriptors_;
+  const float sampling_freq_;  ///< Current sampling frequency
+  const unsigned int dft_length_;  ///< Current Dft length
+
   // TODO(gm): use a smarter factory
   descriptors::AudioPower audio_power_;
   descriptors::AudioSpectrumCentroid audio_spectrum_centroid_;

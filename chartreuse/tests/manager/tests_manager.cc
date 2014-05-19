@@ -24,22 +24,22 @@
 
 // Using declarations for tested class
 using chartreuse::manager::Manager;
-using chartreuse::manager::DescriptorId::kAudioPower;
-using chartreuse::manager::DescriptorId::kAudioSpectrumCentroid;
-using chartreuse::manager::DescriptorId::kAudioSpectrumSpread;
-using chartreuse::manager::DescriptorId::kAudioWaveform;
+using chartreuse::manager::DescriptorId::kCount;
+using chartreuse::manager::DescriptorId::Type;
 
 /// @brief Compute all descriptors for white noise
 TEST(Manager, WhiteNoise) {
-  const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
-  std::vector<float> out_data(kDftLength * 2);
 
   Manager manager(kSamplingFreq);
-  manager.EnableDescriptor(kAudioPower, true);
-  manager.EnableDescriptor(kAudioSpectrumCentroid, true);
-  manager.EnableDescriptor(kAudioSpectrumSpread, true);
-  manager.EnableDescriptor(kAudioWaveform, true);
+
+  for (unsigned int descriptor_idx(0);
+       descriptor_idx < kCount;
+       ++descriptor_idx) {
+    manager.EnableDescriptor(static_cast<Type>(descriptor_idx), true);
+  }
+
+  std::vector<float> out_data(manager.DescriptorsOutputSize());
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {

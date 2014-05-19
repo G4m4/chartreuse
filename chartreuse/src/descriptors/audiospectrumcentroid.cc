@@ -35,22 +35,20 @@ namespace descriptors {
 /// arbitrarily fixed
 static const float kLowEdge(62.5f);
 
-AudioSpectrumCentroid::AudioSpectrumCentroid(manager::Manager* manager,
-                                             const float sampling_freq)
+AudioSpectrumCentroid::AudioSpectrumCentroid(manager::Manager* manager)
     : Descriptor_Interface(manager),
-      sampling_freq_(sampling_freq),
       kLowEdgeIndex_(static_cast<unsigned int>(
-                    std::ceil(kLowEdge * manager::Manager::kSpectrumDftLength / sampling_freq_))),
-      kHighEdgeIndex_(manager::Manager::kSpectrumDftLength / 2 + 1),
-      spectrogram_(manager, manager::Manager::kSpectrumDftLength, sampling_freq),
+                     std::ceil(kLowEdge * manager->DftLength()
+                     / manager->SamplingFrequency()))),
+      kHighEdgeIndex_(manager->DftLength() / 2 + 1),
+      spectrogram_(manager),
       freq_scale_(kHighEdgeIndex_ - kLowEdgeIndex_,
                   algorithms::Scale::kLogFreq,
-                  manager::Manager::kSpectrumDftLength,
+                  manager->DftLength(),
                   kLowEdgeIndex_,
-                  sampling_freq),
-      buffer_(manager::Manager::kSpectrumDftLength + 2),
-      power_(manager::Manager::kSpectrumDftLength / 2 + 1) {
-  CHARTREUSE_ASSERT(sampling_freq > 0.0f);
+                  manager->SamplingFrequency()),
+      buffer_(manager->DftLength() + 2),
+      power_(manager->DftLength() / 2 + 1) {
   CHARTREUSE_ASSERT(kLowEdgeIndex_ > 0);
   CHARTREUSE_ASSERT(kHighEdgeIndex_ > 0);
   CHARTREUSE_ASSERT(kLowEdgeIndex_ < kHighEdgeIndex_);
@@ -66,7 +64,7 @@ void AudioSpectrumCentroid::operator()(const float* const frame,
   spectrogram_(&frame[0], frame_length, &buffer_[0]);
   // Normalization of the DFT
   const float kDFTNorm(2.0f
-    / static_cast<float>(manager::Manager::kSpectrumDftLength * manager::Manager::kSpectrumWindowLength));
+    / static_cast<float>(manager_->DftLength() * manager::Manager::kSpectrumWindowLength));
   // Retrieving the squared magnitude of the DFT
   for (std::size_t i(0); i < buffer_.size(); i += 2) {
     power_[i / 2] = buffer_[i] * buffer_[i] + buffer_[i + 1] * buffer_[i + 1];

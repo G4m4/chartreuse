@@ -33,7 +33,7 @@ namespace descriptors {
 /// @brief AudioPower descriptor: for each frame, retrieve its spectrum centroid
 class AudioSpectrumSpread : public Descriptor_Interface {
  public:
-  explicit AudioSpectrumSpread(manager::Manager* manager, float sampling_freq);
+  explicit AudioSpectrumSpread(manager::Manager* manager);
 
   void operator()(const float* const frame,
                   const std::size_t frame_length,
@@ -45,7 +45,6 @@ class AudioSpectrumSpread : public Descriptor_Interface {
   // No assignment operator for this class
   AudioSpectrumSpread& operator=(const AudioSpectrumSpread& right);
 
-  const float sampling_freq_;  ///< Expected input data sampling frequency
   const unsigned int kLowEdgeIndex_;  ///< Dft index lower bound
   const unsigned int kHighEdgeIndex_;  ///< Dft index higher bound
   algorithms::Spectrogram spectrogram_;  ///< Internal spectrogram

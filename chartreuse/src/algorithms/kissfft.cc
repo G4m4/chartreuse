@@ -24,18 +24,16 @@
 
 #include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/common.h"
+#include "chartreuse/src/manager/manager.h"
 
 namespace chartreuse {
 namespace algorithms {
 
-KissFFT::KissFFT(manager::Manager* manager,
-                 const unsigned int dft_length)
+KissFFT::KissFFT(manager::Manager* manager)
     : Descriptor_Interface(manager),
-      dft_length_(dft_length),
-      config_(kiss_fftr_alloc(dft_length, 0, NULL, NULL)),
-      zeropad_(dft_length + 2, 0.0f) {
-  CHARTREUSE_ASSERT(dft_length > 0);
-  CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
+      config_(kiss_fftr_alloc(manager_->DftLength(), 0, NULL, NULL)),
+      zeropad_(manager_->DftLength() + 2, 0.0f) {
+  // Nothing to do here for now
 }
 
 KissFFT::~KissFFT() {
@@ -52,7 +50,7 @@ void KissFFT::operator()(const float* const frame,
 
   const unsigned int kActualInputLength(
     // Cast for 64b systems
-    std::min(static_cast<unsigned int>(frame_length), dft_length_));
+    std::min(static_cast<unsigned int>(frame_length), manager_->DftLength()));
   std::copy_n(&frame[0],
               kActualInputLength,
               &zeropad_[0]);
@@ -67,11 +65,11 @@ descriptors::Descriptor_Meta KissFFT::Meta(void) const {
   return descriptors::Descriptor_Meta(
     // Not that this is the actual total length
     // (e.g. it should be half of it considering it's complex data)
-    dft_length_ + 2,
+    manager_->DftLength() + 2,
     // Actually the input frame_length...
-    -static_cast<float>(dft_length_),
+    -static_cast<float>(manager_->DftLength()),
     // Actually the input frame_length...
-    static_cast<float>(dft_length_));
+    static_cast<float>(manager_->DftLength()));
 }
 
 }  // namespace algorithms

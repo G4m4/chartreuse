@@ -40,15 +40,10 @@ namespace algorithms {
 /// (input DFT segment zero-padded if need be).
 class Spectrogram : public descriptors::Descriptor_Interface {
  public:
-  /// @brief Default constructor, specifies fixed analysis parameters
-  ///
-  /// @param[in]  dft_length   Length of the DFT applied to each segment
-  /// @param[in]  sampling_freq   Sampling frequency (required by the DFT)
+  /// @brief Default constructor
   // TODO(gm): an "overlap" parameter should be parameterized too
   // (for now it is fixed at 3)
-  explicit Spectrogram(manager::Manager* manager,
-                       const unsigned int dft_length,
-                       const float sampling_freq);
+  explicit Spectrogram(manager::Manager* manager);
   ~Spectrogram();
 
   void operator()(const float* const frame,
@@ -61,8 +56,6 @@ class Spectrogram : public descriptors::Descriptor_Interface {
   // No assignment operator for this class
   Spectrogram& operator=(const Spectrogram& right);
 
-   const unsigned int dft_length_;  ///< Length of the DFT
-   const float sampling_freq_;  ///< Input sampling frequency
    Apodizer apodizer_;  ///< Dedicated object for window function application
    KissFFT dft_;  ///< DFT algorithm wrapper object
    RingBuffer scratch_memory_;  ///< Internal scratch memory

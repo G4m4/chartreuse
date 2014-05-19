@@ -25,25 +25,19 @@
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/algorithms/dftraw.h"
+#include "chartreuse/src/manager/manager.h"
 
 namespace chartreuse {
 namespace algorithms {
 
 const unsigned int Spectrogram::kOverlap(3);
 
-Spectrogram::Spectrogram(manager::Manager* manager,
-                         const unsigned int dft_length,
-                         const float sampling_freq)
+Spectrogram::Spectrogram(manager::Manager* manager)
     : Descriptor_Interface(manager),
-      dft_length_(dft_length),
-      sampling_freq_(sampling_freq),
       apodizer_(kHopSizeSamples * kOverlap, Window::kRectangular),
-      dft_(manager, dft_length),
+      dft_(manager),
       scratch_memory_(kHopSizeSamples * kOverlap),
-      tmp_buffer_(dft_length) {
-  CHARTREUSE_ASSERT(dft_length > 0);
-  CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
-  CHARTREUSE_ASSERT(sampling_freq > 0.0f);
+      tmp_buffer_(manager_->DftLength()) {
   // The first input buffer is to be considered as the "future" part
   // in the overlap.
   // Hence, the first 2 parts ("past" and "present") have to be filled in order
@@ -67,7 +61,9 @@ void Spectrogram::operator()(const float* const frame,
   // Push into ringbuffer for overlap
   scratch_memory_.Push(frame, frame_length);
   // Pop - zero-padding done in the ringbuffer method
-  scratch_memory_.PopOverlapped(&tmp_buffer_[0], dft_length_, kOverlap);
+  scratch_memory_.PopOverlapped(&tmp_buffer_[0],
+                                manager_->DftLength(),
+                                kOverlap);
   // Apply the window
   apodizer_.ApplyWindow(&tmp_buffer_[0]);
   // Apply DFT
@@ -80,11 +76,11 @@ descriptors::Descriptor_Meta Spectrogram::Meta(void) const {
   return descriptors::Descriptor_Meta(
     // Not that this is the actual total length
     // (e.g. it should be half of it considering it's complex data)
-    dft_length_ + 2,
+    manager_->DftLength() + 2,
     // Actually the input frame_length...
-    -static_cast<float>(dft_length_),
+    -static_cast<float>(manager_->DftLength()),
     // Actually the input frame_length...
-    static_cast<float>(dft_length_));
+    static_cast<float>(manager_->DftLength()));
 }
 
 }  // namespace algorithms

@@ -30,8 +30,7 @@ namespace algorithms {
 /// @brief Dft "raw" algorithm implementation class
 class DftRaw : public descriptors::Descriptor_Interface {
  public:
-  explicit DftRaw(manager::Manager* manager,
-                  const unsigned int dft_length);
+  explicit DftRaw(manager::Manager* manager);
 
   /// Output size: dft_length / 2 + 1
   void operator()(const float* const frame,
@@ -43,8 +42,6 @@ class DftRaw : public descriptors::Descriptor_Interface {
  private:
   // No assignment operator for this class
   DftRaw& operator=(const DftRaw& right);
-
-  const unsigned int dft_length_;
 };
 
 }  // namespace algorithms

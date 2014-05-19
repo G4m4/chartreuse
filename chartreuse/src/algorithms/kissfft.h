@@ -33,8 +33,7 @@ namespace algorithms {
 /// @brief Kiss FFT algorithm wrapper class
 class KissFFT : public descriptors::Descriptor_Interface {
  public:
-  explicit KissFFT(manager::Manager* manager,
-                   const unsigned int dft_length);
+  explicit KissFFT(manager::Manager* manager);
   ~KissFFT();
 
   /// Output size: dft_length / 2 + 1
@@ -49,9 +48,6 @@ class KissFFT : public descriptors::Descriptor_Interface {
   KissFFT& operator=(const KissFFT& right);
   // No copy constructor for this class
   KissFFT(const KissFFT& right);
-
-  // TODO(gm): this is useless (already present in the config), remove it
-  const unsigned int dft_length_;
 
   kiss_fftr_cfg config_;   ///< Internal KissFFT-specific persistent data
   std::vector<float> zeropad_;   ///< Temporary buffer for zero-padding

@@ -26,16 +26,14 @@
 
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
+#include "chartreuse/src/manager/manager.h"
 
 namespace chartreuse {
 namespace algorithms {
 
-DftRaw::DftRaw(manager::Manager* manager,
-               const unsigned int dft_length)
-    : Descriptor_Interface(manager),
-      dft_length_(dft_length) {
-  CHARTREUSE_ASSERT(dft_length > 0);
-  CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
+DftRaw::DftRaw(manager::Manager* manager)
+    : Descriptor_Interface(manager) {
+  // Nothing to do here for now
 }
 
 void DftRaw::operator()(const float* const frame,
@@ -47,10 +45,10 @@ void DftRaw::operator()(const float* const frame,
 
   const unsigned int kActualInDataLength
     // Cast for 64b systems
-    = std::min(static_cast<unsigned int>(frame_length), dft_length_);
-  const float kTwiddleBase((2.0f * chartreuse::algorithms::Pi) / dft_length_);
+    = std::min(static_cast<unsigned int>(frame_length), manager_->DftLength());
+  const float kTwiddleBase((2.0f * chartreuse::algorithms::Pi) / manager_->DftLength());
 
-  for (unsigned int i = 0; i < dft_length_ / 2 + 1; ++i) {
+  for (unsigned int i = 0; i < manager_->DftLength() / 2 + 1; ++i) {
     const float twiddle_factor = i * kTwiddleBase;
 
     float real = 0.0f;
@@ -72,11 +70,11 @@ descriptors::Descriptor_Meta DftRaw::Meta(void) const {
   return descriptors::Descriptor_Meta(
     // Not that this is the actual total length
     // (e.g. it should be half of it considering it's complex data)
-    dft_length_ + 2,
+    manager_->DftLength() + 2,
     // Actually the input frame_length...
-    -static_cast<float>(dft_length_),
+    -static_cast<float>(manager_->DftLength()),
     // Actually the input frame_length...
-    static_cast<float>(dft_length_));
+    static_cast<float>(manager_->DftLength()));
 }
 
 }  // namespace algorithms

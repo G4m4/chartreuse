@@ -26,8 +26,10 @@
 
 #include "chartreuse/src/common.h"
 
+#include "chartreuse/src/algorithms/dftpower.h"
 #include "chartreuse/src/algorithms/kissfft.h"
 #include "chartreuse/src/algorithms/spectrogram.h"
+#include "chartreuse/src/algorithms/spectrogrampower.h"
 
 #include "chartreuse/src/descriptors/audiopower.h"
 #include "chartreuse/src/descriptors/audiospectrumcentroid.h"
@@ -47,6 +49,8 @@ enum Type {
   kAudioWaveform,
   kDft,
   kSpectrogram,
+  kDftPower,
+  kSpectrogramPower,
   kCount
 };
 
@@ -173,6 +177,8 @@ class Manager {
   descriptors::AudioWaveform audio_waveform_;
   algorithms::KissFFT dft_;
   algorithms::Spectrogram spectrogram_;
+  algorithms::DftPower dft_power_;
+  algorithms::SpectrogramPower spectrogram_power_;
 };
 
 }  // namespace manager

@@ -50,13 +50,17 @@ Manager::Manager(const float sampling_freq,
                         + 1
                         + 1
                         + 1
-                        + 2, 0.0f),
+                        + 2
+                        + dft_length + 2
+                        + dft_length + 2, 0.0f),
       audio_power_(this),
       audio_spectrum_centroid_(this),
       audio_spectrum_spread_(this),
       audio_waveform_(this),
       dft_(this),
-      spectrogram_(this) {
+      spectrogram_(this),
+      dft_power_(this),
+      spectrogram_power_(this) {
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
   CHARTREUSE_ASSERT(dft_length_ > 0);
   CHARTREUSE_ASSERT(algorithms::IsPowerOfTwo(dft_length_));
@@ -148,6 +152,14 @@ const float* Manager::GetDescriptor(const DescriptorId::Type descriptor,
           instance = &spectrogram_;
           break;
         }
+      case DescriptorId::kDftPower: {
+          instance = &dft_power_;
+          break;
+        }
+      case DescriptorId::kSpectrogramPower: {
+          instance = &spectrogram_power_;
+          break;
+        }
       case DescriptorId::kCount:
       default: {
           // Should never happen
@@ -189,6 +201,14 @@ std::size_t Manager::GetDescriptorSize(
       }
     case DescriptorId::kSpectrogram: {
         instance = &spectrogram_;
+        break;
+      }
+    case DescriptorId::kDftPower: {
+        instance = &dft_power_;
+        break;
+      }
+    case DescriptorId::kSpectrogramPower: {
+        instance = &spectrogram_power_;
         break;
       }
     case DescriptorId::kCount:
@@ -259,6 +279,14 @@ const float* const Manager::DescriptorDataPtr(const DescriptorId::Type descripto
         }
       case DescriptorId::kSpectrogram: {
           instance = &spectrogram_;
+          break;
+        }
+      case DescriptorId::kDftPower: {
+          instance = &dft_power_;
+          break;
+        }
+      case DescriptorId::kSpectrogramPower: {
+          instance = &spectrogram_power_;
           break;
         }
       case DescriptorId::kCount:

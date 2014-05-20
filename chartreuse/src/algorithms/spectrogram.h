@@ -26,7 +26,6 @@
 #include "chartreuse/src/common.h"
 
 #include "chartreuse/src/algorithms/apodizer.h"
-#include "chartreuse/src/algorithms/kissfft.h"
 #include "chartreuse/src/algorithms/ringbuffer.h"
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
@@ -56,11 +55,10 @@ class Spectrogram : public descriptors::Descriptor_Interface {
   // No assignment operator for this class
   Spectrogram& operator=(const Spectrogram& right);
 
-   Apodizer apodizer_;  ///< Dedicated object for window function application
-   KissFFT dft_;  ///< DFT algorithm wrapper object
-   RingBuffer scratch_memory_;  ///< Internal scratch memory
-                                ///< for overlapped data saving
-   std::vector<float> tmp_buffer_;  ///< Internal temporary buffer for DFT
+  Apodizer apodizer_;  ///< Dedicated object for window function application
+  RingBuffer scratch_memory_;  ///< Internal scratch memory
+                              ///< for overlapped data saving
+  std::vector<float> tmp_buffer_;  ///< Internal temporary buffer for DFT
 
   // TODO(gm): this should probably not be fixed
   static const unsigned int kOverlap;

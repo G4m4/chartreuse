@@ -34,8 +34,7 @@ const unsigned int Spectrogram::kOverlap(3);
 
 Spectrogram::Spectrogram(manager::Manager* manager)
     : Descriptor_Interface(manager),
-      apodizer_(kHopSizeSamples * kOverlap, Window::kRectangular),
-      dft_(manager),
+      apodizer_(kHopSizeSamples * kOverlap, Window::kHamming),
       scratch_memory_(kHopSizeSamples * kOverlap),
       tmp_buffer_(manager_->DftLength()) {
   // The first input buffer is to be considered as the "future" part
@@ -67,9 +66,10 @@ void Spectrogram::operator()(const float* const frame,
   // Apply the window
   apodizer_.ApplyWindow(&tmp_buffer_[0]);
   // Apply DFT
-  dft_(&tmp_buffer_[0],
-       tmp_buffer_.size(),
-       data);
+  manager_->GetDescriptorCopy(manager::DescriptorId::kDft,
+                              &tmp_buffer_[0],
+                              tmp_buffer_.size(),
+                              data);
 }
 
 descriptors::Descriptor_Meta Spectrogram::Meta(void) const {

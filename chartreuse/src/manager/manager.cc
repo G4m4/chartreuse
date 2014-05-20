@@ -84,10 +84,10 @@ unsigned int Manager::operator()(const float* const frame,
   float* current_data(data);
   for (const bool enabled_descriptor : enabled_descriptors_) {
     if(enabled_descriptor) {
-      current_data += GetDescriptor(current_id,
-                                    frame,
-                                    frame_length,
-                                    current_data);
+      current_data += GetDescriptorCopy(current_id,
+                                        frame,
+                                        frame_length,
+                                        current_data);
       descriptors += 1;
     }  // for (const bool enabled_descriptor : enabled_descriptors_)
     current_id = static_cast<DescriptorId::Type>(++current_id);
@@ -107,16 +107,6 @@ void Manager::EnableDescriptor(const DescriptorId::Type descriptor,
                                const bool enable) {
   CHARTREUSE_ASSERT(descriptor != DescriptorId::kCount);
   enabled_descriptors_[descriptor] = enable;
-}
-
-std::size_t Manager::GetDescriptor(const DescriptorId::Type descriptor,
-                                   const float* const frame,
-                                   const std::size_t frame_length,
-                                   float* const data) {
-  const float* internal_data_ptr(GetDescriptor(descriptor, frame, frame_length));
-  const std::size_t desc_dim(GetDescriptorSize(descriptor));
-  std::copy(internal_data_ptr, internal_data_ptr + desc_dim, data);
-  return desc_dim;
 }
 
 const float* Manager::GetDescriptor(const DescriptorId::Type descriptor,
@@ -172,6 +162,16 @@ const float* Manager::GetDescriptor(const DescriptorId::Type descriptor,
     DescriptorIsComputed(descriptor, true);
   }
   return internal_data_ptr;
+}
+
+std::size_t Manager::GetDescriptorCopy(const DescriptorId::Type descriptor,
+                                       const float* const frame,
+                                       const std::size_t frame_length,
+                                       float* const data) {
+  const float* internal_data_ptr(GetDescriptor(descriptor, frame, frame_length));
+  const std::size_t desc_dim(GetDescriptorSize(descriptor));
+  std::copy(internal_data_ptr, internal_data_ptr + desc_dim, data);
+  return desc_dim;
 }
 
 std::size_t Manager::GetDescriptorSize(

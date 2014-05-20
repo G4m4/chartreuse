@@ -24,7 +24,6 @@
 #include <vector>
 
 #include "chartreuse/src/algorithms/scalegenerator.h"
-#include "chartreuse/src/algorithms/spectrogram.h"
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
 namespace chartreuse {
@@ -47,12 +46,9 @@ class AudioSpectrumCentroid : public Descriptor_Interface {
 
   const unsigned int kLowEdgeIndex_;  ///< Dft index lower bound
   const unsigned int kHighEdgeIndex_;  ///< Dft index higher bound
-  algorithms::Spectrogram spectrogram_;  ///< Internal spectrogram
   algorithms::ScaleGenerator freq_scale_;  ///< Frequency scale generator
-  // TODO(gm): this could be actually static
-  std::vector<float> buffer_;  ///< Internal temporary buffer
-  // TODO(gm): this is useless
-  std::vector<float> power_;  ///< Internal power of the signal
+  // TODO(gm): check if this is actually required
+  std::vector<float> power_;
 };
 
 }  // namespace descriptors

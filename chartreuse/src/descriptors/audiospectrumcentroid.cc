@@ -39,15 +39,15 @@ AudioSpectrumCentroid::AudioSpectrumCentroid(manager::Manager* manager)
     : Descriptor_Interface(manager),
       kLowEdgeIndex_(static_cast<unsigned int>(
                      std::ceil(kLowEdge * manager->DftLength()
-                     / manager->SamplingFrequency()))),
+                               / manager->SamplingFrequency()))),
+      // TODO(gm): use a static kind of "GetDescriptorSize(kSpectrogramPower)"
       kHighEdgeIndex_(manager->DftLength() / 2 + 1),
-      spectrogram_(manager),
       freq_scale_(kHighEdgeIndex_ - kLowEdgeIndex_,
                   algorithms::Scale::kLogFreq,
                   manager->DftLength(),
                   kLowEdgeIndex_,
                   manager->SamplingFrequency()),
-      buffer_(manager->DftLength() + 2),
+      // TODO(gm): use a static kind of "GetDescriptorSize(kSpectrogramPower)"
       power_(manager->DftLength() / 2 + 1) {
   CHARTREUSE_ASSERT(kLowEdgeIndex_ > 0);
   CHARTREUSE_ASSERT(kHighEdgeIndex_ > 0);
@@ -60,16 +60,11 @@ void AudioSpectrumCentroid::operator()(const float* const frame,
   CHARTREUSE_ASSERT(frame != nullptr);
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
-  // Get the DFT of the frame
-  spectrogram_(&frame[0], frame_length, &buffer_[0]);
-  // Normalization of the DFT
-  const float kDFTNorm(2.0f
-    / static_cast<float>(manager_->DftLength() * manager::Manager::kSpectrumWindowLength));
-  // Retrieving the squared magnitude of the DFT
-  for (std::size_t i(0); i < buffer_.size(); i += 2) {
-    power_[i / 2] = buffer_[i] * buffer_[i] + buffer_[i + 1] * buffer_[i + 1];
-    power_[i / 2] *= kDFTNorm;
-  }
+  // Get the normalized squared magnitude spectrogram of the frame
+  manager_->GetDescriptorCopy(manager::DescriptorId::kSpectrogramPower,
+                              &frame[0],
+                              frame_length,
+                              &power_[0]);
   // The DC component is unchanged, everything else is doubled
   power_[0] *= 0.5f;
   // Summing the contributions of all frequencies lower than 62.5

@@ -39,15 +39,15 @@ AudioSpectrumSpread::AudioSpectrumSpread(manager::Manager* manager)
     : Descriptor_Interface(manager),
       kLowEdgeIndex_(static_cast<unsigned int>(
                      std::ceil(kLowEdge * manager->DftLength()
-                                / manager->SamplingFrequency()))),
+                               / manager->SamplingFrequency()))),
+      // TODO(gm): use a static kind of "GetDescriptorSize(kSpectrogramPower)"
       kHighEdgeIndex_(manager->DftLength() / 2 + 1),
-      spectrogram_(manager),
       freq_scale_(kHighEdgeIndex_ - kLowEdgeIndex_,
                   algorithms::Scale::kLogFreq,
                   manager->DftLength(),
                   kLowEdgeIndex_,
                   manager->SamplingFrequency()),
-      buffer_(manager->DftLength() + 2),
+      // TODO(gm): use a static kind of "GetDescriptorSize(kSpectrogramPower)"
       power_(manager->DftLength() / 2 + 1) {
   CHARTREUSE_ASSERT(kLowEdgeIndex_ > 0);
   CHARTREUSE_ASSERT(kHighEdgeIndex_ > 0);
@@ -55,21 +55,22 @@ AudioSpectrumSpread::AudioSpectrumSpread(manager::Manager* manager)
 }
 
 void AudioSpectrumSpread::operator()(const float* const frame,
-                                       const std::size_t frame_length,
-                                       float* const data) {
+                                     const std::size_t frame_length,
+                                     float* const data) {
   CHARTREUSE_ASSERT(frame != nullptr);
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
-  // Get the DFT of the frame
-  spectrogram_(&frame[0], frame_length, &buffer_[0]);
-  // Normalization of the DFT
-  const float kDFTNorm(2.0f
-    / static_cast<float>(manager_->DftLength() * manager::Manager::kSpectrumWindowLength));
-  // Retrieving the squared magnitude of the DFT
-  for (std::size_t i(0); i < buffer_.size(); i += 2) {
-    power_[i / 2] = buffer_[i] * buffer_[i] + buffer_[i + 1] * buffer_[i + 1];
-    power_[i / 2] *= kDFTNorm;
-  }
+
+  // Get the centroid of the frame
+  const float kCentroid(*manager_->GetDescriptor(
+                          manager::DescriptorId::kAudioSpectrumCentroid,
+                          &frame[0],
+                          frame_length));
+  // Get the normalized squared magnitude spectrogram of the frame
+  manager_->GetDescriptorCopy(manager::DescriptorId::kSpectrogramPower,
+                              &frame[0],
+                              frame_length,
+                              &power_[0]);
   // The DC component is unchanged, everything else is doubled
   power_[0] *= 0.5f;
   // Summing the contributions of all frequencies lower than 62.5
@@ -82,14 +83,6 @@ void AudioSpectrumSpread::operator()(const float* const frame,
                         + power_[kHighEdgeIndex_ - 1]
                         // Prevent divide by zero
                         + 1e-7f);
-  CHARTREUSE_ASSERT(kPowerSum > 0.0f);
-  // Weight each DFT bin by the log of the frequency relative to 1000Hz
-  // The first bin is the low edge
-  float kTmp(power_[kLowEdgeIndex_ - 1] * -5.0f);
-  for (unsigned int i(kLowEdgeIndex_); i < kHighEdgeIndex_; ++i) {
-    kTmp += power_[i] * freq_scale_.GetScaleAtIndex(i - kLowEdgeIndex_);
-  }
-  const float kCentroid(kTmp / kPowerSum);
   float out(0.0f);
   for (unsigned int i(kLowEdgeIndex_); i < kHighEdgeIndex_; ++i) {
     out += power_[i]

@@ -109,6 +109,15 @@ std::size_t Manager::GetDescriptor(const DescriptorId::Type descriptor,
                                    const float* const frame,
                                    const std::size_t frame_length,
                                    float* const data) {
+  const float* internal_data_ptr(GetDescriptor(descriptor, frame, frame_length));
+  const std::size_t desc_dim(GetDescriptorSize(descriptor));
+  std::copy(internal_data_ptr, internal_data_ptr + desc_dim, data);
+  return desc_dim;
+}
+
+const float* Manager::GetDescriptor(const DescriptorId::Type descriptor,
+                                    const float* const frame,
+                                    const std::size_t frame_length) {
   // TODO(gm): this cast is ugly, remove it
   float* const internal_data_ptr(const_cast<float* const>(DescriptorDataPtr(descriptor)));
   descriptors::Descriptor_Interface* instance(nullptr);
@@ -150,9 +159,7 @@ std::size_t Manager::GetDescriptor(const DescriptorId::Type descriptor,
     instance->operator()(frame, frame_length, internal_data_ptr);
     DescriptorIsComputed(descriptor, true);
   }
-  const std::size_t desc_dim(GetDescriptorSize(descriptor));
-  std::copy(internal_data_ptr, internal_data_ptr + desc_dim, data);
-  return desc_dim;
+  return internal_data_ptr;
 }
 
 std::size_t Manager::GetDescriptorSize(

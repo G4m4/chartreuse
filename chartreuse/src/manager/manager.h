@@ -97,9 +97,25 @@ class Manager {
   void EnableDescriptor(const DescriptorId::Type descriptor,
                         const bool enable);
 
+  /// @brief Per-descriptor processing function, read-only version
+  ///
+  /// Retrieve the descriptor, even if not previously activated.
+  /// This version only returns a const pointer:
+  /// hence no copy of any sort is done on the output.
+  ///
+  /// @param[in]  descriptor    Descriptor to be retrieved
+  /// @param[in]  frame    Frame to be analysed
+  /// @param[in]  frame_length    Input frame length
+  ///
+  /// @return pointer to the first element of computed data
+  const float* GetDescriptor(const DescriptorId::Type descriptor,
+                             const float* const frame,
+                             const std::size_t frame_length);
+
   /// @brief Per-descriptor processing function
   ///
   /// Retrieve the descriptor, even if not previously activated.
+  /// This version copy the computed data into the given target.
   ///
   /// @param[in]  descriptor    Descriptor to be retrieved
   /// @param[in]  frame    Frame to be analysed
@@ -107,12 +123,12 @@ class Manager {
   /// @param[out]  data     Descriptor output data
   ///
   /// @return Chosen descriptor output data length
-  std::size_t GetDescriptor(const DescriptorId::Type descriptor,
-                            const float* const frame,
-                            const std::size_t frame_length,
-                            float* const data);
+  std::size_t GetDescriptorCopy(const DescriptorId::Type descriptor,
+                                const float* const frame,
+                                const std::size_t frame_length,
+                                float* const data);
 
-  /// @brief Retrieve the given descirptor output size
+  /// @brief Retrieve the given descriptor output size
   std::size_t GetDescriptorSize(const DescriptorId::Type descriptor) const;
 
   /// @brief Check if the given descriptor was computed for the current frame

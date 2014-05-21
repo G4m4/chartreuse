@@ -26,6 +26,10 @@ import pylab
 def PeriodicSignaDetection(frame, sampling_freq):
     '''
     PeriodicSignaDetection algorithm test implementation
+    @return (min_idx, Hk) where:
+            min_idx    (integer)        Index of the minimum
+            Hk    (float, within[0 ; 1])        Harmonicity, with 1 meaning
+                                    purely periodic and 0 white noise
     '''
     sample_num = len(frame)
     total_power = numpy.sum(frame ** 2)
@@ -36,7 +40,15 @@ def PeriodicSignaDetection(frame, sampling_freq):
         out[k] = numpy.sum((frame[k + 1:sample_num] - frame[0:sample_num - k - 1]) ** 2)
         out[k] /= total_power + part_power
 
-    return out
+    min_idx = 0
+    for i in range(1, sample_num - 20):
+        # TODO(gm): parabolic approximation of the minimum
+        if out[i] - out[i - 1] < 0.0:
+            if out[i + 1] - out[i] > 0.0:
+                if out[i] < out[min_idx]:
+                    min_idx = i
+
+    return (min_idx, 1.0 - out[min_idx])
 
 if __name__ == "__main__":
 #     from scipy import signal
@@ -47,6 +59,7 @@ if __name__ == "__main__":
     actual_in_length = actual_num_frame * window_length
 
     out_data = numpy.zeros(actual_in_length)
+    desc_data = numpy.zeros((actual_num_frame, 2))
     power_data = numpy.zeros(actual_in_length)
     test_data = numpy.zeros(actual_in_length)
 
@@ -62,11 +75,11 @@ if __name__ == "__main__":
 #     sin_data = numpy.random.rand(actual_in_length)
 
     for idx, frame in enumerate(sin_data.reshape(actual_num_frame, window_length)):
-        out_data[idx * (window_length - 1):(idx + 1) * (window_length - 1)] = \
-            PeriodicSignaDetection(frame, sampling_freq)
+        desc_data[:, idx] = PeriodicSignaDetection(frame, sampling_freq)
+        out_data[idx * window_length: (idx + 1) * window_length] = desc_data[1, idx] * numpy.ones(window_length)
 
-    pylab.plot(sin_data / numpy.max(sin_data), label = "in")
-    pylab.plot(out_data / numpy.max(out_data), label = "out")
+    pylab.plot(sin_data, label = "in")
+    pylab.plot(out_data, label = "out")
 
     pylab.legend()
     pylab.show()

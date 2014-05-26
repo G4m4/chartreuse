@@ -57,6 +57,9 @@ class RingBuffer(object):
             self._write_cursor = left_part_length
         self.size += data_length
 
+    def Fill(self, value, data_length):
+        return self.Push(value * numpy.zeros(data_length))
+
     def Pop(self, data_length):
         if data_length > self.size:
             raise Exception("Too much required data!")

@@ -105,7 +105,9 @@ def CustomAutoCorrelation(frame, min_lag, max_lag):
     return out
 
 if __name__ == "__main__":
-    from scipy import signal
+    from scipy import io
+    from scipy.io.wavfile import read
+    import scipy.io.wavfile
 
     sampling_freq = 48000.0
     window_length = 1440
@@ -123,11 +125,16 @@ if __name__ == "__main__":
     sin_path = '../chartreuse/tests/data/'
     sin_filename = "data_in_sin.dat"
     sin_data = numpy.fromfile(sin_path + sin_filename, sep=sep)[0:actual_in_length]
-    time = numpy.arange(0, 1.0, 1.0 / sampling_freq)
-    sin_data = signal.chirp(t = time,
-                            f0 = 440.0,
-                            t1 = 1,
-                            f1 = 8800.0)[0:actual_in_length]
+    freq = 440.0
+    time = numpy.linspace(0, 2 * numpy.pi * freq, sampling_freq)
+    sin_data = numpy.sin(time)[0:actual_in_length]
+    (_, sin_data) = read("../chartreuse/tests/data/C5_flute.wav")
+    sin_data = sin_data[0:actual_in_length] / float(numpy.max(sin_data[0:actual_in_length]))
+#     time = numpy.arange(0, 1.0, 1.0 / sampling_freq)
+#     sin_data = signal.chirp(t = time,
+#                             f0 = 440.0,
+#                             t1 = 1,
+#                             f1 = 8800.0)[0:actual_in_length]
 #     sin_data = numpy.random.rand(actual_in_length)
 #     sin_data = 0.5 * numpy.ones(actual_in_length)
 #     sin_data = numpy.zeros(actual_in_length)

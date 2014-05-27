@@ -112,16 +112,16 @@ if __name__ == "__main__":
 
     in_data = numpy.random.rand(length)
 
-    buffer = RingBuffer(length, overlap)
+    ringbuffer = RingBuffer(length, overlap)
 
     current_in_idx = 0
-    while not buffer.IsFull():
-        buffer.Push(in_data[current_in_idx * frame_length: (current_in_idx + 1) * frame_length])
+    while not ringbuffer.IsFull():
+        ringbuffer.Push(in_data[current_in_idx * frame_length: (current_in_idx + 1) * frame_length])
         current_in_idx += 1
 
     current_out_idx = 0
-    while not buffer.IsEmpty():
-        out_data[current_out_idx * frame_length: (current_out_idx + 1) * frame_length] = buffer.Pop(frame_length)
+    while not ringbuffer.IsEmpty():
+        out_data[current_out_idx * frame_length: (current_out_idx + 1) * frame_length] = ringbuffer.Pop(frame_length)
         current_out_idx += 1
 
     print(utilities.PrintMetadata(utilities.GetMetadata(out_data[0:length] - in_data)))

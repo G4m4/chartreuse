@@ -27,12 +27,13 @@ class RingBuffer(object):
     '''
     A simple non-resizable 1D ringbuffer
     '''
-    def __init__(self, capacity):
+    def __init__(self, capacity, overlap):
         self._data = numpy.zeros(capacity)
         self.capacity = capacity
         self.size = 0
         self._read_cursor = 0
         self._write_cursor = 0
+        self._overlap = overlap
 
     def IsFull(self):
         return self.size == self.capacity
@@ -78,6 +79,26 @@ class RingBuffer(object):
             out[actual_copy_count:data_length] = numpy.zeros(data_length - actual_copy_count)
 
         return out
+
+    def PopOverlapped(self, data_length):
+        # Zero-padding may occur!
+        actual_copy_count = min(self.size, data_length)
+
+        out = numpy.zeros(data_length)
+        # TODO(gm): check out numpy.roll
+        right_part_length = min(actual_copy_count, self.capacity -  self._read_cursor)
+        left_part_length = actual_copy_count - right_part_length
+        out[0:right_part_length] = self._data[self._read_cursor:self._read_cursor + right_part_length]
+        out[right_part_length:right_part_length + left_part_length] = self._data[0:left_part_length]
+
+        self._read_cursor += data_length / self._overlap
+        self._read_cursor = self._read_cursor % self.capacity
+        self.size -= data_length / self._overlap
+
+        # Zero-padding
+        if actual_copy_count < data_length:
+            out[actual_copy_count:data_length] = numpy.zeros(data_length - actual_copy_count)
+
         return out
 
 if __name__ == "__main__":
@@ -85,12 +106,13 @@ if __name__ == "__main__":
 
     frame_length = 480
     length = 9600
+    overlap = 3
 
     out_data = numpy.zeros(length)
 
     in_data = numpy.random.rand(length)
 
-    buffer = RingBuffer(length)
+    buffer = RingBuffer(length, overlap)
 
     current_in_idx = 0
     while not buffer.IsFull():
@@ -102,10 +124,10 @@ if __name__ == "__main__":
         out_data[current_out_idx * frame_length: (current_out_idx + 1) * frame_length] = buffer.Pop(frame_length)
         current_out_idx += 1
 
-    print(utilities.PrintMetadata(utilities.GetMetadata(out_data - in_data)))
+    print(utilities.PrintMetadata(utilities.GetMetadata(out_data[0:length] - in_data)))
 
-    pylab.plot(in_data, label = "in")
-    pylab.plot(out_data, label = "out")
+    pylab.plot(in_data[0:length], label = "in")
+    pylab.plot(out_data[0:length], label = "out")
 
     pylab.legend()
     pylab.show()

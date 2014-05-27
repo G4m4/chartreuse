@@ -42,7 +42,7 @@ class RingBuffer(object):
 
     def Push(self, data):
         data_length = len(data)
-        if data_length > self.capacity - self.size:
+        if data_length > self.capacity:
             raise Exception("Too much input data!")
 
         # TODO(gm): check out numpy.roll
@@ -51,32 +51,33 @@ class RingBuffer(object):
         self._data[self._write_cursor:self._write_cursor + right_part_length] = data[0:right_part_length]
         self._data[0:left_part_length] = data[right_part_length:right_part_length + left_part_length]
 
-        if left_part_length == 0:
-            self._write_cursor += right_part_length
-        else:
-            self._write_cursor = left_part_length
+        self._write_cursor += data_length
+        self._write_cursor = self._write_cursor % self.capacity
         self.size += data_length
 
     def Fill(self, value, data_length):
         return self.Push(value * numpy.zeros(data_length))
 
     def Pop(self, data_length):
-        if data_length > self.size:
-            raise Exception("Too much required data!")
+        # Zero-padding may occur!
+        actual_copy_count = min(self.size, data_length)
 
         out = numpy.zeros(data_length)
         # TODO(gm): check out numpy.roll
-        right_part_length = min(data_length, self.capacity -  self._read_cursor)
-        left_part_length = data_length - right_part_length
+        right_part_length = min(actual_copy_count, self.capacity -  self._read_cursor)
+        left_part_length = actual_copy_count - right_part_length
         out[0:right_part_length] = self._data[self._read_cursor:self._read_cursor + right_part_length]
         out[right_part_length:right_part_length + left_part_length] = self._data[0:left_part_length]
 
-        if left_part_length == 0:
-            self._read_cursor += right_part_length
-        else:
-            self._read_cursor = left_part_length
-
+        self._read_cursor += data_length
+        self._read_cursor = self._read_cursor % self.capacity
         self.size -= data_length
+
+        # Zero-padding
+        if actual_copy_count < data_length:
+            out[actual_copy_count:data_length] = numpy.zeros(data_length - actual_copy_count)
+
+        return out
         return out
 
 if __name__ == "__main__":

@@ -61,7 +61,7 @@ def NormalizedAutoCorrelation(frame):
     return out
 
 @utilities.PrintTiming
-def ZNCC(frame, sampling_freq):
+def ZNCC(frame):
     '''
     Perform the zero-mean normalized autocorrelation of the input signal
     '''
@@ -152,11 +152,13 @@ if __name__ == "__main__":
     for idx, frame in enumerate(sin_data.reshape(actual_num_frame, window_length)):
         normautocorr_data[idx * window_length: (idx + 1) * window_length] = NormalizedAutoCorrelation(frame)
         autocorr_data[idx * window_length: (idx + 1) * window_length] = AutoCorrelation(frame)
+        zncc_data[idx * window_length: (idx + 1) * window_length] = ZNCC(frame)
         out_data[idx * corr_length: (idx + 1) * corr_length] = CustomAutoCorrelation(frame, min_lag, max_lag)
 
     pylab.plot(sin_data, label = "in")
     pylab.plot(autocorr_data, label = "autocorr")
     pylab.plot(normautocorr_data, label = "NCC")
+    pylab.plot(zncc_data, label = "ZNCC")
     pylab.plot(out_data, label = "out")
 
     pylab.legend()

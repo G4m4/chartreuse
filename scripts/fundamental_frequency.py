@@ -70,9 +70,11 @@ class FundamentalFrequency(object):
         xcorr = correlation.CustomAutoCorrelation(current_frame,
                                                   self.min_lag,
                                                   self.max_lag)
-        f0_lag = self.min_lag + self._FindPeaks(xcorr,
-                                                self.min_lag,
-                                                self.max_lag)
+        (f0_lag, value) = self._FindPeaks(xcorr,
+                                          self.min_lag,
+                                          self.max_lag)
+        f0_lag += self.min_lag
+        self.value = value
         self.combed_signal = self._GetCombedSignal(current_frame,
                                                    f0_lag,
                                                    self.frame_length)
@@ -105,7 +107,7 @@ class FundamentalFrequency(object):
                         if (interpolated_min > value + threshold) :
                             min_idx = argmin + i
                             value = interpolated_min
-        return min_idx
+        return (min_idx, value)
 
     def _GetCombedSignal(self, signal, lag, frame_length):
         '''

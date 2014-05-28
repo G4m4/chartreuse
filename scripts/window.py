@@ -28,20 +28,20 @@ class Hamming(object):
     Generator of Hamming window
     '''
     def __init__(self, window_length):
-        self._window_length = window_length
+        self.window_length = window_length
         # Generation of the window
         # Scalar version
 #         for idx in range(self._window_length):
-#             self._window_data[idx] = 0.54 - (0.46 * numpy.cos(2.0 * numpy.pi * idx / (self._window_length - 1)))
+#             self._window_data[idx] = 0.54 - (0.46 * numpy.cos(2.0 * numpy.pi * idx / (self.window_length - 1)))
         # Better version
-        self._window_data = 0.54 * numpy.ones(self._window_length) \
+        self.window_data = 0.54 * numpy.ones(self.window_length) \
                             - 0.46 * numpy.cos(
                                         numpy.arange(0.0,
-                                                     2.0 * numpy.pi * self._window_length / (self._window_length - 1),
-                                                     2.0 * numpy.pi / (self._window_length - 1)))
+                                                     2.0 * numpy.pi * self.window_length / (self.window_length - 1),
+                                                     2.0 * numpy.pi / (self.window_length - 1)))
 
     def GetSample(self, idx):
-        return self._window_data[idx]
+        return self.window_data[idx]
 
 if __name__ == "__main__":
     length = 512

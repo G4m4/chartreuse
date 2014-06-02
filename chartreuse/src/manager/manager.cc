@@ -67,8 +67,7 @@ Manager::Parameters::Parameters(const float sampling_freq,
 }
 
 Manager::Manager(const Parameters& parameters)
-    : parameters_(parameters),
-      // TODO(gm): this could be computed at compile-time
+    : // TODO(gm): this could be computed at compile-time
       descriptors_data_(parameters.dft_length + 2
                         + parameters.dft_length + 2
                         + 1
@@ -77,6 +76,7 @@ Manager::Manager(const Parameters& parameters)
                         + 2
                         + parameters.dft_length + 2
                         + parameters.dft_length + 2, 0.0f),
+      parameters_(parameters),
       audio_power_(this),
       audio_spectrum_centroid_(this),
       audio_spectrum_spread_(this),

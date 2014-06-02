@@ -66,8 +66,35 @@ Type operator++(const Type value);
 /// This should be your preferred way to retrieve descriptors from any input.
 class Manager {
  public:
-  explicit Manager(const float sampling_freq,
-                   const unsigned int dft_length = kSpectrumDftLength);
+  /// @brief Manager parameters class
+  /// Hold all common parameters for internal descriptors retrieval
+  ///
+  /// These parameters cannot be changed throughout all the manager life.
+  class Parameters {
+   public:
+    /// @brief Default constructor, all default parameters value defined here
+    Parameters(const float sampling_freq = 48000.0f,
+               const float low_freq = 62.5f,
+               const float high_freq = 1500.0f,
+               const unsigned int hop_size_sample = 480,
+               const unsigned int window_length = 1440,
+               const unsigned int dft_length = 2048);
+
+    const float sampling_freq;  ///< Analysis sampling frequency
+    const float low_freq;  ///< Lower bound for analysis frequency spectrum
+    const float high_freq;  ///< Higher bound for analysis frequency spectrum
+    const unsigned int min_lag;  ///< Smaller lag for analysis given the above
+    const unsigned int max_lag;  ///< Higher lag for analysis given the above
+    const unsigned int hop_size_sample;  ///< Input signal length
+    const unsigned int window_length;  ///< Accumulated input signal length
+    const unsigned int dft_length;  ///< Spectrum signal length
+
+   private:
+    // No assignment operator for this class
+    Parameters& operator=(const Parameters& right);
+  };
+
+  explicit Manager(const Parameters& parameters);
   ~Manager();
 
   /// @brief Main processing function
@@ -143,14 +170,8 @@ class Manager {
   /// Retrieve total size of all enabled descriptors
   std::size_t DescriptorsOutputSize(void) const;
 
-  /// @brief Current Dft length getter
-  unsigned int DftLength(void) const;
-
-  /// @brief Current Dft length getter
-  float SamplingFrequency(void) const;
-
-  static const unsigned int kSpectrumWindowLength;
-  static const unsigned int kSpectrumDftLength;
+  /// @brief Analysis parameters getter
+  const Parameters& AnalysisParameters(void) const;
 
  private:
   // No assignment operator for this class
@@ -165,10 +186,9 @@ class Manager {
 
   std::array<bool, DescriptorId::kCount> enabled_descriptors_;
   std::array<bool, DescriptorId::kCount> computed_descriptors_;
-  const float sampling_freq_;  ///< Current sampling frequency
-  const unsigned int dft_length_;  ///< Current Dft length
   std::vector<float> descriptors_data_;  ///< Temporary buffer
                                          ///< holding descriptors data result
+  const Parameters parameters_;
 
   // TODO(gm): use a smarter factory
   descriptors::AudioPower audio_power_;

@@ -20,39 +20,62 @@
 
 #include "chartreuse/src/manager/manager.h"
 
+// std::floor
+#include <cmath>
+
 #include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
 namespace chartreuse {
 namespace manager {
 
-/// @brief Internal window length for the spectrogram, arbitrarily fixed
-// TODO(gm): check were this should be put in order to be both efficient
-// and usable
-const unsigned int Manager::kSpectrumWindowLength(1440);
-/// @brief Internal window length for the spectrogram, arbitrarily fixed
-// TODO(gm): check were this should be put in order to be both efficient
-// and usable
-const unsigned int Manager::kSpectrumDftLength(2048);
-
 DescriptorId::Type DescriptorId::operator++(const DescriptorId::Type value) {
   const unsigned int value_int(static_cast<unsigned int>(value));
   return static_cast<DescriptorId::Type>(value_int + 1);
 }
 
-Manager::Manager(const float sampling_freq,
-                 const unsigned int dft_length)
-    : sampling_freq_(sampling_freq),
-      dft_length_(dft_length),
+Manager::Parameters::Parameters(const float sampling_freq,
+                                const float low_freq,
+                                const float high_freq,
+                                const unsigned int hop_size_sample,
+                                const unsigned int window_length,
+                                const unsigned int dft_length)
+    : sampling_freq(sampling_freq),
+      low_freq(low_freq),
+      high_freq(high_freq),
+      min_lag(static_cast<unsigned int>(std::floor(sampling_freq / high_freq))),
+      max_lag(static_cast<unsigned int>(std::floor(sampling_freq / low_freq))),
+      hop_size_sample(hop_size_sample),
+      window_length(window_length),
+      dft_length(dft_length) {
+  CHARTREUSE_ASSERT(sampling_freq > 0.0f);
+  CHARTREUSE_ASSERT(low_freq < sampling_freq / 2.0f);
+  CHARTREUSE_ASSERT(high_freq < sampling_freq / 2.0f);
+  CHARTREUSE_ASSERT(low_freq > 0.0f);
+  CHARTREUSE_ASSERT(high_freq > 0.0f);
+  CHARTREUSE_ASSERT(high_freq > low_freq);
+  CHARTREUSE_ASSERT(min_lag > 0);
+  CHARTREUSE_ASSERT(max_lag > 0);
+  CHARTREUSE_ASSERT(max_lag > min_lag);
+  CHARTREUSE_ASSERT(hop_size_sample > 0);
+  CHARTREUSE_ASSERT(window_length > 0);
+  CHARTREUSE_ASSERT(window_length > hop_size_sample);
+  CHARTREUSE_ASSERT(dft_length > 0);
+  CHARTREUSE_ASSERT(algorithms::IsPowerOfTwo(dft_length));
+  CHARTREUSE_ASSERT(dft_length >= window_length);
+}
+
+Manager::Manager(const Parameters& parameters)
+    : parameters_(parameters),
       // TODO(gm): this could be computed at compile-time
-      descriptors_data_(dft_length + 2
-                        + dft_length + 2
+      descriptors_data_(parameters.dft_length + 2
+                        + parameters.dft_length + 2
                         + 1
                         + 1
                         + 1
                         + 2
-                        + dft_length + 2
-                        + dft_length + 2, 0.0f),
+                        + parameters.dft_length + 2
+                        + parameters.dft_length + 2, 0.0f),
       audio_power_(this),
       audio_spectrum_centroid_(this),
       audio_spectrum_spread_(this),
@@ -61,9 +84,6 @@ Manager::Manager(const float sampling_freq,
       spectrogram_(this),
       dft_power_(this),
       spectrogram_power_(this) {
-  CHARTREUSE_ASSERT(sampling_freq > 0.0f);
-  CHARTREUSE_ASSERT(dft_length_ > 0);
-  CHARTREUSE_ASSERT(algorithms::IsPowerOfTwo(dft_length_));
   enabled_descriptors_.fill(false);
   computed_descriptors_.fill(false);
 }
@@ -234,12 +254,8 @@ std::size_t Manager::DescriptorsOutputSize(void) const {
   return out;
 }
 
-unsigned int Manager::DftLength(void) const {
-  return dft_length_;
-}
-
-float Manager::SamplingFrequency(void) const {
-  return sampling_freq_;
+const Manager::Parameters& Manager::AnalysisParameters(void) const {
+  return parameters_;
 }
 
 bool Manager::IsDescriptorComputed(const DescriptorId::Type descriptor) const {

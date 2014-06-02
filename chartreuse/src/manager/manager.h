@@ -183,7 +183,7 @@ class Manager {
                             const bool is_computed);
 
   /// @brief Retrieve the pointer for internal data buffer given the descriptor
-  const float* const DescriptorDataPtr(const DescriptorId::Type descriptor) const;
+  const float* DescriptorDataPtr(const DescriptorId::Type descriptor) const;
 
   std::array<bool, DescriptorId::kCount> enabled_descriptors_;
   std::array<bool, DescriptorId::kCount> computed_descriptors_;

@@ -268,7 +268,7 @@ void Manager::DescriptorIsComputed(const DescriptorId::Type descriptor,
   computed_descriptors_[static_cast<int>(descriptor)] = is_computed;
 }
 
-const float* const Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) const {
+const float* Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) const {
   DescriptorId::Type current_id(DescriptorId::kAudioPower);
   std::size_t data_offset(0);
   while (current_id != descriptor) {

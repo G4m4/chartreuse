@@ -30,20 +30,20 @@
 namespace chartreuse {
 namespace algorithms {
 
-const unsigned int Spectrogram::kOverlap(3);
-
 Spectrogram::Spectrogram(manager::Manager* manager)
     : Descriptor_Interface(manager),
-      apodizer_(kHopSizeSamples * kOverlap, Window::kHamming),
-      scratch_memory_(kHopSizeSamples * kOverlap),
-      tmp_buffer_(manager_->DftLength()) {
+      apodizer_(manager_->AnalysisParameters().window_length, Window::kHamming),
+      scratch_memory_(manager_->AnalysisParameters().window_length),
+      tmp_buffer_(manager_->AnalysisParameters().dft_length) {
   // The first input buffer is to be considered as the "future" part
   // in the overlap.
   // Hence, the first 2 parts ("past" and "present") have to be filled in order
   // for the internal buffer writing cursor to be at the right position
   // TODO(gm): Find a better way using an "overlap" parameter to do this
   scratch_memory_.Fill(0.0f,
-                       kHopSizeSamples * kOverlap * (kOverlap - 1) / kOverlap);
+                       manager_->AnalysisParameters().window_length
+                       * (manager_->AnalysisParameters().overlap - 1)
+                       / manager_->AnalysisParameters().overlap);
 }
 
 Spectrogram::~Spectrogram() {
@@ -61,8 +61,8 @@ void Spectrogram::operator()(const float* const frame,
   scratch_memory_.Push(frame, frame_length);
   // Pop - zero-padding done in the ringbuffer method
   scratch_memory_.PopOverlapped(&tmp_buffer_[0],
-                                manager_->DftLength(),
-                                kOverlap);
+                                manager_->AnalysisParameters().dft_length,
+                                manager_->AnalysisParameters().overlap);
   // Apply the window
   apodizer_.ApplyWindow(&tmp_buffer_[0]);
   // Apply DFT
@@ -76,11 +76,11 @@ descriptors::Descriptor_Meta Spectrogram::Meta(void) const {
   return descriptors::Descriptor_Meta(
     // Not that this is the actual total length
     // (e.g. it should be half of it considering it's complex data)
-    manager_->DftLength() + 2,
+    manager_->AnalysisParameters().dft_length + 2,
     // Actually the input frame_length...
-    -static_cast<float>(manager_->DftLength()),
+    -static_cast<float>(manager_->AnalysisParameters().dft_length),
     // Actually the input frame_length...
-    static_cast<float>(manager_->DftLength()));
+    static_cast<float>(manager_->AnalysisParameters().dft_length));
 }
 
 }  // namespace algorithms

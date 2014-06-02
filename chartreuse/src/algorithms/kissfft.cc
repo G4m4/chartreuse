@@ -31,8 +31,11 @@ namespace algorithms {
 
 KissFFT::KissFFT(manager::Manager* manager)
     : Descriptor_Interface(manager),
-      config_(kiss_fftr_alloc(manager_->DftLength(), 0, NULL, NULL)),
-      zeropad_(manager_->DftLength() + 2, 0.0f) {
+      config_(kiss_fftr_alloc(manager_->AnalysisParameters().dft_length,
+                              0,
+                              NULL,
+                              NULL)),
+      zeropad_(manager_->AnalysisParameters().dft_length + 2, 0.0f) {
   // Nothing to do here for now
 }
 
@@ -50,7 +53,8 @@ void KissFFT::operator()(const float* const frame,
 
   const unsigned int kActualInputLength(
     // Cast for 64b systems
-    std::min(static_cast<unsigned int>(frame_length), manager_->DftLength()));
+    std::min(static_cast<unsigned int>(frame_length),
+             manager_->AnalysisParameters().dft_length));
   std::copy_n(&frame[0],
               kActualInputLength,
               &zeropad_[0]);
@@ -65,11 +69,11 @@ descriptors::Descriptor_Meta KissFFT::Meta(void) const {
   return descriptors::Descriptor_Meta(
     // Not that this is the actual total length
     // (e.g. it should be half of it considering it's complex data)
-    manager_->DftLength() + 2,
+    manager_->AnalysisParameters().dft_length + 2,
     // Actually the input frame_length...
-    -static_cast<float>(manager_->DftLength()),
+    -static_cast<float>(manager_->AnalysisParameters().dft_length),
     // Actually the input frame_length...
-    static_cast<float>(manager_->DftLength()));
+    static_cast<float>(manager_->AnalysisParameters().dft_length));
 }
 
 }  // namespace algorithms

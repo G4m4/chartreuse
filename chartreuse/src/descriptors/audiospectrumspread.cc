@@ -31,24 +31,21 @@
 namespace chartreuse {
 namespace descriptors {
 
-/// @brief Frequency below which all frequencies contribution are summed,
-/// arbitrarily fixed
-static const float kLowEdge(62.5f);
-
 AudioSpectrumSpread::AudioSpectrumSpread(manager::Manager* manager)
     : Descriptor_Interface(manager),
       kLowEdgeIndex_(static_cast<unsigned int>(
-                     std::ceil(kLowEdge * manager->DftLength()
-                               / manager->SamplingFrequency()))),
+                     std::ceil(manager->AnalysisParameters().low_freq
+                               * manager->AnalysisParameters().dft_length
+                               / manager->AnalysisParameters().sampling_freq))),
       // TODO(gm): use a static kind of "GetDescriptorSize(kSpectrogramPower)"
-      kHighEdgeIndex_(manager->DftLength() / 2 + 1),
+      kHighEdgeIndex_(manager->AnalysisParameters().dft_length / 2 + 1),
       freq_scale_(kHighEdgeIndex_ - kLowEdgeIndex_,
                   algorithms::Scale::kLogFreq,
-                  manager->DftLength(),
+                  manager->AnalysisParameters().dft_length,
                   kLowEdgeIndex_,
-                  manager->SamplingFrequency()),
+                  manager->AnalysisParameters().sampling_freq),
       // TODO(gm): use a static kind of "GetDescriptorSize(kSpectrogramPower)"
-      power_(manager->DftLength() / 2 + 1) {
+      power_(manager->AnalysisParameters().dft_length / 2 + 1) {
   CHARTREUSE_ASSERT(kLowEdgeIndex_ > 0);
   CHARTREUSE_ASSERT(kHighEdgeIndex_ > 0);
   CHARTREUSE_ASSERT(kLowEdgeIndex_ < kHighEdgeIndex_);

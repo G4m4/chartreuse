@@ -59,9 +59,6 @@ class Spectrogram : public descriptors::Descriptor_Interface {
   RingBuffer scratch_memory_;  ///< Internal scratch memory
                               ///< for overlapped data saving
   std::vector<float> tmp_buffer_;  ///< Internal temporary buffer for DFT
-
-  // TODO(gm): this should probably not be fixed
-  static const unsigned int kOverlap;
 };
 
 }  // namespace algorithms

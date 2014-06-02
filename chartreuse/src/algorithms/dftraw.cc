@@ -45,10 +45,14 @@ void DftRaw::operator()(const float* const frame,
 
   const unsigned int kActualInDataLength
     // Cast for 64b systems
-    = std::min(static_cast<unsigned int>(frame_length), manager_->DftLength());
-  const float kTwiddleBase((2.0f * chartreuse::algorithms::Pi) / manager_->DftLength());
+    = std::min(static_cast<unsigned int>(frame_length),
+               manager_->AnalysisParameters().dft_length);
+  const float kTwiddleBase((2.0f * chartreuse::algorithms::Pi)
+                            / manager_->AnalysisParameters().dft_length);
 
-  for (unsigned int i = 0; i < manager_->DftLength() / 2 + 1; ++i) {
+  for (unsigned int i = 0;
+       i < manager_->AnalysisParameters().dft_length / 2 + 1;
+       ++i) {
     const float twiddle_factor = i * kTwiddleBase;
 
     float real = 0.0f;
@@ -70,11 +74,11 @@ descriptors::Descriptor_Meta DftRaw::Meta(void) const {
   return descriptors::Descriptor_Meta(
     // Not that this is the actual total length
     // (e.g. it should be half of it considering it's complex data)
-    manager_->DftLength() + 2,
+    manager_->AnalysisParameters().dft_length + 2,
     // Actually the input frame_length...
-    -static_cast<float>(manager_->DftLength()),
+    -static_cast<float>(manager_->AnalysisParameters().dft_length),
     // Actually the input frame_length...
-    static_cast<float>(manager_->DftLength()));
+    static_cast<float>(manager_->AnalysisParameters().dft_length));
 }
 
 }  // namespace algorithms

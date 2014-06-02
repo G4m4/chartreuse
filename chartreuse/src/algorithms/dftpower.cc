@@ -34,7 +34,9 @@ namespace algorithms {
 DftPower::DftPower(manager::Manager* manager)
     : Descriptor_Interface(manager),
       // TODO(gm): remove the magic, replace it by actual norm computation
-      normalization_factor_(2.0f / (manager->DftLength() * 571.865f)) {
+      normalization_factor_(2.0f
+                            / (manager_->AnalysisParameters().dft_length
+                            * 571.865f)) {
   CHARTREUSE_ASSERT(normalization_factor_ > 0.0f);
 }
 
@@ -63,11 +65,12 @@ void DftPower::operator()(const float* const frame,
 descriptors::Descriptor_Meta DftPower::Meta(void) const {
   return descriptors::Descriptor_Meta(
     // Only real data
-    manager_->DftLength() / 2 + 1,
+    manager_->AnalysisParameters().dft_length / 2 + 1,
     // Actually the input frame_length...
     0.0f,
     // Actually the input frame_length...
-    static_cast<float>(manager_->DftLength() * manager_->DftLength())
+    static_cast<float>(manager_->AnalysisParameters().dft_length
+                       * manager_->AnalysisParameters().dft_length)
     * normalization_factor_);
 }
 

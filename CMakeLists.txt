@@ -269,7 +269,7 @@ if (${CHARTREUSE_HAS_GTEST} STREQUAL "ON")
 endif (${CHARTREUSE_HAS_GTEST} STREQUAL "ON")
 
 # Kiss FFT
-# GTest path may be defined from an outside CMake file,
+# The path may be defined from an outside CMake file,
 # if this is used as an external library
 if(NOT EXISTS ${KISSFFT_DIR})
   set(KISSFFT_DIR

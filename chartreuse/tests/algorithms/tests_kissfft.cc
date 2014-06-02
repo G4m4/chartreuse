@@ -39,7 +39,7 @@ TEST(KissFFT, BasicOddSize) {
   std::vector<float> data(5, kValue);
   const unsigned int kDftLength(8);
 
-  Manager manager(kSamplingFreq, kDftLength);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   KissFFT dft(&manager);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
@@ -61,7 +61,7 @@ TEST(KissFFT, BasicEvenSize) {
   data[3] *= -1.0f;
   const unsigned int kDftLength(8);
 
-  Manager manager(kSamplingFreq, kDftLength);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   KissFFT dft(&manager);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
@@ -82,7 +82,7 @@ TEST(KissFFT, WhiteNoise) {
 
   const unsigned int kDftLength(kLargeDFTLength);
 
-  Manager manager(kSamplingFreq, kDftLength);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   KissFFT dft(&manager);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
@@ -110,7 +110,7 @@ TEST(KissFFT, Normalization) {
   const unsigned int kDftLength(kMediumDFTLength);
   std::vector<float> data(kDataInSinLength, 1.0f);
 
-  Manager manager(kSamplingFreq, kDftLength);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   KissFFT dft(&manager);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
@@ -133,7 +133,7 @@ TEST(KissFFT, Normalization) {
 TEST(KissFFT, MagSinMedLengthProperties) {
   const unsigned int kDftLength(kMediumDFTLength);
 
-  Manager manager(kSamplingFreq, kDftLength);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   KissFFT dft(&manager);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
@@ -161,7 +161,7 @@ TEST(KissFFT, MagSinMedLengthProperties) {
 TEST(KissFFT, SinSmallLength) {
   const unsigned int kDftLength(kSmallDFTLength);
 
-  Manager manager(kSamplingFreq, kDftLength);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   KissFFT dft(&manager);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
@@ -181,7 +181,7 @@ TEST(KissFFT, SinSmallLength) {
 TEST(KissFFT, SinMedLength) {
   const unsigned int kDftLength(kMediumDFTLength);
 
-  Manager manager(kSamplingFreq, kDftLength);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   KissFFT dft(&manager);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
@@ -201,7 +201,7 @@ TEST(KissFFT, SinMedLength) {
 TEST(KissFFT, SinLargeLength) {
   const unsigned int kDftLength(kLargeDFTLength);
 
-  Manager manager(kSamplingFreq, kDftLength);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   KissFFT dft(&manager);
   std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 

@@ -33,7 +33,7 @@ TEST(Spectrogram, WhiteNoise) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
 
-  Manager manager(kSamplingFreq, kDftLength);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   Spectrogram spectrogram(&manager);
   std::vector<float> out_data(spectrogram.Meta().out_dim);
 
@@ -62,7 +62,7 @@ TEST(Spectrogram, Sin) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
 
-  Manager manager(kSamplingFreq, kDftLength);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   Spectrogram spectrogram(&manager);
   std::vector<float> out_data(spectrogram.Meta().out_dim);
 

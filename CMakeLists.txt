@@ -280,4 +280,16 @@ if(NOT EXISTS ${KISSFFT_DIR})
   )
 endif(NOT EXISTS ${KISSFFT_DIR})
 
+# Eigen
+# The path may be defined from an outside CMake file,
+# if this is used as an external library
+if(NOT EXISTS ${EIGEN_DIR})
+  set(EIGEN_DIR
+    $ENV{EIGEN_ROOT}
+  )
+  set(EIGEN_INCLUDE_DIRS
+    ${EIGEN_DIR}
+  )
+endif(NOT EXISTS ${EIGEN_DIR})
+
 add_subdirectory(chartreuse)

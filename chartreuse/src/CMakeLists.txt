@@ -5,6 +5,7 @@ include_directories(
 )
 include_directories(
   SYSTEM
+  ${EIGEN_INCLUDE_DIRS}
   ${KISSFFT_INCLUDE_DIRS}
 )
 

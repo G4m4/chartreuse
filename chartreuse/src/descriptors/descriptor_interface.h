@@ -91,6 +91,8 @@ class Descriptor_Interface {
  private:
   // No assignment operator for this class
   Descriptor_Interface& operator=(const Descriptor_Interface& right);
+  // No copy constructor for this class
+  Descriptor_Interface(const Descriptor_Interface& right);
 };
 
 }  // namespace descriptors

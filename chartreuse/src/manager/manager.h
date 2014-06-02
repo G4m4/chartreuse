@@ -74,20 +74,21 @@ class Manager {
    public:
     /// @brief Default constructor, all default parameters value defined here
     Parameters(const float sampling_freq = 48000.0f,
+               const unsigned int dft_length = 2048,
                const float low_freq = 62.5f,
                const float high_freq = 1500.0f,
                const unsigned int hop_size_sample = 480,
-               const unsigned int window_length = 1440,
-               const unsigned int dft_length = 2048);
+               const unsigned int overlap = 3);
 
     const float sampling_freq;  ///< Analysis sampling frequency
+    const unsigned int dft_length;  ///< Spectrum signal length
     const float low_freq;  ///< Lower bound for analysis frequency spectrum
     const float high_freq;  ///< Higher bound for analysis frequency spectrum
     const unsigned int min_lag;  ///< Smaller lag for analysis given the above
     const unsigned int max_lag;  ///< Higher lag for analysis given the above
     const unsigned int hop_size_sample;  ///< Input signal length
+    const unsigned int overlap;  ///< Accumulated input signal overlap count
     const unsigned int window_length;  ///< Accumulated input signal length
-    const unsigned int dft_length;  ///< Spectrum signal length
 
    private:
     // No assignment operator for this class

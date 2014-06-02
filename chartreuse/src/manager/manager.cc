@@ -35,20 +35,23 @@ DescriptorId::Type DescriptorId::operator++(const DescriptorId::Type value) {
 }
 
 Manager::Parameters::Parameters(const float sampling_freq,
+                                const unsigned int dft_length,
                                 const float low_freq,
                                 const float high_freq,
                                 const unsigned int hop_size_sample,
-                                const unsigned int window_length,
-                                const unsigned int dft_length)
+                                const unsigned int overlap)
     : sampling_freq(sampling_freq),
+      dft_length(dft_length),
       low_freq(low_freq),
       high_freq(high_freq),
       min_lag(static_cast<unsigned int>(std::floor(sampling_freq / high_freq))),
       max_lag(static_cast<unsigned int>(std::floor(sampling_freq / low_freq))),
       hop_size_sample(hop_size_sample),
-      window_length(window_length),
-      dft_length(dft_length) {
+      overlap(overlap),
+      window_length(hop_size_sample * overlap) {
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
+  CHARTREUSE_ASSERT(dft_length > 0);
+  CHARTREUSE_ASSERT(algorithms::IsPowerOfTwo(dft_length));
   CHARTREUSE_ASSERT(low_freq < sampling_freq / 2.0f);
   CHARTREUSE_ASSERT(high_freq < sampling_freq / 2.0f);
   CHARTREUSE_ASSERT(low_freq > 0.0f);
@@ -58,11 +61,9 @@ Manager::Parameters::Parameters(const float sampling_freq,
   CHARTREUSE_ASSERT(max_lag > 0);
   CHARTREUSE_ASSERT(max_lag > min_lag);
   CHARTREUSE_ASSERT(hop_size_sample > 0);
+  CHARTREUSE_ASSERT(overlap >= 1);
   CHARTREUSE_ASSERT(window_length > 0);
-  CHARTREUSE_ASSERT(window_length > hop_size_sample);
-  CHARTREUSE_ASSERT(dft_length > 0);
-  CHARTREUSE_ASSERT(algorithms::IsPowerOfTwo(dft_length));
-  CHARTREUSE_ASSERT(dft_length >= window_length);
+  CHARTREUSE_ASSERT(window_length >= hop_size_sample);
 }
 
 Manager::Manager(const Parameters& parameters)

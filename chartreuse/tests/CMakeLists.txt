@@ -3,6 +3,7 @@
 # preventing warnings from external source files
 include_directories(
   SYSTEM
+  ${EIGEN_INCLUDE_DIRS}
   ${GTEST_INCLUDE_DIRS}
   ${KISSFFT_INCLUDE_DIRS}
 )

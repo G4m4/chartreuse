@@ -72,7 +72,7 @@ class AudioSpectrumSpread(object):
         tmp = self.scale.data - centroid
 
         out = numpy.sum(block * (tmp ** 2))
-        return out / accum_power
+        return numpy.sqrt(out / accum_power)
 
 if __name__ == "__main__":
     from scipy import signal

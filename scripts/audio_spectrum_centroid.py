@@ -55,7 +55,7 @@ class AudioSpectrumCentroid(object):
         '''
         spectro_data = self.spectrogram.Process(frame)
         spectro_power = numpy.abs(spectro_data) ** 2
-        spectro_power /= (self.norm_factor / 2.0)
+        spectro_power *= 2.0 / self.norm_factor
         # The DC component is unchanged, everything else is doubled
         spectro_power[0] *= 0.5
         # Summing the contributions of all frequencies lower than 62.5

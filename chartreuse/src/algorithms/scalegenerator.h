@@ -21,7 +21,7 @@
 #ifndef CHARTREUSE_SRC_ALGORITHMS_SCALEGENERATOR_H_
 #define CHARTREUSE_SRC_ALGORITHMS_SCALEGENERATOR_H_
 
-#include <vector>
+#include "Eigen/Core"
 
 namespace chartreuse {
 namespace algorithms {
@@ -54,10 +54,8 @@ class ScaleGenerator {
                           const unsigned int low_edge,
                           const float sampling_freq);
 
-  /// @brief Retrieve the scale value for the given index
-  ///
-  /// @param[in]  index    Index of the scale value to retrieve
-  float GetScaleAtIndex(const unsigned int index) const;
+  /// @brief Retrieve the scale data
+  const float* Data(void) const;
 
  private:
   /// @brief Synthesis method: create the data with all given parameters
@@ -71,7 +69,7 @@ class ScaleGenerator {
                       const unsigned int low_edge,
                       const float sampling_freq);
 
-   std::vector<float> data_;  ///< Internal buffer for synthesized data
+   Eigen::VectorXf data_;  ///< Internal buffer for synthesized data
 };
 
 }  // namespace algorithms

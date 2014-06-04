@@ -21,7 +21,7 @@
 #ifndef CHARTREUSE_SRC_ALGORITHMS_APODIZER_H_
 #define CHARTREUSE_SRC_ALGORITHMS_APODIZER_H_
 
-#include <vector>
+#include "Eigen/Core"
 
 namespace chartreuse {
 namespace algorithms {
@@ -61,7 +61,7 @@ class Apodizer {
   /// @param[in]  type   Type of the window to be created
   void SynthesizeData(const Window::Type type);
 
-   std::vector<float> data_;  ///< Internal buffer for synthesized data
+   Eigen::Array<float, Eigen::Dynamic, 1> data_;  ///< Internal buffer for synthesized data
 };
 
 }  // namespace algorithms

@@ -20,9 +20,10 @@
 
 #include "chartreuse/src/algorithms/spectrogrampower.h"
 
-#include <cmath>
-
 #include <algorithm>
+#include <complex>
+
+#include "Eigen/Core"
 
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
@@ -32,12 +33,8 @@ namespace chartreuse {
 namespace algorithms {
 
 SpectrogramPower::SpectrogramPower(manager::Manager* manager)
-    : Descriptor_Interface(manager),
-      // TODO(gm): remove the magic, replace it by actual norm computation
-      normalization_factor_(2.0f
-                            / (manager_->AnalysisParameters().dft_length
-                               * 571.865f)) {
-  CHARTREUSE_ASSERT(normalization_factor_ > 0.0f);
+    : Descriptor_Interface(manager) {
+  // Nothing to do here for now
 }
 
 void SpectrogramPower::operator()(const float* const frame,
@@ -48,18 +45,16 @@ void SpectrogramPower::operator()(const float* const frame,
   CHARTREUSE_ASSERT(data != nullptr);
 
   // Get the Dft of the frame
-  const float* const spectrogram(manager_->GetDescriptor(
+  const float* spectrogram(manager_->GetDescriptor(
                                    manager::DescriptorId::kSpectrogram,
                                    &frame[0],
                                    frame_length));
+  const std::complex<float>* spectrogram_casted(reinterpret_cast<const std::complex<float>*>(spectrogram));
+  const unsigned int spectro_length(manager_->GetDescriptorSize(manager::DescriptorId::kSpectrogram) / 2);
+
   // Retrieve the normalized squared magnitude of the data
-  for (std::size_t i(0);
-       i < manager_->GetDescriptorSize(manager::DescriptorId::kSpectrogram);
-       i += 2) {
-    data[i / 2] = spectrogram[i] * spectrogram[i];
-    data[i / 2] += spectrogram[i + 1] * spectrogram[i + 1];
-    data[i / 2] *= normalization_factor_;
-  }
+  const Eigen::VectorXf tmp(Eigen::Map<const Eigen::VectorXcf>(spectrogram_casted, spectro_length).cwiseAbs2());
+  std::copy(tmp.data(), tmp.data() + tmp.size(), data);
 }
 
 descriptors::Descriptor_Meta SpectrogramPower::Meta(void) const {
@@ -71,7 +66,7 @@ descriptors::Descriptor_Meta SpectrogramPower::Meta(void) const {
     // Actually the input frame_length...
     static_cast<float>(manager_->AnalysisParameters().dft_length
                        * manager_->AnalysisParameters().dft_length)
-    * normalization_factor_);
+    * 1.0f);
 }
 
 }  // namespace algorithms

@@ -18,10 +18,9 @@
 /// You should have received a copy of the GNU General Public License
 /// along with Chartreuse.  If not, see <http://www.gnu.org/licenses/>.
 
-// std::min, max
-#include <algorithm>
-
 #include "chartreuse/src/descriptors/audiowaveform.h"
+
+#include "Eigen/Core"
 
 namespace chartreuse {
 namespace descriptors {
@@ -38,8 +37,8 @@ void AudioWaveform::operator()(const float* const frame,
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
 
-  data[0] = *std::min_element(&frame[0], &frame[frame_length]);
-  data[1] = *std::max_element(&frame[0], &frame[frame_length]);
+  data[0] = Eigen::Map<const Eigen::VectorXf>(frame, frame_length).minCoeff();
+  data[1] = Eigen::Map<const Eigen::VectorXf>(frame, frame_length).maxCoeff();
 }
 
 Descriptor_Meta AudioWaveform::Meta(void) const {

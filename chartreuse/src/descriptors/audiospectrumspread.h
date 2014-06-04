@@ -46,9 +46,8 @@ class AudioSpectrumSpread : public Descriptor_Interface {
 
   const unsigned int kLowEdgeIndex_;  ///< Dft index lower bound
   const unsigned int kHighEdgeIndex_;  ///< Dft index higher bound
+  const float normalization_factor_;
   algorithms::ScaleGenerator freq_scale_;  ///< Frequency scale generator
-  // TODO(gm): this is useless
-  std::vector<float> power_;  ///< Internal power of the signal
 };
 
 }  // namespace descriptors

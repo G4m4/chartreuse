@@ -20,7 +20,7 @@
 
 #include "chartreuse/src/algorithms/apodizer.h"
 
-#include <cmath>
+#include <algorithm>
 
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
@@ -32,15 +32,15 @@ Apodizer::Apodizer(const unsigned int length,
                    const Window::Type type)
     // TODO(gm): check if the data can be generated at compile-time
     // At least the default version (rectangular) is done here
-    : data_(length, 1.0f) {
+    : data_(Eigen::Array<float, Eigen::Dynamic, 1>::Constant(length, 1, 1.0f)) {
   CHARTREUSE_ASSERT(length > 0);
   SynthesizeData(type);
 }
 
 void Apodizer::ApplyWindow(float* const buffer) const {
-  for (unsigned int i(0); i < data_.size(); ++i) {
-    buffer[i] *= data_[i];
-  }
+  const Eigen::Array<float, Eigen::Dynamic, 1> tmp(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(buffer, data_.size()));
+  const Eigen::VectorXf product(tmp.cwiseProduct(data_));
+  std::copy(product.data(), product.data() + product.size(), buffer);
 }
 
 void Apodizer::SynthesizeData(const Window::Type type) {
@@ -50,12 +50,13 @@ void Apodizer::SynthesizeData(const Window::Type type) {
       break;
     }
     case Window::kHamming: {
-      const float kDenom(1.0f / static_cast<float>(data_.size() - 1));
-      for (unsigned int i(0); i < data_.size(); ++i) {
-        const float value(2.0f * chartreuse::algorithms::Pi * static_cast<float>(i)
-                          * kDenom);
-        data_[i] = 0.54f - (0.46f * std::cos(value));
-      }
+      const float kHighBound((2.0f * Pi * data_.size()) / (data_.size() - 1));
+      const Eigen::Array<float, Eigen::Dynamic, 1> const_data(Eigen::VectorXf::Constant(data_.size(), 1, 0.54f));
+      const Eigen::Array<float, Eigen::Dynamic, 1> cos_data(Eigen::VectorXf::LinSpaced(Eigen::Sequential,
+                                                                data_.size(),
+                                                                0.0f,
+                                                                kHighBound));
+      data_ = const_data - 0.46f * cos_data.cos();
       break;
     }
     default: {

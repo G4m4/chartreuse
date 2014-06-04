@@ -22,8 +22,8 @@
 
 // std::ceil, std::log
 #include <cmath>
-// std::accumulate
-#include <numeric>
+
+#include "Eigen/Core"
 
 #include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/manager/manager.h"
@@ -39,13 +39,13 @@ AudioSpectrumCentroid::AudioSpectrumCentroid(manager::Manager* manager)
                                / manager->AnalysisParameters().sampling_freq))),
       // TODO(gm): use a static kind of "GetDescriptorSize(kSpectrogramPower)"
       kHighEdgeIndex_(manager->AnalysisParameters().dft_length / 2 + 1),
+      // TODO(gm): remove this magic
+      normalization_factor_(manager->AnalysisParameters().dft_length * 571.865f),
       freq_scale_(kHighEdgeIndex_ - kLowEdgeIndex_,
                   algorithms::Scale::kLogFreq,
                   manager->AnalysisParameters().dft_length,
                   kLowEdgeIndex_,
-                  manager->AnalysisParameters().sampling_freq),
-      // TODO(gm): use a static kind of "GetDescriptorSize(kSpectrogramPower)"
-      power_(manager->AnalysisParameters().dft_length / 2 + 1) {
+                  manager->AnalysisParameters().sampling_freq) {
   CHARTREUSE_ASSERT(kLowEdgeIndex_ > 0);
   CHARTREUSE_ASSERT(kHighEdgeIndex_ > 0);
   CHARTREUSE_ASSERT(kLowEdgeIndex_ < kHighEdgeIndex_);
@@ -57,30 +57,33 @@ void AudioSpectrumCentroid::operator()(const float* const frame,
   CHARTREUSE_ASSERT(frame != nullptr);
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
+
   // Get the normalized squared magnitude spectrogram of the frame
-  manager_->GetDescriptorCopy(manager::DescriptorId::kSpectrogramPower,
-                              &frame[0],
-                              frame_length,
-                              &power_[0]);
+  const float* power_ptr(manager_->GetDescriptor(manager::DescriptorId::kSpectrogramPower,
+                                                 &frame[0],
+                                                 frame_length));
+  Eigen::Array<float, Eigen::Dynamic, 1> power(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(power_ptr,
+                                                                kHighEdgeIndex_));
   // The DC component is unchanged, everything else is doubled
-  power_[0] *= 0.5f;
+  power[0] *= 0.5f;
+  power *= 2.0f / normalization_factor_;
   // Summing the contributions of all frequencies lower than 62.5
   for (unsigned int i(0); i < kLowEdgeIndex_ - 1; ++i) {
-    power_[kLowEdgeIndex_ - 1] += power_[i];
+    power[kLowEdgeIndex_ - 1] += power[i];
   }
-  const float kPowerSum(std::accumulate(&power_[kLowEdgeIndex_ - 1],
-                                        &power_[kHighEdgeIndex_ - 1],
-                                        0.0f)
-                        + power_[kHighEdgeIndex_ - 1]
+  const float kPowerSum(power.tail(kHighEdgeIndex_ - kLowEdgeIndex_ + 1).sum()
                         // Prevent divide by zero
                         + 1e-7f);
   CHARTREUSE_ASSERT(kPowerSum > 0.0f);
   // Weight each DFT bin by the log of the frequency relative to 1000Hz
   // The first bin is the low edge
-  float kOut(power_[kLowEdgeIndex_ - 1] * -5.0f);
-  for (unsigned int i(kLowEdgeIndex_); i < kHighEdgeIndex_; ++i) {
-    kOut += power_[i] * freq_scale_.GetScaleAtIndex(i - kLowEdgeIndex_);
-  }
+  const Eigen::Array<float, Eigen::Dynamic, 1> FreqScale(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(freq_scale_.Data(),
+                                                                    kHighEdgeIndex_ - kLowEdgeIndex_ + 1));
+  const float kOut(power.tail(kHighEdgeIndex_ - kLowEdgeIndex_ + 1).cwiseProduct(FreqScale).sum());
+  //float kOut(power_[kLowEdgeIndex_ - 1] * -5.0f);
+  //for (unsigned int i(kLowEdgeIndex_); i < kHighEdgeIndex_; ++i) {
+  //  kOut += power_[i] * freq_scale_.Data()[i - kLowEdgeIndex_];
+  //}
   data[0] = kOut / kPowerSum;
 }
 

@@ -32,7 +32,7 @@ ScaleGenerator::ScaleGenerator(const unsigned int length,
                                const unsigned int low_edge,
                                const float sampling_freq)
     // TODO(gm): check if the data can be generated at compile-time
-    : data_(length, 1.0f) {
+    : data_(Eigen::VectorXf::Constant(length + 1, 1, 1.0f)) {
   CHARTREUSE_ASSERT(length > 0);
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
@@ -40,8 +40,8 @@ ScaleGenerator::ScaleGenerator(const unsigned int length,
   SynthesizeData(type, dft_length, low_edge, sampling_freq);
 }
 
-float ScaleGenerator::GetScaleAtIndex(const unsigned int index) const {
-  return data_[index];
+const float* ScaleGenerator::Data(void) const {
+  return data_.data();
 }
 
 void ScaleGenerator::SynthesizeData(const Scale::Type type,
@@ -50,11 +50,20 @@ void ScaleGenerator::SynthesizeData(const Scale::Type type,
                                     const float sampling_freq) {
   switch (type) {
     case Scale::kLogFreq: {
-      const float kFactor(sampling_freq / dft_length);
-      for (unsigned int i(0); i < data_.size(); ++i) {
-        const float kFftFreq(static_cast<float>(i + low_edge) * kFactor);
-        data_[i] = algorithms::LogTwo(kFftFreq * 0.001f);
-      }
+      //const float kFactor(sampling_freq / dft_length);
+      //for (unsigned int i(0); i < data_.size(); ++i) {
+      //  const float kFftFreq(static_cast<float>(i + low_edge) * kFactor);
+      //  data_[i] = algorithms::LogTwo(kFftFreq * 0.001f);
+      //}
+      const float kLowBound(2.0f * sampling_freq / dft_length);
+      const float kHighBound(sampling_freq * 0.5f);
+      Eigen::Array<float, Eigen::Dynamic, 1> tmp(Eigen::VectorXf::LinSpaced(Eigen::Sequential,
+                                                                            data_.size(),
+                                                                            kLowBound,
+                                                                            kHighBound));
+      tmp(0) = sampling_freq / (dft_length * (3.0f / 4.0f));
+      const float kInvLog2(1.442695040888963f);
+      data_ = (tmp * 0.001f).log() * kInvLog2;
       break;
     }
     default: {

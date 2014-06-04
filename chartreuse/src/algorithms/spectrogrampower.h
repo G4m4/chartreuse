@@ -45,8 +45,6 @@ class SpectrogramPower : public descriptors::Descriptor_Interface {
  private:
   // No assignment operator for this class
   SpectrogramPower& operator=(const SpectrogramPower& right);
-
-  const float normalization_factor_;  ///< Normalization to be applied on the output
 };
 
 }  // namespace algorithms

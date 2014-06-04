@@ -20,6 +20,8 @@
 
 #include "chartreuse/src/descriptors/audiopower.h"
 
+#include "Eigen/Core"
+
 namespace chartreuse {
 namespace descriptors {
 
@@ -35,12 +37,9 @@ void AudioPower::operator()(const float* const frame,
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
 
-  float power(0.0f);
-  for (std::size_t i(0); i < frame_length; ++i) {
-    power += frame[i] * frame[i];
-  }
   const float kNormFactor(1 / static_cast<float>(frame_length));
-  data[0] = power * kNormFactor;
+  data[0] = Eigen::Map<const Eigen::VectorXf>(frame, frame_length).squaredNorm()
+            * kNormFactor;
 }
 
 Descriptor_Meta AudioPower::Meta(void) const {

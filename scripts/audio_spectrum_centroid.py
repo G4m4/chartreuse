@@ -50,7 +50,7 @@ class AudioSpectrumCentroid(object):
 
     def Process(self, frame):
         '''
-        Actual processing function, retrieve the fundamental frequency
+        Actual processing function, retrieve the descriptor
         for the given frame
         '''
         spectro_data = self.spectrogram.Process(frame)

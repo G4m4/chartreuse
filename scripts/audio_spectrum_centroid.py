@@ -60,7 +60,7 @@ class AudioSpectrumCentroid(object):
         spectro_power[0] *= 0.5
         # Summing the contributions of all frequencies lower than 62.5
         spectro_power[self.low_edge_idx - 1] = numpy.sum(spectro_power[0:self.low_edge_idx])
-        block = spectro_power[self.low_edge_idx - 1:len(spectro_power - 1)]
+        block = spectro_power[self.low_edge_idx - 1:len(spectro_power)]
         accum_power = numpy.sum(block + 1e-7)
         out = numpy.sum(self.scale.data * block)
 

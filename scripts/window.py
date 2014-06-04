@@ -40,8 +40,8 @@ class Hamming(object):
                                                      2.0 * numpy.pi * self.window_length / (self.window_length - 1),
                                                      2.0 * numpy.pi / (self.window_length - 1)))
 
-    def GetSample(self, idx):
-        return self.window_data[idx]
+    def NormalizationFactor(self):
+        return numpy.sum(self.window_data ** 2)
 
 if __name__ == "__main__":
     length = 512
@@ -49,8 +49,7 @@ if __name__ == "__main__":
     out_data = numpy.zeros(length)
 
     apodizer = Hamming(length)
-    for idx in range(length):
-        out_data[idx] = apodizer.GetSample(idx)
+    out_data = apodizer.window_data
 
     pylab.plot(out_data)
     pylab.show()

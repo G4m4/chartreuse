@@ -55,15 +55,14 @@ class AudioSpectrumCentroid(object):
         '''
         spectro_data = self.spectrogram.Process(frame)
         spectro_power = numpy.abs(spectro_data) ** 2
-        spectro_power /= self.norm_factor
+        spectro_power /= (self.norm_factor / 2.0)
         # The DC component is unchanged, everything else is doubled
         spectro_power[0] *= 0.5
-        spectro_power *= 2.0
         # Summing the contributions of all frequencies lower than 62.5
         spectro_power[self.low_edge_idx - 1] = numpy.sum(spectro_power[0:self.low_edge_idx])
-        spectro_power = spectro_power[self.low_edge_idx - 1:len(spectro_power - 1)]
-        accum_power = numpy.sum(spectro_power + 1e-7)
-        out = numpy.sum(self.scale.data * spectro_power)
+        block = spectro_power[self.low_edge_idx - 1:len(spectro_power - 1)]
+        accum_power = numpy.sum(block + 1e-7)
+        out = numpy.sum(self.scale.data * block)
 
         return out / accum_power
 
@@ -94,11 +93,11 @@ if __name__ == "__main__":
     sin_path = '../chartreuse/tests/data/'
     sin_filename = "data_in_sin.dat"
     sin_data = numpy.fromfile(sin_path + sin_filename, sep=sep)[0:actual_in_length]
-#     freq = 445.0
-#     time = numpy.linspace(0, 2 * numpy.pi * freq, sampling_freq)
-#     sin_data = numpy.sin(time)[0:actual_in_length]
-#     (_, sin_data) = read("../chartreuse/tests/data/C5_flute.wav")
-#     sin_data = sin_data[0:actual_in_length] / float(numpy.max(sin_data[0:actual_in_length]))
+    freq = 445.0
+    time = numpy.linspace(0, 2 * numpy.pi * freq, sampling_freq)
+    sin_data = numpy.sin(time)[0:actual_in_length]
+    (_, sin_data) = read("../chartreuse/tests/data/C5_flute.wav")
+    sin_data = sin_data[0:actual_in_length] / float(numpy.max(sin_data[0:actual_in_length]))
 #     time = numpy.arange(0, 1.0, 1.0 / sampling_freq)
 #     sin_data = signal.chirp(t = time,
 #                             f0 = 100.0,
@@ -124,7 +123,7 @@ if __name__ == "__main__":
         out_data[idx * frame_length: (idx + 1) * frame_length] = desc_data[0, idx] * numpy.ones(frame_length)
 
 #     pylab.plot(sin_data, label = "in")
-    pylab.plot(out_data, label = "out")
+    pylab.plot(out_data[0:len(out_data) - 1], label = "out")
 
     pylab.legend()
     pylab.show()

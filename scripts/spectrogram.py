@@ -34,7 +34,7 @@ class Spectrogram(object):
         self.sampling_freq = sampling_freq
         self.dft_length = dft_length
         self.window_length = frame_length * overlap
-        self.apodizer = window.Hamming(window_length)
+        self.apodizer = window.Hamming(self.window_length)
         self.buffer = ringbuffer.RingBuffer(self.window_length, overlap)
         self.buffer.Fill(0.0, frame_length * 2)
 

@@ -97,7 +97,7 @@ def CustomAutoCorrelation(frame, min_lag, max_lag):
     for lag in range(min_lag, max_lag):
         corr_power = numpy.sum(frame[max_lag:frame_length] * frame[max_lag - lag:frame_length - lag])
         lag_power = numpy.sum(frame[max_lag - lag:frame_length - lag] ** 2.0)
-        if (lag_power > 0.0):
+        if (lag_power != 0.0):
             out[lag - min_lag] = corr_power / numpy.sqrt(sig_power * 2.0 * lag_power)
         else:
             out[lag - min_lag] = 0.0

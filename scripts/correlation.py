@@ -135,7 +135,7 @@ if __name__ == "__main__":
 #                             f0 = 440.0,
 #                             t1 = 1,
 #                             f1 = 8800.0)[0:actual_in_length]
-#     sin_data = numpy.random.rand(actual_in_length)
+#     sin_data = numpy.random.rand(actual_in_length) * 2.0 - 1.0
 #     sin_data = 0.5 * numpy.ones(actual_in_length)
 #     sin_data = numpy.zeros(actual_in_length)
 #     pulse_occurence = 512

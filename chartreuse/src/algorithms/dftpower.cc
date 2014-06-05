@@ -54,7 +54,7 @@ void DftPower::operator()(const float* const frame,
                                 frame_length));
   // Retrieve the normalized squared magnitude of the data
   for (std::size_t i(0);
-       i < manager_->GetDescriptorSize(manager::DescriptorId::kDft);
+      i < manager_->GetDescriptorMeta(manager::DescriptorId::kDft).out_dim;
        i += 2) {
     data[i / 2] = dft_data[i] * dft_data[i];
     data[i / 2] += dft_data[i + 1] * dft_data[i + 1];

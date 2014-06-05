@@ -192,12 +192,12 @@ std::size_t Manager::GetDescriptorCopy(const DescriptorId::Type descriptor,
                                        const std::size_t frame_length,
                                        float* const data) {
   const float* internal_data_ptr(GetDescriptor(descriptor, frame, frame_length));
-  const std::size_t desc_dim(GetDescriptorSize(descriptor));
+  const std::size_t desc_dim(GetDescriptorMeta(descriptor).out_dim);
   std::copy(internal_data_ptr, internal_data_ptr + desc_dim, data);
   return desc_dim;
 }
 
-std::size_t Manager::GetDescriptorSize(
+const descriptors::Descriptor_Meta& Manager::GetDescriptorMeta(
     const DescriptorId::Type descriptor) const {
   // TODO(gm): a cleaner code!
   const descriptors::Descriptor_Interface* instance(nullptr);
@@ -242,7 +242,7 @@ std::size_t Manager::GetDescriptorSize(
       }
   }  // switch (descriptor)
   CHARTREUSE_ASSERT(instance != nullptr);
-  return instance->Meta().out_dim;
+  return instance->Meta();
 }
 
 std::size_t Manager::DescriptorsOutputSize(void) const {
@@ -250,7 +250,7 @@ std::size_t Manager::DescriptorsOutputSize(void) const {
   DescriptorId::Type current_id(DescriptorId::kAudioPower);
   for (const bool enabled_descriptor : enabled_descriptors_) {
     if(enabled_descriptor) {
-      out += GetDescriptorSize(current_id);
+      out += GetDescriptorMeta(current_id).out_dim;
     }  // for (const bool enabled_descriptor : enabled_descriptors_)
     current_id = static_cast<DescriptorId::Type>(++current_id);
   }

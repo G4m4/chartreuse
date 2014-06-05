@@ -50,7 +50,7 @@ void SpectrogramPower::operator()(const float* const frame,
                                    &frame[0],
                                    frame_length));
   const std::complex<float>* spectrogram_casted(reinterpret_cast<const std::complex<float>*>(spectrogram));
-  const unsigned int spectro_length(manager_->GetDescriptorSize(manager::DescriptorId::kSpectrogram) / 2);
+  const unsigned int spectro_length(manager_->GetDescriptorMeta(manager::DescriptorId::kSpectrogram).out_dim / 2);
 
   // Retrieve the normalized squared magnitude of the data
   const Eigen::VectorXf tmp(Eigen::Map<const Eigen::VectorXcf>(spectrogram_casted, spectro_length).cwiseAbs2());

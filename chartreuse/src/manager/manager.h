@@ -160,8 +160,9 @@ class Manager {
                                 const std::size_t frame_length,
                                 float* const data);
 
-  /// @brief Retrieve the given descriptor output size
-  std::size_t GetDescriptorSize(const DescriptorId::Type descriptor) const;
+  /// @brief Retrieve the given descriptor metadata
+  const descriptors::Descriptor_Meta& GetDescriptorMeta(
+    const DescriptorId::Type descriptor) const;
 
   /// @brief Check if the given descriptor was computed for the current frame
   bool IsDescriptorComputed(const DescriptorId::Type descriptor) const;

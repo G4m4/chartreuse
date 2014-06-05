@@ -67,7 +67,9 @@ Manager::Parameters::Parameters(const float sampling_freq,
 }
 
 Manager::Manager(const Parameters& parameters)
-    : // TODO(gm): this could be computed at compile-time
+    : enabled_descriptors_(),
+      computed_descriptors_(),
+      // TODO(gm): this could be computed at compile-time
       descriptors_data_(parameters.dft_length + 2
                         + parameters.dft_length + 2
                         + 1

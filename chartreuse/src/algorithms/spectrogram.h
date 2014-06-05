@@ -40,8 +40,6 @@ namespace algorithms {
 class Spectrogram : public descriptors::Descriptor_Interface {
  public:
   /// @brief Default constructor
-  // TODO(gm): an "overlap" parameter should be parameterized too
-  // (for now it is fixed at 3)
   explicit Spectrogram(manager::Manager* manager);
   ~Spectrogram();
 

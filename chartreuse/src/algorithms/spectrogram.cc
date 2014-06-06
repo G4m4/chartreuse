@@ -20,8 +20,6 @@
 
 #include "chartreuse/src/algorithms/spectrogram.h"
 
-#include <cmath>
-
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/algorithms/dftraw.h"

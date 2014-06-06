@@ -49,7 +49,7 @@ void AutoCorrelation::operator()(const float* const frame,
   CHARTREUSE_ASSERT(kMinLag > 0);
   CHARTREUSE_ASSERT(kMaxLag > 0);
   CHARTREUSE_ASSERT(kMaxLag > kMinLag);
-  CHARTREUSE_ASSERT(frame_length > kMaxLag);
+  CHARTREUSE_ASSERT(manager_->AnalysisParameters().window_length > kMaxLag);
   const float kPower(Eigen::Map<const Eigen::VectorXf>(&frame[kMaxLag], frame_length - kMaxLag).cwiseAbs2().sum());
   const Eigen::Map<const Eigen::VectorXf> right_part(&frame[kMaxLag], frame_length - kMaxLag);
   for (unsigned int lag(kMinLag); lag < kMaxLag; ++lag) {

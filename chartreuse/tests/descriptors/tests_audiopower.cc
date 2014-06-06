@@ -31,7 +31,6 @@ using chartreuse::manager::DescriptorId::kAudioPower;
 TEST(AudioPower, Null) {
   Manager manager(kSamplingFreq);
   chartreuse::manager::DescriptorId::Type descriptor(kAudioPower);
-  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -40,9 +39,9 @@ TEST(AudioPower, Null) {
     std::fill(frame.begin(),
               frame.end(),
               0.0f);
-    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
+    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
-         desc_index < desc_data.size();
+         desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
       EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
       EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
@@ -56,7 +55,6 @@ TEST(AudioPower, Null) {
 TEST(AudioPower, WhiteNoise) {
   Manager manager(kSamplingFreq);
   chartreuse::manager::DescriptorId::Type descriptor(kAudioPower);
-  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -65,9 +63,9 @@ TEST(AudioPower, WhiteNoise) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
+    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
-         desc_index < desc_data.size();
+         desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
       EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
       EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
@@ -81,7 +79,6 @@ TEST(AudioPower, WhiteNoise) {
 TEST(AudioPower, Sin) {
   Manager manager(kSamplingFreq);
   chartreuse::manager::DescriptorId::Type descriptor(kAudioPower);
-  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
@@ -93,9 +90,9 @@ TEST(AudioPower, Sin) {
     std::copy(&kInSin[index],
               &kInSin[kRightIndex],
               frame.begin());
-    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
+    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
-         desc_index < desc_data.size();
+         desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
       EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
       EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
@@ -110,7 +107,6 @@ TEST(AudioPower, LowFreq) {
   const float kFrequency(1.0f);
   Manager manager(kSamplingFreq);
   chartreuse::manager::DescriptorId::Type descriptor(kAudioPower);
-  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -120,9 +116,9 @@ TEST(AudioPower, LowFreq) {
     std::generate(frame.begin(),
                   frame.end(),
                   generator);
-    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
+    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
-         desc_index < desc_data.size();
+         desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
       EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
       EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
@@ -137,7 +133,6 @@ TEST(AudioPower, Highfreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
   Manager manager(kSamplingFreq);
   chartreuse::manager::DescriptorId::Type descriptor(kAudioPower);
-  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -147,9 +142,9 @@ TEST(AudioPower, Highfreq) {
     std::generate(frame.begin(),
                   frame.end(),
                   generator);
-    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
+    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
-         desc_index < desc_data.size();
+         desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
       EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
       EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
@@ -163,7 +158,6 @@ TEST(AudioPower, Highfreq) {
 TEST(AudioPower, Constant) {
   Manager manager(kSamplingFreq);
   chartreuse::manager::DescriptorId::Type descriptor(kAudioPower);
-  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
   const float kConstant(manager.GetDescriptorMeta(descriptor).out_max);
 
   std::size_t index(0);
@@ -173,9 +167,9 @@ TEST(AudioPower, Constant) {
     std::fill(frame.begin(),
               frame.end(),
               kConstant);
-    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
+    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
-         desc_index < desc_data.size();
+         desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
       EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
       EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
@@ -188,7 +182,6 @@ TEST(AudioPower, Constant) {
 TEST(AudioPower, Perf) {
   Manager manager(kSamplingFreq);
   chartreuse::manager::DescriptorId::Type descriptor(kAudioPower);
-  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   // Computing the mean output prevents the compiler from optimizing out things
@@ -199,7 +192,7 @@ TEST(AudioPower, Perf) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
+    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     mean += desc_data[0] * desc_data[0];
     index += frame.size();
   }

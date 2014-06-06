@@ -33,17 +33,8 @@ namespace algorithms {
 Spectrogram::Spectrogram(manager::Manager* manager)
     : Descriptor_Interface(manager),
       apodizer_(manager_->AnalysisParameters().window_length, Window::kHamming),
-      scratch_memory_(manager_->AnalysisParameters().window_length),
       tmp_buffer_(manager_->AnalysisParameters().dft_length) {
-  // The first input buffer is to be considered as the "future" part
-  // in the overlap.
-  // Hence, the first 2 parts ("past" and "present") have to be filled in order
-  // for the internal buffer writing cursor to be at the right position
-  // TODO(gm): Find a better way using an "overlap" parameter to do this
-  scratch_memory_.Fill(0.0f,
-                       manager_->AnalysisParameters().window_length
-                       * (manager_->AnalysisParameters().overlap - 1)
-                       / manager_->AnalysisParameters().overlap);
+  // Nothing to do here for now
 }
 
 Spectrogram::~Spectrogram() {
@@ -57,12 +48,10 @@ void Spectrogram::operator()(const float* const frame,
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
 
-  // Push into ringbuffer for overlap
-  scratch_memory_.Push(frame, frame_length);
-  // Pop - zero-padding done in the ringbuffer method
-  scratch_memory_.PopOverlapped(&tmp_buffer_[0],
-                                manager_->AnalysisParameters().dft_length,
-                                manager_->AnalysisParameters().overlap);
+  // Retrieve current window
+  std::copy_n(manager_->CurrentWindow(),
+              manager_->AnalysisParameters().dft_length,
+              &tmp_buffer_[0]);
   // Apply the window
   apodizer_.ApplyWindow(&tmp_buffer_[0]);
   // Apply DFT

@@ -28,6 +28,7 @@
 
 #include "chartreuse/src/algorithms/dftpower.h"
 #include "chartreuse/src/algorithms/kissfft.h"
+#include "chartreuse/src/algorithms/ringbuffer.h"
 #include "chartreuse/src/algorithms/spectrogram.h"
 #include "chartreuse/src/algorithms/spectrogrampower.h"
 
@@ -167,6 +168,9 @@ class Manager {
   /// @brief Check if the given descriptor was computed for the current frame
   bool IsDescriptorComputed(const DescriptorId::Type descriptor) const;
 
+  /// @brief Check if the current signal window is already pushed
+  bool IsWindowFilled(void) const;
+
   /// @brief Descriptor output size
   ///
   /// Retrieve total size of all enabled descriptors
@@ -174,6 +178,9 @@ class Manager {
 
   /// @brief Analysis parameters getter
   const Parameters& AnalysisParameters(void) const;
+
+  /// @brief Retrieve current (overlapped) data window
+  const float* CurrentWindow(void) const;
 
  private:
   // No assignment operator for this class
@@ -183,13 +190,19 @@ class Manager {
   void DescriptorIsComputed(const DescriptorId::Type descriptor,
                             const bool is_computed);
 
+  /// @brief Set the current window as "pushed" for the current frame
+  void WindowIsFilled(const bool is_filled);
+
   /// @brief Retrieve the pointer for internal data buffer given the descriptor
   const float* DescriptorDataPtr(const DescriptorId::Type descriptor) const;
 
   std::array<bool, DescriptorId::kCount> enabled_descriptors_;
   std::array<bool, DescriptorId::kCount> computed_descriptors_;
+  bool window_is_filled_;
   std::vector<float> descriptors_data_;  ///< Temporary buffer
                                          ///< holding descriptors data result
+  std::vector<float> current_window_;  ///< Internal scratch memory
+                                       ///< for overlapped data saving
   const Parameters parameters_;
 
   // TODO(gm): use a smarter factory
@@ -197,6 +210,7 @@ class Manager {
   descriptors::AudioSpectrumCentroid audio_spectrum_centroid_;
   descriptors::AudioSpectrumSpread audio_spectrum_spread_;
   descriptors::AudioWaveform audio_waveform_;
+  algorithms::RingBuffer ringbuf_;
   algorithms::KissFFT dft_;
   algorithms::Spectrogram spectrogram_;
   algorithms::DftPower dft_power_;

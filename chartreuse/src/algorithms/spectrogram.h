@@ -26,7 +26,6 @@
 #include "chartreuse/src/common.h"
 
 #include "chartreuse/src/algorithms/apodizer.h"
-#include "chartreuse/src/algorithms/ringbuffer.h"
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
 namespace chartreuse {
@@ -54,8 +53,6 @@ class Spectrogram : public descriptors::Descriptor_Interface {
   Spectrogram& operator=(const Spectrogram& right);
 
   Apodizer apodizer_;  ///< Dedicated object for window function application
-  RingBuffer scratch_memory_;  ///< Internal scratch memory
-                              ///< for overlapped data saving
   std::vector<float> tmp_buffer_;  ///< Internal temporary buffer for DFT
 };
 

@@ -69,6 +69,7 @@ Manager::Parameters::Parameters(const float sampling_freq,
 Manager::Manager(const Parameters& parameters)
     : enabled_descriptors_(),
       computed_descriptors_(),
+      window_is_filled_(false),
       // TODO(gm): this could be computed at compile-time
       descriptors_data_(parameters.dft_length + 2
                         + parameters.dft_length + 2
@@ -78,15 +79,25 @@ Manager::Manager(const Parameters& parameters)
                         + 2
                         + parameters.dft_length + 2
                         + parameters.dft_length + 2, 0.0f),
+      current_window_(parameters.dft_length),
       parameters_(parameters),
       audio_power_(this),
       audio_spectrum_centroid_(this),
       audio_spectrum_spread_(this),
       audio_waveform_(this),
+      ringbuf_(parameters.window_length),
       dft_(this),
       spectrogram_(this),
       dft_power_(this),
       spectrogram_power_(this) {
+  // The first input buffer is to be considered as the "future" part
+  // in the overlap.
+  // Hence, the first 2 parts ("past" and "present") have to be filled in order
+  // for the internal buffer writing cursor to be at the right position
+  // TODO(gm): Find a better way using an "overlap" parameter to do this
+  ringbuf_.Fill(0.0f,
+                parameters.window_length * (parameters.overlap - 1)
+                / parameters.overlap);
   enabled_descriptors_.fill(false);
   computed_descriptors_.fill(false);
 }
@@ -102,6 +113,15 @@ unsigned int Manager::operator()(const float* const frame,
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
 
+  if (!IsWindowFilled()) {
+    // Push into ringbuffer for overlap
+    ringbuf_.Push(frame, frame_length);
+    // Pop - zero-padding done in the ringbuffer method
+    ringbuf_.PopOverlapped(&current_window_[0],
+                           parameters_.dft_length,
+                           parameters_.overlap);
+    WindowIsFilled(true);
+  }
   std::size_t descriptors(0);
   DescriptorId::Type current_id(DescriptorId::kAudioPower);
   float* current_data(data);
@@ -122,6 +142,7 @@ unsigned int Manager::operator()(const float* const frame,
        ++descriptor_idx) {
     DescriptorIsComputed(static_cast<DescriptorId::Type>(descriptor_idx),
                          false);
+    WindowIsFilled(false);
   }
   return descriptors;
 }
@@ -261,13 +282,25 @@ const Manager::Parameters& Manager::AnalysisParameters(void) const {
   return parameters_;
 }
 
+const float* Manager::CurrentWindow(void) const {
+  return &current_window_[0];
+}
+
 bool Manager::IsDescriptorComputed(const DescriptorId::Type descriptor) const {
   return computed_descriptors_[static_cast<int>(descriptor)];
+}
+
+bool Manager::IsWindowFilled(void) const {
+  return window_is_filled_;
 }
 
 void Manager::DescriptorIsComputed(const DescriptorId::Type descriptor,
                                    const bool is_computed) {
   computed_descriptors_[static_cast<int>(descriptor)] = is_computed;
+}
+
+void Manager::WindowIsFilled(const bool is_filled) {
+  window_is_filled_ = is_filled;
 }
 
 const float* Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) const {

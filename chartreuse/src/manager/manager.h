@@ -161,7 +161,7 @@ class Manager {
                                 float* const data);
 
   /// @brief Retrieve the given descriptor metadata
-  const descriptors::Descriptor_Meta& GetDescriptorMeta(
+  descriptors::Descriptor_Meta GetDescriptorMeta(
     const DescriptorId::Type descriptor) const;
 
   /// @brief Check if the given descriptor was computed for the current frame

@@ -197,7 +197,7 @@ std::size_t Manager::GetDescriptorCopy(const DescriptorId::Type descriptor,
   return desc_dim;
 }
 
-const descriptors::Descriptor_Meta& Manager::GetDescriptorMeta(
+descriptors::Descriptor_Meta Manager::GetDescriptorMeta(
     const DescriptorId::Type descriptor) const {
   // TODO(gm): a cleaner code!
   const descriptors::Descriptor_Interface* instance(nullptr);

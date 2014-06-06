@@ -20,20 +20,18 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/descriptors/audiowaveform.h"
 #include "chartreuse/src/manager/manager.h"
 
-// Using declarations for tested class
-using chartreuse::descriptors::AudioWaveform;
 // Useful using declarations
 using chartreuse::manager::Manager;
+using chartreuse::manager::DescriptorId::kAudioWaveform;
 
 /// @brief Compute the descriptor for a null signal,
 /// check its output
 TEST(AudioWaveform, Null) {
   Manager manager(kSamplingFreq);
-  AudioWaveform descriptor(&manager);
-  std::vector<float> desc_data(descriptor.Meta().out_dim);
+  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -42,12 +40,12 @@ TEST(AudioWaveform, Null) {
     std::fill(frame.begin(),
               frame.end(),
               0.0f);
-    descriptor(&frame[0], frame.size(), &desc_data[0]);
+    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -57,8 +55,8 @@ TEST(AudioWaveform, Null) {
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, WhiteNoise) {
   Manager manager(kSamplingFreq);
-  AudioWaveform descriptor(&manager);
-  std::vector<float> desc_data(descriptor.Meta().out_dim);
+  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -67,12 +65,12 @@ TEST(AudioWaveform, WhiteNoise) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    descriptor(&frame[0], frame.size(), &desc_data[0]);
+    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -82,8 +80,8 @@ TEST(AudioWaveform, WhiteNoise) {
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, Sin) {
   Manager manager(kSamplingFreq);
-  AudioWaveform descriptor(&manager);
-  std::vector<float> desc_data(descriptor.Meta().out_dim);
+  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
@@ -95,12 +93,12 @@ TEST(AudioWaveform, Sin) {
     std::copy(&kInSin[index],
               &kInSin[kRightIndex],
               frame.begin());
-    descriptor(&frame[0], frame.size(), &desc_data[0]);
+    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -111,8 +109,8 @@ TEST(AudioWaveform, Sin) {
 TEST(AudioWaveform, LowFreq) {
   const float kFrequency(1.0f);
   Manager manager(kSamplingFreq);
-  AudioWaveform descriptor(&manager);
-  std::vector<float> desc_data(descriptor.Meta().out_dim);
+  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -122,12 +120,12 @@ TEST(AudioWaveform, LowFreq) {
     std::generate(frame.begin(),
                   frame.end(),
                   generator);
-    descriptor(&frame[0], frame.size(), &desc_data[0]);
+    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -138,8 +136,8 @@ TEST(AudioWaveform, LowFreq) {
 TEST(AudioWaveform, Highfreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
   Manager manager(kSamplingFreq);
-  AudioWaveform descriptor(&manager);
-  std::vector<float> desc_data(descriptor.Meta().out_dim);
+  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -149,12 +147,12 @@ TEST(AudioWaveform, Highfreq) {
     std::generate(frame.begin(),
                   frame.end(),
                   generator);
-    descriptor(&frame[0], frame.size(), &desc_data[0]);
+    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -164,9 +162,9 @@ TEST(AudioWaveform, Highfreq) {
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, Constant) {
   Manager manager(kSamplingFreq);
-  AudioWaveform descriptor(&manager);
-  std::vector<float> desc_data(descriptor.Meta().out_dim);
-  const float kConstant(descriptor.Meta().out_max);
+  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
+  const float kConstant(manager.GetDescriptorMeta(descriptor).out_max);
 
   std::size_t index(0);
   while (index < kDataTestSetSize - 1) {
@@ -175,12 +173,12 @@ TEST(AudioWaveform, Constant) {
     std::fill(frame.begin(),
               frame.end(),
               kConstant);
-    descriptor(&frame[0], frame.size(), &desc_data[0]);
+    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
     for (unsigned int desc_index(0);
          desc_index < desc_data.size();
          ++desc_index) {
-      EXPECT_GE(descriptor.Meta().out_max, desc_data[desc_index]);
-      EXPECT_LE(descriptor.Meta().out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
     }
     index += frame.size();
   }
@@ -189,8 +187,8 @@ TEST(AudioWaveform, Constant) {
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioWaveform, Perf) {
   Manager manager(kSamplingFreq);
-  AudioWaveform descriptor(&manager);
-  std::vector<float> desc_data(descriptor.Meta().out_dim);
+  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  std::vector<float> desc_data(manager.GetDescriptorMeta(descriptor).out_dim);
 
   std::size_t index(0);
   // Computing the mean output prevents the compiler from optimizing out things
@@ -201,9 +199,9 @@ TEST(AudioWaveform, Perf) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    descriptor(&frame[0], frame.size(), &desc_data[0]);
+    manager.GetDescriptorCopy(descriptor, &frame[0], frame.size(), &desc_data[0]);
     mean += desc_data[0] * desc_data[0];
     index += frame.size();
   }
-  EXPECT_LE(descriptor.Meta().out_min, mean);
+  EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, mean);
 }

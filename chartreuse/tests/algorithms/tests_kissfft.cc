@@ -20,13 +20,11 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/algorithms/kissfft.h"
 #include "chartreuse/src/manager/manager.h"
 
-// Using declarations for tested class
-using chartreuse::algorithms::KissFFT;
 // Useful using declarations
 using chartreuse::manager::Manager;
+using chartreuse::manager::DescriptorId::kDft;
 
 static const unsigned int kFFTDataSize(1024);
 static const unsigned int kDefaultSamplingRate = 48000;
@@ -38,14 +36,11 @@ TEST(KissFFT, BasicOddSize) {
   const float kValue(1.0f);
   std::vector<float> data(5, kValue);
   const unsigned int kDftLength(8);
+  chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  KissFFT dft(&manager);
-  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
-  dft(&data[0],
-      data.size(),
-      &out_data[0]);
+  const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   const float kExpected(kValue * data.size());
   EXPECT_EQ(kExpected, out_data[0]);
@@ -60,17 +55,14 @@ TEST(KissFFT, BasicEvenSize) {
   data[1] *= -1.0f;
   data[3] *= -1.0f;
   const unsigned int kDftLength(8);
+  chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  KissFFT dft(&manager);
-  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
-  dft(&data[0],
-      data.size(),
-      &out_data[0]);
+  const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   const float kExpected(kValue * data.size());
-  EXPECT_EQ(kExpected, out_data[out_data.size() - 2]);
+  EXPECT_EQ(kExpected, out_data[manager.GetDescriptorMeta(descriptor).out_dim - 2]);
 }
 
 /// @brief Compute the DFT of an uniform white noise
@@ -81,25 +73,22 @@ TEST(KissFFT, WhiteNoise) {
                 [&] {return kNormDistribution(kRandomGenerator);});
 
   const unsigned int kDftLength(kLargeDFTLength);
+  chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  KissFFT dft(&manager);
-  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   const float kExpectedMean = 0.0f;
-  const float kEpsilonMean = 1e-3f * out_data.size();
+  const float kEpsilonMean = 1e-3f * manager.GetDescriptorMeta(descriptor).out_dim;
 
-  dft(&data[0],
-      data.size(),
-      &out_data[0]);
+  const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   float mean(0.0f);
-  for (std::vector<float>::const_iterator iter(out_data.begin());
-       iter != out_data.end();
-       iter += 1) {
-    mean += *iter;
+  for (unsigned int idx(0);
+       idx < manager.GetDescriptorMeta(descriptor).out_dim;
+       idx += 1) {
+    mean += out_data[idx];
   }
-  mean /= out_data.size() - 2.0f;
+  mean /= manager.GetDescriptorMeta(descriptor).out_dim - 2.0f;
 
   EXPECT_NEAR(kExpectedMean, mean, kEpsilonMean);
 }
@@ -109,10 +98,9 @@ TEST(KissFFT, WhiteNoise) {
 TEST(KissFFT, Normalization) {
   const unsigned int kDftLength(kMediumDFTLength);
   std::vector<float> data(kDataInSinLength, 1.0f);
+  chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  KissFFT dft(&manager);
-  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   // Input buffer normalized
   // Note that whatever the input data size is,
@@ -120,9 +108,7 @@ TEST(KissFFT, Normalization) {
   const float kExpected = static_cast<float>(kDftLength);
   const float kEpsilon = 1e-5f;
 
-  dft(&data[0],
-      data.size(),
-      &out_data[0]);
+  const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   const float kActual = out_data[0];
 
@@ -132,25 +118,22 @@ TEST(KissFFT, Normalization) {
 /// @brief Check properties of a medium-length DFT for a pure sinusoid
 TEST(KissFFT, MagSinMedLengthProperties) {
   const unsigned int kDftLength(kMediumDFTLength);
+  chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  KissFFT dft(&manager);
-  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   const float kExpected = (kDftLength * kDefaultTestFreq)
                           / static_cast<float>(kDefaultSamplingRate);
   const float kEpsilon = 1.0f;  // Due to resolution issues
 
-  dft(&kInSin[0],
-      kInSin.size(),
-      &out_data[0]);
+  const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   const unsigned int kActual(
-    std::distance(out_data.begin(),
-                  std::min_element(out_data.begin(),
+    std::distance(&out_data[0],
+                  std::min_element(&out_data[0],
                                    // Only searching on half the data,
                                    // since this output is complex!
-                                   out_data.begin() + kDftLength))
+                                   &out_data[0] + kDftLength))
     / 2);
 
   EXPECT_NEAR(kExpected, kActual, kEpsilon);
@@ -160,16 +143,13 @@ TEST(KissFFT, MagSinMedLengthProperties) {
 /// with externally precomputed reference data
 TEST(KissFFT, SinSmallLength) {
   const unsigned int kDftLength(kSmallDFTLength);
+  chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  KissFFT dft(&manager);
-  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   const float kEpsilon = 1e-3f * kDftLength;
 
-  dft(&kInSin[0],
-      kInSin.size(),
-      &out_data[0]);
+  const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
     EXPECT_NEAR(kDataSmallSinDFT[i / 2], out_data[i], kEpsilon);
@@ -180,16 +160,13 @@ TEST(KissFFT, SinSmallLength) {
 /// with externally precomputed reference data
 TEST(KissFFT, SinMedLength) {
   const unsigned int kDftLength(kMediumDFTLength);
+  chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  KissFFT dft(&manager);
-  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   const float kEpsilon = 1e-3f * kDftLength;
 
-  dft(&kInSin[0],
-      kInSin.size(),
-      &out_data[0]);
+  const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
     EXPECT_NEAR(kDataMediumSinDFT[i / 2], out_data[i], kEpsilon);
@@ -200,18 +177,15 @@ TEST(KissFFT, SinMedLength) {
 /// with externally precomputed reference data
 TEST(KissFFT, SinLargeLength) {
   const unsigned int kDftLength(kLargeDFTLength);
+  chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  KissFFT dft(&manager);
-  std::vector<float> out_data(dft.Meta().out_dim, 0.0f);
 
   // Greater error for this DFT length
   // TODO: find out why?
   const float kEpsilon = 1e-2f * kDftLength;
 
-  dft(&kInSin[0],
-      kInSin.size(),
-      &out_data[0]);
+  const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
     EXPECT_NEAR(kDataLargeSinDFT[i / 2], out_data[i], kEpsilon);

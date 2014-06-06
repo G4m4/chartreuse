@@ -20,22 +20,19 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/algorithms/spectrogram.h"
 #include "chartreuse/src/manager/manager.h"
 
-// Using declarations for tested class
-using chartreuse::algorithms::Spectrogram;
 // Useful using declarations
 using chartreuse::manager::Manager;
+using chartreuse::manager::DescriptorId::kSpectrogram;
 
 /// @brief Compute the spectrogram for white noise
 TEST(Spectrogram, WhiteNoise) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
+  chartreuse::manager::DescriptorId::Type descriptor(kSpectrogram);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  Spectrogram spectrogram(&manager);
-  std::vector<float> out_data(spectrogram.Meta().out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -44,14 +41,12 @@ TEST(Spectrogram, WhiteNoise) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    spectrogram(&frame[0],
-                frame.size(),
-                &out_data[0]);
+    const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
-         desc_index < out_data.size();
+         desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
-      EXPECT_GE(spectrogram.Meta().out_max, out_data[desc_index]);
-      EXPECT_LE(spectrogram.Meta().out_min, out_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
     index += frame.size();
   }
@@ -61,10 +56,9 @@ TEST(Spectrogram, WhiteNoise) {
 TEST(Spectrogram, Sin) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
+  chartreuse::manager::DescriptorId::Type descriptor(kSpectrogram);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  Spectrogram spectrogram(&manager);
-  std::vector<float> out_data(spectrogram.Meta().out_dim);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -76,14 +70,12 @@ TEST(Spectrogram, Sin) {
     std::copy(&kInSin[index],
               &kInSin[kRightIndex],
               frame.begin());
-    spectrogram(&frame[0],
-                frame.size(),
-                &out_data[0]);
+    const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
-         desc_index < out_data.size();
+         desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
-      EXPECT_GE(spectrogram.Meta().out_max, out_data[desc_index]);
-      EXPECT_LE(spectrogram.Meta().out_min, out_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
     index += frame.size();
   }

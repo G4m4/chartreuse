@@ -111,38 +111,30 @@ unsigned int Manager::operator()(const float* const frame,
                                  float* const data) {
   CHARTREUSE_ASSERT(frame != nullptr);
   CHARTREUSE_ASSERT(frame_length > 0);
-  CHARTREUSE_ASSERT(data != nullptr);
 
-  if (!IsWindowFilled()) {
-    // Push into ringbuffer for overlap
-    ringbuf_.Push(frame, frame_length);
-    // Pop - zero-padding done in the ringbuffer method
-    ringbuf_.PopOverlapped(&current_window_[0],
-                           parameters_.dft_length,
-                           parameters_.overlap);
-    WindowIsFilled(true);
-  }
-  std::size_t descriptors(0);
-  DescriptorId::Type current_id(DescriptorId::kAudioPower);
-  float* current_data(data);
-  for (const bool enabled_descriptor : enabled_descriptors_) {
-    if(enabled_descriptor) {
-      current_data += GetDescriptorCopy(current_id,
-                                        frame,
-                                        frame_length,
-                                        current_data);
-      descriptors += 1;
-    }  // for (const bool enabled_descriptor : enabled_descriptors_)
-    current_id = static_cast<DescriptorId::Type>(++current_id);
-  }
-  // Invalidate all previous computation (this has to be done after all
-  // decriptors retrieval, since there may be dependencies between them)
+  // Invalidate all computation from the previous frame
   for (unsigned int descriptor_idx(0);
        descriptor_idx < DescriptorId::kCount;
        ++descriptor_idx) {
     DescriptorIsComputed(static_cast<DescriptorId::Type>(descriptor_idx),
                          false);
     WindowIsFilled(false);
+  }
+  // Push into ringbuffer for overlap
+  ringbuf_.Push(frame, frame_length);
+  // Pop - zero-padding done in the ringbuffer method
+  ringbuf_.PopOverlapped(&current_window_[0],
+                          parameters_.dft_length,
+                          parameters_.overlap);
+  WindowIsFilled(true);
+  std::size_t descriptors(0);
+  DescriptorId::Type current_id(DescriptorId::kAudioPower);
+  for (const bool enabled_descriptor : enabled_descriptors_) {
+    if(enabled_descriptor) {
+      GetDescriptor(current_id, frame, frame_length);
+      descriptors += 1;
+    }  // for (const bool enabled_descriptor : enabled_descriptors_)
+    current_id = static_cast<DescriptorId::Type>(++current_id);
   }
   return descriptors;
 }

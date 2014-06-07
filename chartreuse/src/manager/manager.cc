@@ -66,7 +66,7 @@ Manager::Parameters::Parameters(const float sampling_freq,
   CHARTREUSE_ASSERT(window_length >= hop_size_sample);
 }
 
-Manager::Manager(const Parameters& parameters)
+Manager::Manager(const Parameters& parameters, const bool zero_init)
     : enabled_descriptors_(),
       computed_descriptors_(),
       window_is_filled_(false),
@@ -90,14 +90,17 @@ Manager::Manager(const Parameters& parameters)
       spectrogram_(this),
       dft_power_(this),
       spectrogram_power_(this) {
-  // The first input buffer is to be considered as the "future" part
-  // in the overlap.
-  // Hence, the first 2 parts ("past" and "present") have to be filled in order
-  // for the internal buffer writing cursor to be at the right position
-  // TODO(gm): Find a better way using an "overlap" parameter to do this
-  ringbuf_.Fill(0.0f,
-                parameters.window_length * (parameters.overlap - 1)
-                / parameters.overlap);
+  // TODO(gm): Find a cleaner way to do this
+  if (zero_init) {
+    // The first input buffer is to be considered as the "future" part
+    // in the overlap.
+    // Hence, the first 2 parts ("past" and "present") have to be filled in order
+    // for the internal buffer writing cursor to be at the right position
+    // TODO(gm): Find a better way using an "overlap" parameter to do this
+    ringbuf_.Fill(0.0f,
+                  parameters.window_length * (parameters.overlap - 1)
+                  / parameters.overlap);
+  }
   enabled_descriptors_.fill(false);
   computed_descriptors_.fill(false);
 }

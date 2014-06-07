@@ -96,7 +96,12 @@ class Manager {
     Parameters& operator=(const Parameters& right);
   };
 
-  explicit Manager(const Parameters& parameters);
+  /// @brief Constructor, parameters have to be passed to it (no default)
+  ///
+  /// @param[in]  parameters    Analysis parameters to use
+  /// @param[in]  zero_init   Zero initialization of internal memory,
+  /// in order to compensate the missing beginning for all overlap algorithms
+  explicit Manager(const Parameters& parameters, const bool zero_init = true);
   ~Manager();
 
   /// @brief Main processing function

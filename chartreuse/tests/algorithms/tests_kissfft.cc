@@ -38,8 +38,10 @@ TEST(KissFFT, BasicOddSize) {
   const unsigned int kDftLength(8);
   chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
-  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength), false);
+  manager.EnableDescriptor(descriptor, true);
 
+  manager(&data[0], data.size(), nullptr);
   const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   const float kExpected(kValue * data.size());
@@ -57,8 +59,10 @@ TEST(KissFFT, BasicEvenSize) {
   const unsigned int kDftLength(8);
   chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
-  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength), false);
+  manager.EnableDescriptor(descriptor, true);
 
+  manager(&data[0], data.size(), nullptr);
   const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   const float kExpected(kValue * data.size());
@@ -75,11 +79,13 @@ TEST(KissFFT, WhiteNoise) {
   const unsigned int kDftLength(kLargeDFTLength);
   chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
-  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength), false);
+  manager.EnableDescriptor(descriptor, true);
 
   const float kExpectedMean = 0.0f;
   const float kEpsilonMean = 1e-3f * manager.GetDescriptorMeta(descriptor).out_dim;
 
+  manager(&data[0], data.size(), nullptr);
   const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   float mean(0.0f);
@@ -100,7 +106,13 @@ TEST(KissFFT, Normalization) {
   std::vector<float> data(kDataInSinLength, 1.0f);
   chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
-  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
+  Manager manager(Manager::Parameters(kSamplingFreq,
+                                      kDftLength,
+                                      62.5f,
+                                      1500.0f,
+                                      data.size(),
+                                      1), false);
+  manager.EnableDescriptor(descriptor, true);
 
   // Input buffer normalized
   // Note that whatever the input data size is,
@@ -108,6 +120,7 @@ TEST(KissFFT, Normalization) {
   const float kExpected = static_cast<float>(kDftLength);
   const float kEpsilon = 1e-5f;
 
+  manager(&data[0], data.size(), nullptr);
   const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   const float kActual = out_data[0];
@@ -120,12 +133,19 @@ TEST(KissFFT, MagSinMedLengthProperties) {
   const unsigned int kDftLength(kMediumDFTLength);
   chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
-  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
+  Manager manager(Manager::Parameters(kSamplingFreq,
+                                      kDftLength,
+                                      62.5f,
+                                      1500.0f,
+                                      kInSin.size(),
+                                      1), false);
+  manager.EnableDescriptor(descriptor, true);
 
   const float kExpected = (kDftLength * kDefaultTestFreq)
                           / static_cast<float>(kDefaultSamplingRate);
   const float kEpsilon = 1.0f;  // Due to resolution issues
 
+  manager(&kInSin[0], kInSin.size(), nullptr);
   const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   const unsigned int kActual(
@@ -145,10 +165,17 @@ TEST(KissFFT, SinSmallLength) {
   const unsigned int kDftLength(kSmallDFTLength);
   chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
-  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
+  Manager manager(Manager::Parameters(kSamplingFreq,
+                                      kDftLength,
+                                      62.5f,
+                                      1500.0f,
+                                      kInSin.size(),
+                                      1), false);
+  manager.EnableDescriptor(descriptor, true);
 
   const float kEpsilon = 1e-3f * kDftLength;
 
+  manager(&kInSin[0], kInSin.size(), nullptr);
   const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
@@ -162,10 +189,17 @@ TEST(KissFFT, SinMedLength) {
   const unsigned int kDftLength(kMediumDFTLength);
   chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
-  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
+  Manager manager(Manager::Parameters(kSamplingFreq,
+                                      kDftLength,
+                                      62.5f,
+                                      1500.0f,
+                                      kInSin.size(),
+                                      1), false);
+  manager.EnableDescriptor(descriptor, true);
 
   const float kEpsilon = 1e-3f * kDftLength;
 
+  manager(&kInSin[0], kInSin.size(), nullptr);
   const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
@@ -179,12 +213,19 @@ TEST(KissFFT, SinLargeLength) {
   const unsigned int kDftLength(kLargeDFTLength);
   chartreuse::manager::DescriptorId::Type descriptor(kDft);
 
-  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
+  Manager manager(Manager::Parameters(kSamplingFreq,
+                                      kDftLength,
+                                      62.5f,
+                                      1500.0f,
+                                      kInSin.size(),
+                                      1), false);
+  manager.EnableDescriptor(descriptor, true);
 
   // Greater error for this DFT length
   // TODO: find out why?
   const float kEpsilon = 1e-2f * kDftLength;
 
+  manager(&kInSin[0], kInSin.size(), nullptr);
   const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {

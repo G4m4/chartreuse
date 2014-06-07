@@ -20,36 +20,35 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/algorithms/autocorrelation.h"
 #include "chartreuse/src/manager/manager.h"
 
-// Using declarations for tested class
-using chartreuse::algorithms::AutoCorrelation;
 // Useful using declarations
 using chartreuse::manager::Manager;
+using chartreuse::manager::DescriptorId::kAutoCorrelation;
 
 /// @brief Check output range for white noise
 TEST(AutoCorrelation, WhiteNoise) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
+  chartreuse::manager::DescriptorId::Type descriptor(kAutoCorrelation);
 
-  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  AutoCorrelation analyzer(&manager);
-  std::vector<float> out_data(analyzer.Meta().out_dim);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength), true);
+  manager.EnableDescriptor(descriptor, true);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
-    std::vector<float> frame(manager.AnalysisParameters().window_length);
+    std::vector<float> frame(manager.AnalysisParameters().hop_size_sample);
     // Fill the frame with random data
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    analyzer(&frame[0], frame.size(), &out_data[0]);
+    manager(&frame[0], frame.size(), &frame[0]);
+    const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
-         desc_index < out_data.size();
+         desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
-      EXPECT_GE(analyzer.Meta().out_max, out_data[desc_index]);
-      EXPECT_LE(analyzer.Meta().out_min, out_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
     index += frame.size();
   }
@@ -59,24 +58,25 @@ TEST(AutoCorrelation, WhiteNoise) {
 TEST(AutoCorrelation, Perf) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
+  chartreuse::manager::DescriptorId::Type descriptor(kAutoCorrelation);
 
-  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
-  AutoCorrelation analyzer(&manager);
-  std::vector<float> out_data(analyzer.Meta().out_dim);
+  Manager manager(Manager::Parameters(kSamplingFreq, kDftLength), true);
+  manager.EnableDescriptor(descriptor, true);
 
   std::size_t index(0);
   while (index < kDataPerfSetSize / 8) {
-    std::vector<float> frame(manager.AnalysisParameters().window_length);
+    std::vector<float> frame(manager.AnalysisParameters().hop_size_sample);
     // Fill the frame with random data
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    analyzer(&frame[0], frame.size(), &out_data[0]);
+    manager(&frame[0], frame.size(), &frame[0]);
+    const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
-         desc_index < out_data.size();
+         desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
-      EXPECT_GE(analyzer.Meta().out_max, out_data[desc_index]);
-      EXPECT_LE(analyzer.Meta().out_min, out_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
     index += frame.size();
   }

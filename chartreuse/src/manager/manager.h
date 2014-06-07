@@ -26,6 +26,7 @@
 
 #include "chartreuse/src/common.h"
 
+#include "chartreuse/src/algorithms/autocorrelation.h"
 #include "chartreuse/src/algorithms/dftpower.h"
 #include "chartreuse/src/algorithms/kissfft.h"
 #include "chartreuse/src/algorithms/ringbuffer.h"
@@ -52,6 +53,7 @@ enum Type {
   kSpectrogram,
   kDftPower,
   kSpectrogramPower,
+  kAutoCorrelation,
   kCount
 };
 
@@ -216,6 +218,7 @@ class Manager {
   descriptors::AudioSpectrumSpread audio_spectrum_spread_;
   descriptors::AudioWaveform audio_waveform_;
   algorithms::RingBuffer ringbuf_;
+  algorithms::AutoCorrelation autocorrelation_;
   algorithms::KissFFT dft_;
   algorithms::Spectrogram spectrogram_;
   algorithms::DftPower dft_power_;

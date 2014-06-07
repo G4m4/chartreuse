@@ -86,6 +86,7 @@ Manager::Manager(const Parameters& parameters, const bool zero_init)
       audio_spectrum_spread_(this),
       audio_waveform_(this),
       ringbuf_(parameters.window_length),
+      autocorrelation_(this),
       dft_(this),
       spectrogram_(this),
       dft_power_(this),
@@ -121,8 +122,8 @@ unsigned int Manager::operator()(const float* const frame,
        ++descriptor_idx) {
     DescriptorIsComputed(static_cast<DescriptorId::Type>(descriptor_idx),
                          false);
-    WindowIsFilled(false);
   }
+  WindowIsFilled(false);
   // Push into ringbuffer for overlap
   ringbuf_.Push(frame, frame_length);
   // Pop - zero-padding done in the ringbuffer method
@@ -189,6 +190,10 @@ const float* Manager::GetDescriptor(const DescriptorId::Type descriptor,
           instance = &spectrogram_power_;
           break;
         }
+      case DescriptorId::kAutoCorrelation: {
+          instance = &autocorrelation_;
+          break;
+        }
       case DescriptorId::kCount:
       default: {
           // Should never happen
@@ -248,6 +253,10 @@ descriptors::Descriptor_Meta Manager::GetDescriptorMeta(
       }
     case DescriptorId::kSpectrogramPower: {
         instance = &spectrogram_power_;
+        break;
+      }
+    case DescriptorId::kAutoCorrelation: {
+        instance = &autocorrelation_;
         break;
       }
     case DescriptorId::kCount:
@@ -334,6 +343,10 @@ const float* Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) con
         }
       case DescriptorId::kSpectrogramPower: {
           instance = &spectrogram_power_;
+          break;
+        }
+      case DescriptorId::kAutoCorrelation: {
+          instance = &autocorrelation_;
           break;
         }
       case DescriptorId::kCount:

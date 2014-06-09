@@ -45,10 +45,7 @@ void SpectrogramPower::operator()(const float* const frame,
   CHARTREUSE_ASSERT(data != nullptr);
 
   // Get the Dft of the frame
-  const float* spectrogram(manager_->GetDescriptor(
-                                   manager::DescriptorId::kSpectrogram,
-                                   &frame[0],
-                                   frame_length));
+  const float* spectrogram(manager_->GetDescriptor(manager::DescriptorId::kSpectrogram));
   const std::complex<float>* spectrogram_casted(reinterpret_cast<const std::complex<float>*>(spectrogram));
   const unsigned int spectro_length(manager_->GetDescriptorMeta(manager::DescriptorId::kSpectrogram).out_dim / 2);
 

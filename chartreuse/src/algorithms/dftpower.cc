@@ -48,10 +48,7 @@ void DftPower::operator()(const float* const frame,
   CHARTREUSE_ASSERT(data != nullptr);
 
   // Get the Dft of the frame
-  const float* const dft_data(manager_->GetDescriptor(
-                                manager::DescriptorId::kDft,
-                                &frame[0],
-                                frame_length));
+  const float* const dft_data(manager_->GetDescriptor(manager::DescriptorId::kDft));
   // Retrieve the normalized squared magnitude of the data
   for (std::size_t i(0);
       i < manager_->GetDescriptorMeta(manager::DescriptorId::kDft).out_dim;

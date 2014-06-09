@@ -123,6 +123,8 @@ void Manager::ProcessFrame(const float* const frame,
                          false);
   }
   // Push the frame into internal scratch memory
+  // TODO(gm): no resizing should occur here
+  current_frame_.resize(frame_length);
   std::copy_n(frame, frame_length, current_frame_.begin());
   // Push into ringbuffer for overlap
   ringbuf_.Push(frame, frame_length);

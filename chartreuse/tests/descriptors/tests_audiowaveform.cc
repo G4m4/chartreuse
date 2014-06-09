@@ -39,12 +39,13 @@ TEST(AudioWaveform, Null) {
     std::fill(frame.begin(),
               frame.end(),
               0.0f);
-    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    manager.ProcessFrame(&frame[0], frame.size());
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
-      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
-      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
     index += frame.size();
   }
@@ -63,12 +64,13 @@ TEST(AudioWaveform, WhiteNoise) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    manager.ProcessFrame(&frame[0], frame.size());
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
-      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
-      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
     index += frame.size();
   }
@@ -81,23 +83,17 @@ TEST(AudioWaveform, Sin) {
   chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
 
   std::size_t index(0);
+  const unsigned int kFrameLength(manager.AnalysisParameters().hop_size_sample);
   while (index < kDataTestSetSize - 1) {
-    std::array<float, chartreuse::kHopSizeSamples> frame;
-    // Fill the frame with sin data
-    const std::size_t kRightIndex(
-      std::min(index + frame.size(),
-      static_cast<std::size_t>(kDataInSinLength - 1)));
-    std::copy(&kInSin[index],
-              &kInSin[kRightIndex],
-              frame.begin());
-    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    manager.ProcessFrame(&kInSin[index], kFrameLength);
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
-      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
-      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
-    index += frame.size();
+    index += kFrameLength;
   }
 }
 
@@ -116,12 +112,13 @@ TEST(AudioWaveform, LowFreq) {
     std::generate(frame.begin(),
                   frame.end(),
                   generator);
-    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    manager.ProcessFrame(&frame[0], frame.size());
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
-      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
-      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
     index += frame.size();
   }
@@ -142,12 +139,13 @@ TEST(AudioWaveform, Highfreq) {
     std::generate(frame.begin(),
                   frame.end(),
                   generator);
-    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    manager.ProcessFrame(&frame[0], frame.size());
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
-      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
-      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
     index += frame.size();
   }
@@ -167,12 +165,13 @@ TEST(AudioWaveform, Constant) {
     std::fill(frame.begin(),
               frame.end(),
               kConstant);
-    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    manager.ProcessFrame(&frame[0], frame.size());
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
-      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, desc_data[desc_index]);
-      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, desc_data[desc_index]);
+      EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
+      EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
     index += frame.size();
   }
@@ -192,8 +191,9 @@ TEST(AudioWaveform, Perf) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    const float* desc_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
-    mean += desc_data[0] * desc_data[0];
+    manager.ProcessFrame(&frame[0], frame.size());
+    const float* out_data(manager.GetDescriptor(descriptor));
+    mean += out_data[0] * out_data[0];
     index += frame.size();
   }
   EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, mean);

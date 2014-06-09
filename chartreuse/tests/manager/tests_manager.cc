@@ -36,9 +36,6 @@ TEST(Manager, WhiteNoise) {
   for (unsigned int descriptor_idx(0);
        descriptor_idx < kCount;
        ++descriptor_idx) {
-    if (static_cast<Type>(descriptor_idx) == chartreuse::manager::DescriptorId::kAutoCorrelation) {
-      break;
-    }
     manager.EnableDescriptor(static_cast<Type>(descriptor_idx), true);
   }
 
@@ -66,9 +63,6 @@ TEST(Manager, Perf) {
   for (unsigned int descriptor_idx(0);
        descriptor_idx < kCount;
        ++descriptor_idx) {
-    if (static_cast<Type>(descriptor_idx) == chartreuse::manager::DescriptorId::kAutoCorrelation) {
-      break;
-    }
     manager.EnableDescriptor(static_cast<Type>(descriptor_idx), true);
   }
 

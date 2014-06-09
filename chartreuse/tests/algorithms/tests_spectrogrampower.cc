@@ -43,7 +43,7 @@ TEST(SpectrogramPower, WhiteNoise) {
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
     manager.ProcessFrame(&frame[0], frame.size());
-    const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
@@ -64,24 +64,17 @@ TEST(SpectrogramPower, Sin) {
   manager.EnableDescriptor(descriptor, true);
 
   std::size_t index(0);
+  const unsigned int kFrameLength(manager.AnalysisParameters().hop_size_sample);
   while (index < kDataTestSetSize) {
-    std::array<float, chartreuse::kHopSizeSamples> frame;
-    // Fill the frame with sin data
-    const std::size_t kRightIndex(
-      std::min(index + frame.size(),
-      static_cast<std::size_t>(kDataInSinLength - 1)));
-    std::copy(&kInSin[index],
-              &kInSin[kRightIndex],
-              frame.begin());
-    manager.ProcessFrame(&frame[0], frame.size());
-    const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    manager.ProcessFrame(&kInSin[index], kFrameLength);
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
       EXPECT_GE(manager.GetDescriptorMeta(descriptor).out_max, out_data[desc_index]);
       EXPECT_LE(manager.GetDescriptorMeta(descriptor).out_min, out_data[desc_index]);
     }
-    index += frame.size();
+    index += kFrameLength;
   }
 }
 
@@ -102,7 +95,7 @@ TEST(SpectrogramPower, Perf) {
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
     manager.ProcessFrame(&frame[0], frame.size());
-    const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {

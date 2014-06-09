@@ -43,7 +43,7 @@ TEST(AutoCorrelation, WhiteNoise) {
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
     manager.ProcessFrame(&frame[0], frame.size());
-    const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {
@@ -71,7 +71,7 @@ TEST(AutoCorrelation, Perf) {
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
     manager.ProcessFrame(&frame[0], frame.size());
-    const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
+    const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
          ++desc_index) {

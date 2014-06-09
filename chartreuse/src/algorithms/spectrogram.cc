@@ -20,6 +20,9 @@
 
 #include "chartreuse/src/algorithms/spectrogram.h"
 
+// std::copy_n
+#include <algorithm>
+
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/algorithms/dftraw.h"
@@ -53,10 +56,10 @@ void Spectrogram::operator()(const float* const frame,
   // Apply the window
   apodizer_.ApplyWindow(&tmp_buffer_[0]);
   // Apply DFT
-  manager_->GetDescriptorCopy(manager::DescriptorId::kDft,
-                              &tmp_buffer_[0],
-                              tmp_buffer_.size(),
-                              data);
+  const float* kDft(manager_->GetDescriptor(manager::DescriptorId::kDft,
+                                            &tmp_buffer_[0],
+                                            tmp_buffer_.size()));
+  std::copy_n(kDft, manager_->AnalysisParameters().dft_length + 2, data);
 }
 
 descriptors::Descriptor_Meta Spectrogram::Meta(void) const {

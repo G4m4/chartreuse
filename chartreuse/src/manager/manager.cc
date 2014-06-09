@@ -132,15 +132,6 @@ void Manager::ProcessFrame(const float* const frame,
   ringbuf_.PopOverlapped(&current_window_[0],
                           parameters_.dft_length,
                           parameters_.overlap);
-  std::size_t descriptors(0);
-  DescriptorId::Type current_id(DescriptorId::kAudioPower);
-  for (const bool enabled_descriptor : enabled_descriptors_) {
-    if(enabled_descriptor) {
-      GetDescriptor(current_id, frame, frame_length);
-      descriptors += 1;
-    }  // for (const bool enabled_descriptor : enabled_descriptors_)
-    current_id = static_cast<DescriptorId::Type>(++current_id);
-  }
 }
 
 void Manager::EnableDescriptor(const DescriptorId::Type descriptor,
@@ -149,9 +140,7 @@ void Manager::EnableDescriptor(const DescriptorId::Type descriptor,
   enabled_descriptors_[descriptor] = enable;
 }
 
-const float* Manager::GetDescriptor(const DescriptorId::Type descriptor,
-                                    const float* const frame,
-                                    const std::size_t frame_length) {
+const float* Manager::GetDescriptor(const DescriptorId::Type descriptor) {
   // TODO(gm): this cast is ugly, remove it
   float* const internal_data_ptr(const_cast<float* const>(DescriptorDataPtr(descriptor)));
   descriptors::Descriptor_Interface* instance(nullptr);
@@ -202,7 +191,9 @@ const float* Manager::GetDescriptor(const DescriptorId::Type descriptor,
         }
     }  // switch (descriptor)
     CHARTREUSE_ASSERT(instance != nullptr);
-    instance->operator()(frame, frame_length, internal_data_ptr);
+    instance->operator()(CurrentFrame(),
+                         parameters_.hop_size_sample,
+                         internal_data_ptr);
     DescriptorIsComputed(descriptor, true);
   }
   return internal_data_ptr;

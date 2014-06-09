@@ -131,20 +131,16 @@ class Manager {
   void EnableDescriptor(const DescriptorId::Type descriptor,
                         const bool enable);
 
-  /// @brief Per-descriptor processing function, read-only version
+  /// @brief Per-descriptor processing function
   ///
   /// Retrieve the descriptor, even if not previously activated.
   /// This version only returns a const pointer:
   /// hence no copy of any sort is done on the output.
   ///
   /// @param[in]  descriptor    Descriptor to be retrieved
-  /// @param[in]  frame    Frame to be analysed
-  /// @param[in]  frame_length    Input frame length
   ///
   /// @return pointer to the first element of computed data
-  const float* GetDescriptor(const DescriptorId::Type descriptor,
-                             const float* const frame,
-                             const std::size_t frame_length);
+  const float* GetDescriptor(const DescriptorId::Type descriptor);
 
   /// @brief Retrieve the given descriptor metadata
   descriptors::Descriptor_Meta GetDescriptorMeta(

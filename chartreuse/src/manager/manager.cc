@@ -208,16 +208,6 @@ const float* Manager::GetDescriptor(const DescriptorId::Type descriptor,
   return internal_data_ptr;
 }
 
-std::size_t Manager::GetDescriptorCopy(const DescriptorId::Type descriptor,
-                                       const float* const frame,
-                                       const std::size_t frame_length,
-                                       float* const data) {
-  const float* internal_data_ptr(GetDescriptor(descriptor, frame, frame_length));
-  const std::size_t desc_dim(GetDescriptorMeta(descriptor).out_dim);
-  std::copy(internal_data_ptr, internal_data_ptr + desc_dim, data);
-  return desc_dim;
-}
-
 descriptors::Descriptor_Meta Manager::GetDescriptorMeta(
     const DescriptorId::Type descriptor) const {
   // TODO(gm): a cleaner code!

@@ -146,22 +146,6 @@ class Manager {
                              const float* const frame,
                              const std::size_t frame_length);
 
-  /// @brief Per-descriptor processing function
-  ///
-  /// Retrieve the descriptor, even if not previously activated.
-  /// This version copy the computed data into the given target.
-  ///
-  /// @param[in]  descriptor    Descriptor to be retrieved
-  /// @param[in]  frame    Frame to be analysed
-  /// @param[in]  frame_length    Input frame length
-  /// @param[out]  data     Descriptor output data
-  ///
-  /// @return Chosen descriptor output data length
-  std::size_t GetDescriptorCopy(const DescriptorId::Type descriptor,
-                                const float* const frame,
-                                const std::size_t frame_length,
-                                float* const data);
-
   /// @brief Retrieve the given descriptor metadata
   descriptors::Descriptor_Meta GetDescriptorMeta(
     const DescriptorId::Type descriptor) const;

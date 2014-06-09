@@ -41,7 +41,7 @@ TEST(KissFFT, BasicOddSize) {
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength), false);
   manager.EnableDescriptor(descriptor, true);
 
-  manager(&data[0], data.size(), nullptr);
+  manager.ProcessFrame(&data[0], data.size());
   const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   const float kExpected(kValue * data.size());
@@ -62,7 +62,7 @@ TEST(KissFFT, BasicEvenSize) {
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength), false);
   manager.EnableDescriptor(descriptor, true);
 
-  manager(&data[0], data.size(), nullptr);
+  manager.ProcessFrame(&data[0], data.size());
   const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   const float kExpected(kValue * data.size());
@@ -85,7 +85,7 @@ TEST(KissFFT, WhiteNoise) {
   const float kExpectedMean = 0.0f;
   const float kEpsilonMean = 1e-3f * manager.GetDescriptorMeta(descriptor).out_dim;
 
-  manager(&data[0], data.size(), nullptr);
+  manager.ProcessFrame(&data[0], data.size());
   const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   float mean(0.0f);
@@ -120,7 +120,7 @@ TEST(KissFFT, Normalization) {
   const float kExpected = static_cast<float>(kDftLength);
   const float kEpsilon = 1e-5f;
 
-  manager(&data[0], data.size(), nullptr);
+  manager.ProcessFrame(&data[0], data.size());
   const float* out_data(manager.GetDescriptor(descriptor, &data[0], data.size()));
 
   const float kActual = out_data[0];
@@ -145,7 +145,7 @@ TEST(KissFFT, MagSinMedLengthProperties) {
                           / static_cast<float>(kDefaultSamplingRate);
   const float kEpsilon = 1.0f;  // Due to resolution issues
 
-  manager(&kInSin[0], kInSin.size(), nullptr);
+  manager.ProcessFrame(&kInSin[0], kInSin.size());
   const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   const unsigned int kActual(
@@ -175,7 +175,7 @@ TEST(KissFFT, SinSmallLength) {
 
   const float kEpsilon = 1e-3f * kDftLength;
 
-  manager(&kInSin[0], kInSin.size(), nullptr);
+  manager.ProcessFrame(&kInSin[0], kInSin.size());
   const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
@@ -199,7 +199,7 @@ TEST(KissFFT, SinMedLength) {
 
   const float kEpsilon = 1e-3f * kDftLength;
 
-  manager(&kInSin[0], kInSin.size(), nullptr);
+  manager.ProcessFrame(&kInSin[0], kInSin.size());
   const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {
@@ -225,7 +225,7 @@ TEST(KissFFT, SinLargeLength) {
   // TODO: find out why?
   const float kEpsilon = 1e-2f * kDftLength;
 
-  manager(&kInSin[0], kInSin.size(), nullptr);
+  manager.ProcessFrame(&kInSin[0], kInSin.size());
   const float* out_data(manager.GetDescriptor(descriptor, &kInSin[0], kInSin.size()));
 
   for (unsigned int i = 0; i < kDftLength; i += 2) {

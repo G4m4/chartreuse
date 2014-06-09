@@ -51,9 +51,8 @@ TEST(Manager, WhiteNoise) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    manager(&frame[0],
-            frame.size(),
-            &out_data[0]);
+    manager.ProcessFrame(&frame[0],
+                         frame.size());
     index += frame.size();
   }
 }
@@ -82,9 +81,8 @@ TEST(Manager, Perf) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    manager(&frame[0],
-            frame.size(),
-            &out_data[0]);
+    manager.ProcessFrame(&frame[0],
+                         frame.size());
     index += frame.size();
   }
 }

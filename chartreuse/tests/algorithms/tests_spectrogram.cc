@@ -42,7 +42,7 @@ TEST(Spectrogram, WhiteNoise) {
     std::generate(frame.begin(),
                   frame.end(),
                   [&] {return kNormDistribution(kRandomGenerator);});
-    manager(&frame[0], frame.size(), &frame[0]);
+    manager.ProcessFrame(&frame[0], frame.size());
     const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;
@@ -73,7 +73,7 @@ TEST(Spectrogram, Sin) {
     std::copy(&kInSin[index],
               &kInSin[kRightIndex],
               frame.begin());
-    manager(&frame[0], frame.size(), &frame[0]);
+    manager.ProcessFrame(&frame[0], frame.size());
     const float* out_data(manager.GetDescriptor(descriptor, &frame[0], frame.size()));
     for (unsigned int desc_index(0);
          desc_index < manager.GetDescriptorMeta(descriptor).out_dim;

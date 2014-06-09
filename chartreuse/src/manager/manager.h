@@ -108,10 +108,7 @@ class Manager {
 
   /// @brief Main processing function
   ///
-  /// Retrieve all activated descriptors, for the given frame.
-  ///
-  /// Descriptors value will be stored in the output data array,
-  /// in their order of declaration in DescriptorId.
+  /// Feed the manager with the next signal frame.
   ///
   /// Note that calling this function will invalidate all previously computed
   /// data, e.g. after calling this function all descriptors will be evaluated
@@ -119,13 +116,10 @@ class Manager {
   ///
   /// @param[in]  frame    Frame to be analysed
   /// @param[in]  frame_length    Input frame length
-  /// @param[out]  data     Descriptor output data
-  /// (total length is the sum of dimensionality of all activated descriptors)
   ///
-  /// @return Actual count of processed descriptors
-  unsigned int operator()(const float* const frame,
-                          const std::size_t frame_length,
-                          float* const data);
+  /// @return Nothing - cannot fail
+  void ProcessFrame(const float* const frame,
+                    const std::size_t frame_length);
 
   /// @brief Descriptor enabling
   ///
@@ -175,9 +169,6 @@ class Manager {
   /// @brief Check if the given descriptor was computed for the current frame
   bool IsDescriptorComputed(const DescriptorId::Type descriptor) const;
 
-  /// @brief Check if the current signal window is already pushed
-  bool IsWindowFilled(void) const;
-
   /// @brief Descriptor output size
   ///
   /// Retrieve total size of all enabled descriptors
@@ -197,15 +188,11 @@ class Manager {
   void DescriptorIsComputed(const DescriptorId::Type descriptor,
                             const bool is_computed);
 
-  /// @brief Set the current window as "pushed" for the current frame
-  void WindowIsFilled(const bool is_filled);
-
   /// @brief Retrieve the pointer for internal data buffer given the descriptor
   const float* DescriptorDataPtr(const DescriptorId::Type descriptor) const;
 
   std::array<bool, DescriptorId::kCount> enabled_descriptors_;
   std::array<bool, DescriptorId::kCount> computed_descriptors_;
-  bool window_is_filled_;
   std::vector<float> descriptors_data_;  ///< Temporary buffer
                                          ///< holding descriptors data result
   std::vector<float> current_window_;  ///< Internal scratch memory

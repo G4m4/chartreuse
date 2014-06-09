@@ -69,7 +69,6 @@ Manager::Parameters::Parameters(const float sampling_freq,
 Manager::Manager(const Parameters& parameters, const bool zero_init)
     : enabled_descriptors_(),
       computed_descriptors_(),
-      window_is_filled_(false),
       // TODO(gm): this could be computed at compile-time
       descriptors_data_(parameters.dft_length + 2
                         + parameters.dft_length + 2
@@ -110,9 +109,8 @@ Manager::~Manager() {
   // Nothing to do here for now
 }
 
-unsigned int Manager::operator()(const float* const frame,
-                                 const std::size_t frame_length,
-                                 float* const data) {
+void Manager::ProcessFrame(const float* const frame,
+                           const std::size_t frame_length) {
   CHARTREUSE_ASSERT(frame != nullptr);
   CHARTREUSE_ASSERT(frame_length > 0);
 
@@ -123,14 +121,14 @@ unsigned int Manager::operator()(const float* const frame,
     DescriptorIsComputed(static_cast<DescriptorId::Type>(descriptor_idx),
                          false);
   }
-  WindowIsFilled(false);
+  // Push the frame into internal scratch memory
+  std::copy_n(frame, frame_length, current_frame_.begin());
   // Push into ringbuffer for overlap
   ringbuf_.Push(frame, frame_length);
   // Pop - zero-padding done in the ringbuffer method
   ringbuf_.PopOverlapped(&current_window_[0],
                           parameters_.dft_length,
                           parameters_.overlap);
-  WindowIsFilled(true);
   std::size_t descriptors(0);
   DescriptorId::Type current_id(DescriptorId::kAudioPower);
   for (const bool enabled_descriptor : enabled_descriptors_) {
@@ -140,7 +138,6 @@ unsigned int Manager::operator()(const float* const frame,
     }  // for (const bool enabled_descriptor : enabled_descriptors_)
     current_id = static_cast<DescriptorId::Type>(++current_id);
   }
-  return descriptors;
 }
 
 void Manager::EnableDescriptor(const DescriptorId::Type descriptor,
@@ -294,17 +291,9 @@ bool Manager::IsDescriptorComputed(const DescriptorId::Type descriptor) const {
   return computed_descriptors_[static_cast<int>(descriptor)];
 }
 
-bool Manager::IsWindowFilled(void) const {
-  return window_is_filled_;
-}
-
 void Manager::DescriptorIsComputed(const DescriptorId::Type descriptor,
                                    const bool is_computed) {
   computed_descriptors_[static_cast<int>(descriptor)] = is_computed;
-}
-
-void Manager::WindowIsFilled(const bool is_filled) {
-  window_is_filled_ = is_filled;
 }
 
 const float* Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) const {

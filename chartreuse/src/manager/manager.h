@@ -177,6 +177,9 @@ class Manager {
   /// @brief Analysis parameters getter
   const Parameters& AnalysisParameters(void) const;
 
+  /// @brief Retrieve current data
+  const float* CurrentFrame(void) const;
+
   /// @brief Retrieve current (overlapped) data window
   const float* CurrentWindow(void) const;
 
@@ -195,6 +198,8 @@ class Manager {
   std::array<bool, DescriptorId::kCount> computed_descriptors_;
   std::vector<float> descriptors_data_;  ///< Temporary buffer
                                          ///< holding descriptors data result
+  std::vector<float> current_frame_;  ///< Internal scratch memory
+                                       ///< for input data saving
   std::vector<float> current_window_;  ///< Internal scratch memory
                                        ///< for overlapped data saving
   const Parameters parameters_;

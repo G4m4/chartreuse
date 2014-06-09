@@ -78,6 +78,7 @@ Manager::Manager(const Parameters& parameters, const bool zero_init)
                         + 2
                         + parameters.dft_length + 2
                         + parameters.dft_length + 2, 0.0f),
+      current_frame_(parameters.hop_size_sample),
       current_window_(parameters.dft_length),
       parameters_(parameters),
       audio_power_(this),
@@ -281,6 +282,10 @@ std::size_t Manager::DescriptorsOutputSize(void) const {
 
 const Manager::Parameters& Manager::AnalysisParameters(void) const {
   return parameters_;
+}
+
+const float* Manager::CurrentFrame(void) const {
+  return &current_frame_[0];
 }
 
 const float* Manager::CurrentWindow(void) const {

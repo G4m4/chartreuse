@@ -60,14 +60,10 @@ void AudioSpectrumSpread::operator()(const float* const frame,
 
   // Get the centroid of the frame
   const float kCentroid(*manager_->GetDescriptor(
-                          manager::DescriptorId::kAudioSpectrumCentroid,
-                          &frame[0],
-                          frame_length));
+                          manager::DescriptorId::kAudioSpectrumCentroid));
 
   // Get the normalized squared magnitude spectrogram of the frame
-  const float* power_ptr(manager_->GetDescriptor(manager::DescriptorId::kSpectrogramPower,
-                                                 &frame[0],
-                                                 frame_length));
+  const float* power_ptr(manager_->GetDescriptor(manager::DescriptorId::kSpectrogramPower));
   Eigen::Array<float, Eigen::Dynamic, 1> power(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(power_ptr,
                                                                 kHighEdgeIndex_));
   // The DC component is unchanged, everything else is doubled

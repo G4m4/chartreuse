@@ -26,6 +26,7 @@
 
 #include "chartreuse/src/common.h"
 
+#include "chartreuse/src/algorithms/apodizer.h"
 #include "chartreuse/src/algorithms/autocorrelation.h"
 #include "chartreuse/src/algorithms/dftpower.h"
 #include "chartreuse/src/algorithms/kissfft.h"
@@ -163,6 +164,9 @@ class Manager {
   /// @brief Retrieve current (overlapped) data window
   const float* CurrentWindow(void) const;
 
+  /// @brief Retrieve current apodized, zero-padded, data window
+  const float* CurrentWindowApodized(void) const;
+
  private:
   // No assignment operator for this class
   Manager& operator=(const Manager& right);
@@ -172,7 +176,7 @@ class Manager {
                             const bool is_computed);
 
   /// @brief Retrieve the pointer for internal data buffer given the descriptor
-  const float* DescriptorDataPtr(const DescriptorId::Type descriptor) const;
+  float* DescriptorDataPtr(const DescriptorId::Type descriptor);
 
   std::array<bool, DescriptorId::kCount> enabled_descriptors_;
   std::array<bool, DescriptorId::kCount> computed_descriptors_;
@@ -182,6 +186,8 @@ class Manager {
                                        ///< for input data saving
   std::vector<float> current_window_;  ///< Internal scratch memory
                                        ///< for overlapped data saving
+  std::vector<float> current_window_apodized_;  ///< Internal scratch memory
+                                                ///< for overlapped data saving
   const Parameters parameters_;
 
   // TODO(gm): use a smarter factory
@@ -195,6 +201,7 @@ class Manager {
   algorithms::Spectrogram spectrogram_;
   algorithms::DftPower dft_power_;
   algorithms::SpectrogramPower spectrogram_power_;
+  algorithms::Apodizer apodizer_;  ///< Dedicated object for window function application
 };
 
 }  // namespace manager

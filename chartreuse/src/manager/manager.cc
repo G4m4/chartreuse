@@ -80,6 +80,7 @@ Manager::Manager(const Parameters& parameters, const bool zero_init)
                         + parameters.dft_length + 2, 0.0f),
       current_frame_(parameters.hop_size_sample),
       current_window_(parameters.dft_length),
+      current_window_apodized_(parameters.dft_length),
       parameters_(parameters),
       audio_power_(this),
       audio_spectrum_centroid_(this),
@@ -90,7 +91,8 @@ Manager::Manager(const Parameters& parameters, const bool zero_init)
       dft_(this),
       spectrogram_(this),
       dft_power_(this),
-      spectrogram_power_(this) {
+      spectrogram_power_(this),
+      apodizer_(parameters.dft_length, algorithms::Window::kHamming) {
   // TODO(gm): Find a cleaner way to do this
   if (zero_init) {
     // The first input buffer is to be considered as the "future" part
@@ -130,8 +132,12 @@ void Manager::ProcessFrame(const float* const frame,
   ringbuf_.Push(frame, frame_length);
   // Pop - zero-padding done in the ringbuffer method
   ringbuf_.PopOverlapped(&current_window_[0],
-                          parameters_.dft_length,
-                          parameters_.overlap);
+                         parameters_.dft_length,
+                         parameters_.overlap);
+  std::copy_n(current_window_.begin(),
+              current_window_.size(),
+              current_window_apodized_.begin());
+  apodizer_.ApplyWindow(&current_window_apodized_[0]);
 }
 
 void Manager::EnableDescriptor(const DescriptorId::Type descriptor,
@@ -142,7 +148,7 @@ void Manager::EnableDescriptor(const DescriptorId::Type descriptor,
 
 const float* Manager::GetDescriptor(const DescriptorId::Type descriptor) {
   // TODO(gm): this cast is ugly, remove it
-  float* const internal_data_ptr(const_cast<float* const>(DescriptorDataPtr(descriptor)));
+  float* const internal_data_ptr(DescriptorDataPtr(descriptor));
   descriptors::Descriptor_Interface* instance(nullptr);
   if (!IsDescriptorComputed(descriptor)) {
     // TODO(gm): a cleaner code!
@@ -191,9 +197,7 @@ const float* Manager::GetDescriptor(const DescriptorId::Type descriptor) {
         }
     }  // switch (descriptor)
     CHARTREUSE_ASSERT(instance != nullptr);
-    instance->operator()(CurrentFrame(),
-                         parameters_.hop_size_sample,
-                         internal_data_ptr);
+    instance->operator()(internal_data_ptr);
     DescriptorIsComputed(descriptor, true);
   }
   return internal_data_ptr;
@@ -275,6 +279,10 @@ const float* Manager::CurrentWindow(void) const {
   return &current_window_[0];
 }
 
+const float* Manager::CurrentWindowApodized(void) const {
+  return &current_window_apodized_[0];
+}
+
 bool Manager::IsDescriptorComputed(const DescriptorId::Type descriptor) const {
   return computed_descriptors_[static_cast<int>(descriptor)];
 }
@@ -284,7 +292,7 @@ void Manager::DescriptorIsComputed(const DescriptorId::Type descriptor,
   computed_descriptors_[static_cast<int>(descriptor)] = is_computed;
 }
 
-const float* Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) const {
+float* Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) {
   DescriptorId::Type current_id(DescriptorId::kAudioPower);
   std::size_t data_offset(0);
   while (current_id != descriptor) {

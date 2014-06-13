@@ -31,9 +31,13 @@ class AudioWaveform : public Descriptor_Interface {
  public:
   explicit AudioWaveform(manager::Manager* manager);
 
-  void operator()(const float* const frame,
-                  const std::size_t frame_length,
-                  float* const data);
+  void operator()(float* const output);
+
+  /// @brief Independent process method: this is where the actual computation
+  /// is done, to be used in a "raw" way when no manager is available
+  void Process(const float* const input,
+    const std::size_t input_length,
+    float* const output);
 
   Descriptor_Meta Meta(void) const;
 };

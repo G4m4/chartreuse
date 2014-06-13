@@ -40,22 +40,26 @@ DftPower::DftPower(manager::Manager* manager)
   CHARTREUSE_ASSERT(normalization_factor_ > 0.0f);
 }
 
-void DftPower::operator()(const float* const frame,
-                          const std::size_t frame_length,
-                          float* const data) {
-  CHARTREUSE_ASSERT(frame != nullptr);
-  CHARTREUSE_ASSERT(frame_length > 0);
-  CHARTREUSE_ASSERT(data != nullptr);
+void DftPower::operator()(float* const output) {
+  Process(manager_->GetDescriptor(manager::DescriptorId::kDft),
+          manager_->GetDescriptorMeta(manager::DescriptorId::kDft).out_dim,
+          output);
+}
 
-  // Get the Dft of the frame
-  const float* const dft_data(manager_->GetDescriptor(manager::DescriptorId::kDft));
-  // Retrieve the normalized squared magnitude of the data
+void DftPower::Process(const float* const input,
+                       const std::size_t input_length,
+                       float* const output) {
+  CHARTREUSE_ASSERT(input != nullptr);
+  CHARTREUSE_ASSERT(input_length > 0);
+  CHARTREUSE_ASSERT(output != nullptr);
+
+  // Retrieve the normalized squared magnitude of the dft data
   for (std::size_t i(0);
-      i < manager_->GetDescriptorMeta(manager::DescriptorId::kDft).out_dim;
+       i < input_length;
        i += 2) {
-    data[i / 2] = dft_data[i] * dft_data[i];
-    data[i / 2] += dft_data[i + 1] * dft_data[i + 1];
-    data[i / 2] *= normalization_factor_;
+    output[i / 2] = input[i] * input[i];
+    output[i / 2] += input[i + 1] * input[i + 1];
+    output[i / 2] *= normalization_factor_;
   }
 }
 

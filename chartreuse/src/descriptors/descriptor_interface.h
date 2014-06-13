@@ -73,14 +73,11 @@ class Descriptor_Interface {
 
   /// @brief Actual processing method for one frame
   ///
-  /// @param[in]  frame    Frame to be analysed
-  /// @param[in]  frame_length    Input frame length
+  /// This is the manager-dependent method, e.g. everything is done through
+  /// the manager (input data retrieval and output data feed)
+  ///
   /// @param[out]  data     Descriptor output data
-  /// @return nothing (not allowed to fail)
-  virtual void operator()(
-    const float* const frame,
-    const std::size_t frame_length,
-    float* const data) = 0;
+  virtual void operator()(float* const data) = 0;
 
   /// @brief Retrieve descriptor metadata
   virtual Descriptor_Meta Meta(void) const = 0;

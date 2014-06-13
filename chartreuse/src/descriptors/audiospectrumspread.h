@@ -21,8 +21,6 @@
 #ifndef CHARTREUSE_SRC_DESCRIPTORS_AUDIOSPECTRUMSPREAD_H_
 #define CHARTREUSE_SRC_DESCRIPTORS_AUDIOSPECTRUMSPREAD_H_
 
-#include <vector>
-
 #include "chartreuse/src/algorithms/scalegenerator.h"
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
@@ -34,9 +32,11 @@ class AudioSpectrumSpread : public Descriptor_Interface {
  public:
   explicit AudioSpectrumSpread(manager::Manager* manager);
 
-  void operator()(const float* const frame,
-                  const std::size_t frame_length,
-                  float* const data);
+  void operator()(float* const output);
+
+  /// @brief Independent process method: this is where the actual computation
+  /// is done, to be used in a "raw" way when no manager is available
+  void Process(float* const output);
 
   Descriptor_Meta Meta(void) const;
 

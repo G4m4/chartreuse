@@ -33,8 +33,7 @@ namespace algorithms {
 
 Spectrogram::Spectrogram(manager::Manager* manager)
     : Descriptor_Interface(manager),
-      apodizer_(manager_->AnalysisParameters().window_length, Window::kHamming),
-      tmp_buffer_(manager_->AnalysisParameters().dft_length) {
+      dft_(manager) {
   // Nothing to do here for now
 }
 
@@ -42,24 +41,26 @@ Spectrogram::~Spectrogram() {
   // Nothing to do here for now
 }
 
-void Spectrogram::operator()(const float* const frame,
-                             const std::size_t frame_length,
-                             float* const data) {
-  CHARTREUSE_ASSERT(frame != nullptr);
-  CHARTREUSE_ASSERT(frame_length > 0);
-  CHARTREUSE_ASSERT(data != nullptr);
+void Spectrogram::operator()(float* const output) {
+  Process(manager_->CurrentFrame(),
+          manager_->AnalysisParameters().hop_size_sample,
+          manager_->AnalysisParameters().dft_length,
+          output);
+}
+void Spectrogram::Process(const float* const input,
+                          const std::size_t input_length,
+                          const unsigned int dft_length,
+                          float* const output) {
+  CHARTREUSE_ASSERT(input != nullptr);
+  CHARTREUSE_ASSERT(input_length > 0);
+  CHARTREUSE_ASSERT(dft_length > 0);
+  CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
+  CHARTREUSE_ASSERT(output != nullptr);
 
-  // Retrieve current window
-  std::copy_n(manager_->CurrentWindow(),
-              manager_->AnalysisParameters().dft_length,
-              &tmp_buffer_[0]);
-  // Apply the window
-  apodizer_.ApplyWindow(&tmp_buffer_[0]);
-  // Apply DFT
-  const float* kDft(manager_->GetDescriptor(manager::DescriptorId::kDft,
-                                            &tmp_buffer_[0],
-                                            tmp_buffer_.size()));
-  std::copy_n(kDft, manager_->AnalysisParameters().dft_length + 2, data);
+  dft_.Process(manager_->CurrentWindowApodized(),
+               manager_->AnalysisParameters().dft_length,
+               manager_->AnalysisParameters().dft_length,
+               output);
 }
 
 descriptors::Descriptor_Meta Spectrogram::Meta(void) const {

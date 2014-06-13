@@ -37,31 +37,37 @@ AutoCorrelation::~AutoCorrelation() {
   // Nothing to do here for now
 }
 
-void AutoCorrelation::operator()(const float* const frame,
-                                 const std::size_t frame_length,
-                                 float* const data) {
-  CHARTREUSE_ASSERT(frame != nullptr);
-  CHARTREUSE_ASSERT(frame_length > 0);
-  CHARTREUSE_ASSERT(data != nullptr);
+void AutoCorrelation::operator()(float* const output) {
+  Process(manager_->CurrentWindow(),
+          manager_->AnalysisParameters().window_length,
+          manager_->AnalysisParameters().min_lag,
+          manager_->AnalysisParameters().max_lag,
+          output);
+}
 
-  const unsigned int kMinLag(manager_->AnalysisParameters().min_lag);
-  const unsigned int kMaxLag(manager_->AnalysisParameters().max_lag);
-  const unsigned int kWindowLength(manager_->AnalysisParameters().window_length);
-  CHARTREUSE_ASSERT(kMinLag > 0);
-  CHARTREUSE_ASSERT(kMaxLag > 0);
-  CHARTREUSE_ASSERT(kMaxLag > kMinLag);
-  CHARTREUSE_ASSERT(kWindowLength > kMaxLag);
-  const float* kCurrentWindow(manager_->CurrentWindow());
-  const float kPower(Eigen::Map<const Eigen::VectorXf>(&kCurrentWindow[kMaxLag], kWindowLength - kMaxLag).cwiseAbs2().sum());
-  const Eigen::Map<const Eigen::VectorXf> right_part(&kCurrentWindow[kMaxLag], kWindowLength - kMaxLag);
-  for (unsigned int lag(kMinLag); lag < kMaxLag; ++lag) {
-    const Eigen::Map<const Eigen::VectorXf> lagged_part(&kCurrentWindow[kMaxLag - lag], kWindowLength - kMaxLag);
+void AutoCorrelation::Process(const float* const input,
+                              const std::size_t input_length,
+                              const unsigned int min_lag,
+                              const unsigned int max_lag,
+                              float* const output) {
+  CHARTREUSE_ASSERT(input != nullptr);
+  CHARTREUSE_ASSERT(input_length > 0);
+  CHARTREUSE_ASSERT(min_lag > 0);
+  CHARTREUSE_ASSERT(max_lag > 0);
+  CHARTREUSE_ASSERT(max_lag > min_lag);
+  CHARTREUSE_ASSERT(input_length > max_lag);
+  CHARTREUSE_ASSERT(output != nullptr);
+
+  const float kPower(Eigen::Map<const Eigen::VectorXf>(&input[max_lag], input_length - max_lag).cwiseAbs2().sum());
+  const Eigen::Map<const Eigen::VectorXf> right_part(&input[max_lag], input_length - max_lag);
+  for (unsigned int lag(min_lag); lag < max_lag; ++lag) {
+    const Eigen::Map<const Eigen::VectorXf> lagged_part(&input[max_lag - lag], input_length - max_lag);
     const float kCorrPower(right_part.cwiseProduct(lagged_part).sum());
     const float kLagPower(lagged_part.cwiseAbs2().sum());
     if (kLagPower != 0.0f) {
-      data[lag - kMinLag] = kCorrPower / std::sqrt(kPower * 2.0f * kLagPower);
+      output[lag - min_lag] = kCorrPower / std::sqrt(kPower * 2.0f * kLagPower);
     } else {
-      data[lag - kMinLag] = 0.0f;
+      output[lag - min_lag] = 0.0f;
     }
   }
 }

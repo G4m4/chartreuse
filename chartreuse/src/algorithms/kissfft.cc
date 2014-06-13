@@ -44,25 +44,33 @@ KissFFT::~KissFFT() {
   kiss_fft_cleanup();
 }
 
-void KissFFT::operator()(const float* const frame,
-                         const std::size_t frame_length,
-                         float* const data) {
-  CHARTREUSE_ASSERT(frame != nullptr);
-  CHARTREUSE_ASSERT(frame_length > 0);
-  CHARTREUSE_ASSERT(data != nullptr);
+void KissFFT::operator()(float* const output) {
+  Process(manager_->CurrentFrame(),
+          manager_->AnalysisParameters().hop_size_sample,
+          manager_->AnalysisParameters().dft_length,
+          output);
+}
+
+void KissFFT::Process(const float* const input,
+                      const std::size_t input_length,
+                      const unsigned int dft_length,
+                      float* const output) {
+  CHARTREUSE_ASSERT(input != nullptr);
+  CHARTREUSE_ASSERT(input_length > 0);
+  CHARTREUSE_ASSERT(dft_length > 0);
+  CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
+  CHARTREUSE_ASSERT(output != nullptr);
 
   const unsigned int kActualInputLength(
     // Cast for 64b systems
-    std::min(static_cast<unsigned int>(frame_length),
-             manager_->AnalysisParameters().dft_length));
-  std::copy_n(&frame[0],
+    std::min(static_cast<unsigned int>(input_length), dft_length));
+  std::copy_n(&input[0],
               kActualInputLength,
               &zeropad_[0]);
-  return kiss_fftr(
-    config_,
-    &zeropad_[0],
-    // TODO(gm): something cleaner?
-    reinterpret_cast<kiss_fft_cpx*>(data));
+  return kiss_fftr(config_,
+                   &zeropad_[0],
+                   // TODO(gm): something cleaner?
+                   reinterpret_cast<kiss_fft_cpx*>(output));
 }
 
 descriptors::Descriptor_Meta KissFFT::Meta(void) const {

@@ -51,21 +51,21 @@ AudioSpectrumSpread::AudioSpectrumSpread(manager::Manager* manager)
   CHARTREUSE_ASSERT(kLowEdgeIndex_ < kHighEdgeIndex_);
 }
 
-void AudioSpectrumSpread::operator()(const float* const frame,
-                                     const std::size_t frame_length,
-                                     float* const data) {
-  CHARTREUSE_ASSERT(frame != nullptr);
-  CHARTREUSE_ASSERT(frame_length > 0);
-  CHARTREUSE_ASSERT(data != nullptr);
+void AudioSpectrumSpread::operator()(float* const output) {
+  Process(output);
+}
+
+void AudioSpectrumSpread::Process(float* const output) {
+  CHARTREUSE_ASSERT(output != nullptr);
 
   // Get the centroid of the frame
   const float kCentroid(*manager_->GetDescriptor(
-                          manager::DescriptorId::kAudioSpectrumCentroid));
+    manager::DescriptorId::kAudioSpectrumCentroid));
 
   // Get the normalized squared magnitude spectrogram of the frame
   const float* power_ptr(manager_->GetDescriptor(manager::DescriptorId::kSpectrogramPower));
   Eigen::Array<float, Eigen::Dynamic, 1> power(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(power_ptr,
-                                                                kHighEdgeIndex_));
+    kHighEdgeIndex_));
   // The DC component is unchanged, everything else is doubled
   power[0] *= 0.5f;
   power *= 2.0f / normalization_factor_;
@@ -74,14 +74,14 @@ void AudioSpectrumSpread::operator()(const float* const frame,
     power[kLowEdgeIndex_ - 1] += power[i];
   }
   const float kPowerSum(power.tail(kHighEdgeIndex_ - kLowEdgeIndex_ + 1).sum()
-                        // Prevent divide by zero
-                        + 1e-7f);
+    // Prevent divide by zero
+    + 1e-7f);
   CHARTREUSE_ASSERT(kPowerSum > 0.0f);
   const Eigen::Array<float, Eigen::Dynamic, 1> FreqScale(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(freq_scale_.Data(),
-                                                                    kHighEdgeIndex_ - kLowEdgeIndex_ + 1));
+    kHighEdgeIndex_ - kLowEdgeIndex_ + 1));
   const Eigen::Array<float, Eigen::Dynamic, 1> tmp(FreqScale - kCentroid);
   const float kOut(power.tail(kHighEdgeIndex_ - kLowEdgeIndex_ + 1).cwiseProduct(tmp.cwiseAbs2()).sum());
-  data[0] = std::sqrt(kOut / kPowerSum);
+  output[0] = std::sqrt(kOut / kPowerSum);
 }
 
 Descriptor_Meta AudioSpectrumSpread::Meta(void) const {

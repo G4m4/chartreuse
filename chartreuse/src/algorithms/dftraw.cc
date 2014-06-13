@@ -36,23 +36,29 @@ DftRaw::DftRaw(manager::Manager* manager)
   // Nothing to do here for now
 }
 
-void DftRaw::operator()(const float* const frame,
-                        const std::size_t frame_length,
-                        float* const data) {
-  CHARTREUSE_ASSERT(frame != nullptr);
-  CHARTREUSE_ASSERT(frame_length > 0);
-  CHARTREUSE_ASSERT(data != nullptr);
+void DftRaw::operator()(float* const output) {
+  Process(manager_->CurrentFrame(),
+          manager_->AnalysisParameters().hop_size_sample,
+          manager_->AnalysisParameters().dft_length,
+          output);
+}
+
+void DftRaw::Process(const float* const input,
+                     const std::size_t input_length,
+                     const unsigned int dft_length,
+                     float* const output) {
+  CHARTREUSE_ASSERT(input != nullptr);
+  CHARTREUSE_ASSERT(input_length > 0);
+  CHARTREUSE_ASSERT(dft_length > 0);
+  CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
+  CHARTREUSE_ASSERT(output != nullptr);
 
   const unsigned int kActualInDataLength
     // Cast for 64b systems
-    = std::min(static_cast<unsigned int>(frame_length),
-               manager_->AnalysisParameters().dft_length);
-  const float kTwiddleBase((2.0f * chartreuse::algorithms::Pi)
-                            / manager_->AnalysisParameters().dft_length);
+    = std::min(static_cast<unsigned int>(input_length), dft_length);
+  const float kTwiddleBase((2.0f * chartreuse::algorithms::Pi) / dft_length);
 
-  for (unsigned int i = 0;
-       i < manager_->AnalysisParameters().dft_length / 2 + 1;
-       ++i) {
+  for (unsigned int i = 0; i < dft_length / 2 + 1; ++i) {
     const float twiddle_factor = i * kTwiddleBase;
 
     float real = 0.0f;
@@ -62,11 +68,11 @@ void DftRaw::operator()(const float* const frame,
       const float c = std::cos(j * twiddle_factor);
       const float s = std::sin(j * twiddle_factor);
 
-      real += frame[j] * c;
-      imag -= frame[j] * s;
+      real += input[j] * c;
+      imag -= input[j] * s;
     }  // iterating on input
-    data[2 * i] = real;
-    data[2 * i + 1] = imag;
+    output[2 * i] = real;
+    output[2 * i + 1] = imag;
   }  // iterating on output
 }
 

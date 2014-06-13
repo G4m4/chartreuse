@@ -32,10 +32,14 @@ class DftRaw : public descriptors::Descriptor_Interface {
  public:
   explicit DftRaw(manager::Manager* manager);
 
-  /// Output size: dft_length / 2 + 1
-  void operator()(const float* const frame,
-                  const std::size_t frame_length,
-                  float* const data);
+  void operator()(float* const output);
+
+  /// @brief Independent process method: this is where the actual computation
+  /// is done, to be used in a "raw" way when no manager is available
+  void Process(const float* const input,
+               const std::size_t input_length,
+               const unsigned int dft_length,
+               float* const output);
 
   descriptors::Descriptor_Meta Meta(void) const;
 

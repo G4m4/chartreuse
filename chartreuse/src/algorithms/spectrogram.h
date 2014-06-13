@@ -21,11 +21,9 @@
 #ifndef CHARTREUSE_SRC_ALGORITHMS_SPECTROGRAM_H_
 #define CHARTREUSE_SRC_ALGORITHMS_SPECTROGRAM_H_
 
-#include <vector>
-
 #include "chartreuse/src/common.h"
 
-#include "chartreuse/src/algorithms/apodizer.h"
+#include "chartreuse/src/algorithms/kissfft.h"
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
 namespace chartreuse {
@@ -42,9 +40,14 @@ class Spectrogram : public descriptors::Descriptor_Interface {
   explicit Spectrogram(manager::Manager* manager);
   ~Spectrogram();
 
-  void operator()(const float* const frame,
-                  const std::size_t frame_length,
-                  float* const data);
+  void operator()(float* const output);
+
+  /// @brief Independent process method: this is where the actual computation
+  /// is done, to be used in a "raw" way when no manager is available
+  void Process(const float* const input,
+               const std::size_t input_length,
+               const unsigned int dft_length,
+               float* const output);
 
   descriptors::Descriptor_Meta Meta(void) const;
 
@@ -52,8 +55,8 @@ class Spectrogram : public descriptors::Descriptor_Interface {
   // No assignment operator for this class
   Spectrogram& operator=(const Spectrogram& right);
 
-  Apodizer apodizer_;  ///< Dedicated object for window function application
-  std::vector<float> tmp_buffer_;  ///< Internal temporary buffer for DFT
+  // TODO(gm): remove that
+  KissFFT dft_;
 };
 
 }  // namespace algorithms

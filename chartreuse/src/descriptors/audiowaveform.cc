@@ -22,6 +22,8 @@
 
 #include "Eigen/Core"
 
+#include "chartreuse/src/manager/manager.h"
+
 namespace chartreuse {
 namespace descriptors {
 
@@ -30,15 +32,21 @@ AudioWaveform::AudioWaveform(manager::Manager* manager)
   // Nothing to do here!
 }
 
-void AudioWaveform::operator()(const float* const frame,
-                               const std::size_t frame_length,
-                               float* const data) {
-  CHARTREUSE_ASSERT(frame != nullptr);
-  CHARTREUSE_ASSERT(frame_length > 0);
-  CHARTREUSE_ASSERT(data != nullptr);
+void AudioWaveform::operator()(float* const output) {
+  Process(manager_->CurrentFrame(),
+    manager_->AnalysisParameters().hop_size_sample,
+    output);
+}
 
-  data[0] = Eigen::Map<const Eigen::VectorXf>(frame, frame_length).minCoeff();
-  data[1] = Eigen::Map<const Eigen::VectorXf>(frame, frame_length).maxCoeff();
+void AudioWaveform::Process(const float* const input,
+                            const std::size_t input_length,
+                            float* const output) {
+  CHARTREUSE_ASSERT(input != nullptr);
+  CHARTREUSE_ASSERT(input_length > 0);
+  CHARTREUSE_ASSERT(output != nullptr);
+
+  output[0] = Eigen::Map<const Eigen::VectorXf>(input, input_length).minCoeff();
+  output[1] = Eigen::Map<const Eigen::VectorXf>(input, input_length).maxCoeff();
 }
 
 Descriptor_Meta AudioWaveform::Meta(void) const {

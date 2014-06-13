@@ -36,9 +36,15 @@ class AutoCorrelation : public descriptors::Descriptor_Interface {
   explicit AutoCorrelation(manager::Manager* manager);
   ~AutoCorrelation();
 
-  void operator()(const float* const frame,
-                  const std::size_t frame_length,
-                  float* const data);
+  void operator()(float* const output);
+
+  /// @brief Independent process method: this is where the actual computation
+  /// is done, to be used in a "raw" way when no manager is available
+  void Process(const float* const input,
+               const std::size_t input_length,
+               const unsigned int min_lag,
+               const unsigned int max_lag,
+               float* const output);
 
   descriptors::Descriptor_Meta Meta(void) const;
 

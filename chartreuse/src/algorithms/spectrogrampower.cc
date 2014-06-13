@@ -37,21 +37,27 @@ SpectrogramPower::SpectrogramPower(manager::Manager* manager)
   // Nothing to do here for now
 }
 
-void SpectrogramPower::operator()(const float* const frame,
-                                  const std::size_t frame_length,
-                                  float* const data) {
-  CHARTREUSE_ASSERT(frame != nullptr);
-  CHARTREUSE_ASSERT(frame_length > 0);
-  CHARTREUSE_ASSERT(data != nullptr);
+void SpectrogramPower::operator()(float* const output) {
+  Process(manager_->GetDescriptor(manager::DescriptorId::kDft),
+    manager_->GetDescriptorMeta(manager::DescriptorId::kSpectrogram).out_dim,
+    output);
+}
+
+void SpectrogramPower::Process(const float* const input,
+                               const std::size_t input_length,
+                               float* const output) {
+  CHARTREUSE_ASSERT(input != nullptr);
+  CHARTREUSE_ASSERT(input_length > 0);
+  CHARTREUSE_ASSERT(output != nullptr);
 
   // Get the Dft of the frame
-  const float* spectrogram(manager_->GetDescriptor(manager::DescriptorId::kSpectrogram));
+  const float* spectrogram(input);
   const std::complex<float>* spectrogram_casted(reinterpret_cast<const std::complex<float>*>(spectrogram));
-  const unsigned int spectro_length(manager_->GetDescriptorMeta(manager::DescriptorId::kSpectrogram).out_dim / 2);
+  const unsigned int spectro_length(input_length / 2);
 
   // Retrieve the normalized squared magnitude of the data
   const Eigen::VectorXf tmp(Eigen::Map<const Eigen::VectorXcf>(spectrogram_casted, spectro_length).cwiseAbs2());
-  std::copy(tmp.data(), tmp.data() + tmp.size(), data);
+  std::copy(tmp.data(), tmp.data() + tmp.size(), output);
 }
 
 descriptors::Descriptor_Meta SpectrogramPower::Meta(void) const {

@@ -22,6 +22,8 @@
 
 #include "Eigen/Core"
 
+#include "chartreuse/src/manager/manager.h"
+
 namespace chartreuse {
 namespace descriptors {
 
@@ -30,16 +32,22 @@ AudioPower::AudioPower(manager::Manager* manager)
   // Nothing to do here!
 }
 
-void AudioPower::operator()(const float* const frame,
-                            const std::size_t frame_length,
-                            float* const data) {
-  CHARTREUSE_ASSERT(frame != nullptr);
-  CHARTREUSE_ASSERT(frame_length > 0);
-  CHARTREUSE_ASSERT(data != nullptr);
+void AudioPower::operator()(float* const output) {
+  Process(manager_->CurrentFrame(),
+          manager_->AnalysisParameters().hop_size_sample,
+          output);
+}
 
-  const float kNormFactor(1 / static_cast<float>(frame_length));
-  data[0] = Eigen::Map<const Eigen::VectorXf>(frame, frame_length).squaredNorm()
-            * kNormFactor;
+void AudioPower::Process(const float* const input,
+                         const std::size_t input_length,
+                         float* const output) {
+  CHARTREUSE_ASSERT(input != nullptr);
+  CHARTREUSE_ASSERT(input_length > 0);
+  CHARTREUSE_ASSERT(output != nullptr);
+
+  const float kNormFactor(1 / static_cast<float>(input_length));
+  output[0] = Eigen::Map<const Eigen::VectorXf>(input, input_length).squaredNorm()
+    * kNormFactor;
 }
 
 Descriptor_Meta AudioPower::Meta(void) const {

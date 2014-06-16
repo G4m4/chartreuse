@@ -105,6 +105,7 @@ def CustomAutoCorrelation(frame, min_lag, max_lag):
     return out
 
 if __name__ == "__main__":
+    from scipy import signal
     from scipy import io
     from scipy.io.wavfile import read
     import scipy.io.wavfile
@@ -160,6 +161,8 @@ if __name__ == "__main__":
     pylab.plot(normautocorr_data, label = "NCC")
     pylab.plot(zncc_data, label = "ZNCC")
     pylab.plot(out_data, label = "out")
+
+    print(utilities.PrintMetadata(utilities.GetMetadata(out_data)))
 
     pylab.legend()
     pylab.show()

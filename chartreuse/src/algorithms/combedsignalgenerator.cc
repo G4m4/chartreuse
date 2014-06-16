@@ -59,8 +59,8 @@ void CombedSignalGenerator::operator()(const float* const frame,
   const float kDen(lagged_signal.cwiseAbs2().sum());
 
   const float kFactor((kDen > 0.0f) ? kNum / kDen : 0.0f);
-  const Eigen::VectorXf out(base_signal - kFactor * lagged_signal);
-  std::copy(out.data(), out.data() + out.size(), data);
+  Eigen::Map<Eigen::VectorXf> data_map(data, frame_length);
+  data_map = base_signal - kFactor * lagged_signal;
 }
 
 }  // namespace algorithms

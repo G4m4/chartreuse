@@ -55,8 +55,9 @@ void SpectrogramPower::Process(const float* const input,
   const unsigned int spectro_length(input_length / 2);
 
   // Retrieve the normalized squared magnitude of the data
-  const Eigen::VectorXf tmp(Eigen::Map<const Eigen::VectorXcf>(spectrogram_casted, spectro_length).cwiseAbs2());
-  std::copy(tmp.data(), tmp.data() + tmp.size(), output);
+  const Eigen::Map<const Eigen::VectorXcf> tmp(spectrogram_casted, spectro_length);
+  Eigen::Map<Eigen::VectorXf> out_map(output, spectro_length);
+  out_map = tmp.cwiseAbs2();
 }
 
 descriptors::Descriptor_Meta SpectrogramPower::Meta(void) const {

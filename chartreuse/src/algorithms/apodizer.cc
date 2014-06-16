@@ -37,8 +37,8 @@ Apodizer::Apodizer(const unsigned int length,
 
 void Apodizer::ApplyWindow(float* const buffer) const {
   const Eigen::Array<float, Eigen::Dynamic, 1> tmp(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(buffer, data_.size()));
-  const Eigen::VectorXf product(tmp.cwiseProduct(data_));
-  std::copy(product.data(), product.data() + product.size(), buffer);
+  Eigen::Map<Eigen::VectorXf> data_map(buffer, data_.size());
+  data_map = tmp.cwiseProduct(data_);
 }
 
 void Apodizer::SynthesizeData(const Window::Type type) {

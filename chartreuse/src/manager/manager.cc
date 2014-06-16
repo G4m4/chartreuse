@@ -98,7 +98,11 @@ Manager::Manager(const Parameters& parameters, const bool zero_init)
       spectrogram_(this),
       dft_power_(this),
       spectrogram_power_(this),
-      apodizer_(parameters.dft_length, algorithms::Window::kHamming) {
+      apodizer_(parameters.dft_length, algorithms::Window::kHamming),
+      freq_scale_(parameters.high_edge - parameters.low_edge,
+                  algorithms::Scale::kLogFreq,
+                  parameters.dft_length,
+                  parameters.sampling_freq) {
   // TODO(gm): Find a cleaner way to do this
   if (zero_init) {
     // The first input buffer is to be considered as the "future" part
@@ -287,6 +291,10 @@ const float* Manager::CurrentWindow(void) const {
 
 const float* Manager::CurrentWindowApodized(void) const {
   return &current_window_apodized_[0];
+}
+
+const float* Manager::FrequencyScale(void) const {
+  return freq_scale_.Data();
 }
 
 bool Manager::IsDescriptorComputed(const DescriptorId::Type descriptor) const {

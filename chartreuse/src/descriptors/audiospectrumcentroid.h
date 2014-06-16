@@ -21,7 +21,6 @@
 #ifndef CHARTREUSE_SRC_DESCRIPTORS_AUDIOSPECTRUMCENTROID_H_
 #define CHARTREUSE_SRC_DESCRIPTORS_AUDIOSPECTRUMCENTROID_H_
 
-#include "chartreuse/src/algorithms/scalegenerator.h"
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
 namespace chartreuse {
@@ -38,6 +37,7 @@ class AudioSpectrumCentroid : public Descriptor_Interface {
   /// is done, to be used in a "raw" way when no manager is available
   void Process(const float* const spectrogram_power,
                float* const output,
+               const float* const frequency_scale,
                const unsigned int low_edge_idx,
                const unsigned int high_edge_idx);
 
@@ -48,7 +48,6 @@ class AudioSpectrumCentroid : public Descriptor_Interface {
   AudioSpectrumCentroid& operator=(const AudioSpectrumCentroid& right);
 
   const float normalization_factor_;
-  algorithms::ScaleGenerator freq_scale_;  ///< Frequency scale generator
 };
 
 }  // namespace descriptors

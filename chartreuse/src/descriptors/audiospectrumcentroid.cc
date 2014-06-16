@@ -34,24 +34,21 @@ namespace descriptors {
 AudioSpectrumCentroid::AudioSpectrumCentroid(manager::Manager* manager)
     : Descriptor_Interface(manager),
       // TODO(gm): remove this magic
-      normalization_factor_(manager->AnalysisParameters().dft_length * 571.865f),
-      freq_scale_(manager->AnalysisParameters().high_edge - manager->AnalysisParameters().low_edge,
-                  algorithms::Scale::kLogFreq,
-                  manager->AnalysisParameters().dft_length,
-                  manager->AnalysisParameters().low_edge,
-                  manager->AnalysisParameters().sampling_freq) {
+      normalization_factor_(manager->AnalysisParameters().dft_length * 571.865f) {
   // Nothing to do here for now
 }
 
 void AudioSpectrumCentroid::operator()(float* const output) {
   Process(manager_->GetDescriptor(manager::DescriptorId::kSpectrogramPower),
           output,
+          manager_->FrequencyScale(),
           manager_->AnalysisParameters().low_edge,
           manager_->AnalysisParameters().high_edge);
 }
 
 void AudioSpectrumCentroid::Process(const float* const spectrogram_power,
                                     float* const output,
+                                    const float* const frequency_scale,
                                     const unsigned int low_edge_idx,
                                     const unsigned int high_edge_idx) {
   CHARTREUSE_ASSERT(spectrogram_power != nullptr);
@@ -74,7 +71,7 @@ void AudioSpectrumCentroid::Process(const float* const spectrogram_power,
   CHARTREUSE_ASSERT(kPowerSum > 0.0f);
   // Weight each DFT bin by the log of the frequency relative to 1000Hz
   // The first bin is the low edge
-  const Eigen::Array<float, Eigen::Dynamic, 1> FreqScale(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(freq_scale_.Data(),
+  const Eigen::Array<float, Eigen::Dynamic, 1> FreqScale(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(frequency_scale,
     high_edge_idx - low_edge_idx + 1));
   const float kOut(power.tail(high_edge_idx - low_edge_idx + 1).cwiseProduct(FreqScale).sum());
   //float kOut(power_[kLowEdgeIndex_ - 1] * -5.0f);

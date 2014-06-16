@@ -31,6 +31,7 @@
 #include "chartreuse/src/algorithms/dftpower.h"
 #include "chartreuse/src/algorithms/kissfft.h"
 #include "chartreuse/src/algorithms/ringbuffer.h"
+#include "chartreuse/src/algorithms/scalegenerator.h"
 #include "chartreuse/src/algorithms/spectrogram.h"
 #include "chartreuse/src/algorithms/spectrogrampower.h"
 
@@ -169,6 +170,9 @@ class Manager {
   /// @brief Retrieve current apodized, zero-padded, data window
   const float* CurrentWindowApodized(void) const;
 
+  /// @brief Retrieve current frequency scale
+  const float* FrequencyScale(void) const;
+
  private:
   // No assignment operator for this class
   Manager& operator=(const Manager& right);
@@ -204,6 +208,7 @@ class Manager {
   algorithms::DftPower dft_power_;
   algorithms::SpectrogramPower spectrogram_power_;
   algorithms::Apodizer apodizer_;  ///< Dedicated object for window function application
+  algorithms::ScaleGenerator freq_scale_;  ///< Frequency scale generator
 };
 
 }  // namespace manager

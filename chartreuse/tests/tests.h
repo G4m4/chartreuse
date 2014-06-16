@@ -36,9 +36,9 @@
 
 // Smaller performance test sets in debug
 #if (_BUILD_CONFIGURATION_DEBUG)
-static const unsigned int kDataPerfSetSize = 64 * 1024;
+static const unsigned int kDataPerfSetSize = 48000;
 #else  // (_BUILD_CONFIGURATION_DEBUG)
-static const unsigned int kDataPerfSetSize = 64 * 1024 * 1024;
+static const unsigned int kDataPerfSetSize = 100 * 48000;
 #endif  // (_BUILD_CONFIGURATION_DEBUG)
 
 static const unsigned int kSmallDFTLength = 64;

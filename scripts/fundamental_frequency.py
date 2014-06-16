@@ -70,11 +70,8 @@ class FundamentalFrequency(object):
         xcorr = correlation.CustomAutoCorrelation(current_frame,
                                                   self.min_lag,
                                                   self.max_lag)
-        (f0_lag, value) = self._FindPeaks(xcorr,
-                                          self.min_lag,
-                                          self.max_lag)
+        f0_lag = self._FindPeaks(xcorr, self.min_lag, self.max_lag)
         f0_lag += self.min_lag
-        self.value = value
         self.combed_signal = self._GetCombedSignal(current_frame,
                                                    f0_lag,
                                                    self.frame_length)
@@ -89,25 +86,24 @@ class FundamentalFrequency(object):
         min_idx = max_lag
         threshold = 5e-3
         for i in range(min_lag, min(max_lag, len(data) - 1)):
-            if data[i] > value:
-                if data[i] - data[i - 1] > 0.0:
-                    if data[i + 1] - data[i] < 0.0:
-                        neighbourhood = [data[i - 1], data[i], data[i + 1]]
-                        argmin = ParabolicArgMin(neighbourhood)
-                        interpolated_min = LinearInterpolation(data[i - 1],
-                                                               data[i],
-                                                               1.0 + argmin)
-                        # Value of the parabolic approximation, not proven useful
+            if data[i] - data[i - 1] > 0.0:
+                if data[i + 1] - data[i] < 0.0:
+                    neighbourhood = [data[i - 1], data[i], data[i + 1]]
+                    argmin = ParabolicArgMin(neighbourhood)
+                    interpolated_min = LinearInterpolation(data[i - 1],
+                                                           data[i],
+                                                           1.0 + argmin)
+                    # Value of the parabolic approximation, not proven useful
 #                         interpolated_min = data[i - 1] * data[i - 1] \
 #                                             - 8.0 * data[i - 1] * data[i] \
 #                                             - 2.0 * data[i - 1] * data[i + 1] \
 #                                             + data[i + 1] * data[i + 1] - 8.0 * data[i] * data[i + 1] \
 #                                             + 16.0 * data[i] * data[i]
 #                         interpolated_min /= -8.0 * (data[i - 1] - 2.0 * data[i] + data[i + 1])
-                        if (interpolated_min > value + threshold) :
-                            min_idx = argmin + i
-                            value = interpolated_min
-        return (min_idx, value)
+                    if (interpolated_min > value + threshold) :
+                        min_idx = argmin + i
+                        value = interpolated_min
+        return min_idx
 
     def _GetCombedSignal(self, signal, lag, frame_length):
         '''
@@ -184,7 +180,7 @@ if __name__ == "__main__":
 
     pylab.plot(sin_data, label = "in")
     pylab.plot(combed_data, label = "combed")
-    pylab.plot(out_data, label = "out")
+    pylab.plot(out_data / numpy.max(out_data), label = "out")
 
     pylab.legend()
     pylab.show()

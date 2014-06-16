@@ -82,6 +82,7 @@ Manager::Manager(const Parameters& parameters, const bool zero_init)
                         + 1
                         + 1
                         + 2
+                        + 1  // AFF
                         + parameters.dft_length + 2
                         + parameters.dft_length + 2, 0.0f),
       current_frame_(parameters.hop_size_sample),
@@ -92,6 +93,7 @@ Manager::Manager(const Parameters& parameters, const bool zero_init)
       audio_spectrum_centroid_(this),
       audio_spectrum_spread_(this),
       audio_waveform_(this),
+      audio_fundamental_frequency_(this),
       ringbuf_(parameters.window_length),
       autocorrelation_(this),
       dft_(this),
@@ -179,6 +181,10 @@ const float* Manager::GetDescriptor(const DescriptorId::Type descriptor) {
           instance = &audio_waveform_;
           break;
         }
+      case DescriptorId::kAudioFundamentalFrequency: {
+          instance = &audio_fundamental_frequency_;
+          break;
+        }
       case DescriptorId::kDft: {
           instance = &dft_;
           break;
@@ -232,6 +238,10 @@ descriptors::Descriptor_Meta Manager::GetDescriptorMeta(
       }
     case DescriptorId::kAudioWaveform: {
         instance = &audio_waveform_;
+        break;
+      }
+    case DescriptorId::kAudioFundamentalFrequency: {
+        instance = &audio_fundamental_frequency_;
         break;
       }
     case DescriptorId::kDft: {
@@ -326,6 +336,10 @@ float* Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) {
         }
       case DescriptorId::kAudioWaveform: {
           instance = &audio_waveform_;
+          break;
+        }
+      case DescriptorId::kAudioFundamentalFrequency: {
+          instance = &audio_fundamental_frequency_;
           break;
         }
       case DescriptorId::kDft: {

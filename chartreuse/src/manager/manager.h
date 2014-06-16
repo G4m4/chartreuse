@@ -35,6 +35,7 @@
 #include "chartreuse/src/algorithms/spectrogram.h"
 #include "chartreuse/src/algorithms/spectrogrampower.h"
 
+#include "chartreuse/src/descriptors/audiofundamentalfrequency.h"
 #include "chartreuse/src/descriptors/audiopower.h"
 #include "chartreuse/src/descriptors/audiospectrumcentroid.h"
 #include "chartreuse/src/descriptors/audiospectrumspread.h"
@@ -51,6 +52,7 @@ enum Type {
   kAudioSpectrumCentroid,
   kAudioSpectrumSpread,
   kAudioWaveform,
+  kAudioFundamentalFrequency,
   kDft,
   kSpectrogram,
   kDftPower,
@@ -201,6 +203,7 @@ class Manager {
   descriptors::AudioSpectrumCentroid audio_spectrum_centroid_;
   descriptors::AudioSpectrumSpread audio_spectrum_spread_;
   descriptors::AudioWaveform audio_waveform_;
+  descriptors::AudioFundamentalFrequency audio_fundamental_frequency_;
   algorithms::RingBuffer ringbuf_;
   algorithms::AutoCorrelation autocorrelation_;
   algorithms::KissFFT dft_;

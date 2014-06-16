@@ -47,6 +47,7 @@ void CombedSignalGenerator::operator()(const float* const frame,
   CHARTREUSE_ASSERT(frame_length > 0);
   CHARTREUSE_ASSERT(data != nullptr);
   CHARTREUSE_ASSERT(window_length_ - frame_length >= lag_);
+  CHARTREUSE_ASSERT(frame != data);
 
   const unsigned int kBaseSignalPos(window_length_ - frame_length);
   const unsigned int kLaggedSignalPos(window_length_ - frame_length - lag_);

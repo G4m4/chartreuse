@@ -53,6 +53,7 @@ void Spectrogram::Process(const float* const input,
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
   CHARTREUSE_ASSERT(output != nullptr);
+  CHARTREUSE_ASSERT(input != output);
 
   dft_.Process(manager_->CurrentWindowApodized(),
                manager_->AnalysisParameters().dft_length,

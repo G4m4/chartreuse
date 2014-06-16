@@ -44,6 +44,7 @@ void AudioWaveform::Process(const float* const input,
   CHARTREUSE_ASSERT(input != nullptr);
   CHARTREUSE_ASSERT(input_length > 0);
   CHARTREUSE_ASSERT(output != nullptr);
+  CHARTREUSE_ASSERT(input != output);
 
   output[0] = Eigen::Map<const Eigen::VectorXf>(input, input_length).minCoeff();
   output[1] = Eigen::Map<const Eigen::VectorXf>(input, input_length).maxCoeff();

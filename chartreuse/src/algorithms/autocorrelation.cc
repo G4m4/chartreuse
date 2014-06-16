@@ -57,6 +57,7 @@ void AutoCorrelation::Process(const float* const input,
   CHARTREUSE_ASSERT(max_lag > min_lag);
   CHARTREUSE_ASSERT(input_length > max_lag);
   CHARTREUSE_ASSERT(output != nullptr);
+  CHARTREUSE_ASSERT(input != output);
 
   const float kPower(Eigen::Map<const Eigen::VectorXf>(&input[max_lag], input_length - max_lag).cwiseAbs2().sum());
   const Eigen::Map<const Eigen::VectorXf> right_part(&input[max_lag], input_length - max_lag);

@@ -48,6 +48,7 @@ void SpectrogramPower::Process(const float* const input,
   CHARTREUSE_ASSERT(input != nullptr);
   CHARTREUSE_ASSERT(input_length > 0);
   CHARTREUSE_ASSERT(output != nullptr);
+  CHARTREUSE_ASSERT(input != output);
 
   // Get the Dft of the frame
   const float* spectrogram(input);

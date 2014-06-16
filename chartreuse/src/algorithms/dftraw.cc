@@ -52,6 +52,7 @@ void DftRaw::Process(const float* const input,
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
   CHARTREUSE_ASSERT(output != nullptr);
+  CHARTREUSE_ASSERT(input != output);
 
   const unsigned int kActualInDataLength
     // Cast for 64b systems

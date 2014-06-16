@@ -54,6 +54,7 @@ void AudioSpectrumCentroid::Process(const float* const spectrogram_power,
   CHARTREUSE_ASSERT(spectrogram_power != nullptr);
   CHARTREUSE_ASSERT(output != nullptr);
   CHARTREUSE_ASSERT(spectrogram_power != output);
+  CHARTREUSE_ASSERT(spectrogram_power != frequency_scale);
   CHARTREUSE_ASSERT(frequency_scale != nullptr);
   CHARTREUSE_ASSERT(low_edge_idx > 0);
   CHARTREUSE_ASSERT(high_edge_idx > 0);

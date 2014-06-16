@@ -44,6 +44,7 @@ void AudioPower::Process(const float* const input,
   CHARTREUSE_ASSERT(input != nullptr);
   CHARTREUSE_ASSERT(input_length > 0);
   CHARTREUSE_ASSERT(output != nullptr);
+  CHARTREUSE_ASSERT(input != output);
 
   const float kNormFactor(1 / static_cast<float>(input_length));
   output[0] = Eigen::Map<const Eigen::VectorXf>(input, input_length).squaredNorm()

@@ -52,6 +52,7 @@ void DftPower::Process(const float* const input,
   CHARTREUSE_ASSERT(input != nullptr);
   CHARTREUSE_ASSERT(input_length > 0);
   CHARTREUSE_ASSERT(output != nullptr);
+  CHARTREUSE_ASSERT(input != output);
 
   // Retrieve the normalized squared magnitude of the dft data
   for (std::size_t i(0);

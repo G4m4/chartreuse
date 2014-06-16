@@ -25,6 +25,8 @@
 // std::log
 #include <cmath>
 
+#include "chartreuse/src/common.h"
+
 namespace chartreuse {
 namespace algorithms {
 
@@ -45,9 +47,53 @@ bool IsPowerOfTwo(const unsigned int value) {
 }
 
 float LogTwo(const float value) {
+  CHARTREUSE_ASSERT(value > 0.0f);
   // This is 1 / log(2)
   const float kInvLog2(1.442695040888963f);
   return static_cast<float>(std::log(value) * kInvLog2);
+}
+
+float LinearInterpolation(const float left,
+                          const float right,
+                          const float ratio) {
+  return (1.0f - ratio) * left + ratio * right;
+}
+
+float ParabolicArgMin(const float prev, const float peak, const float next) {
+  const float min_position(0.5f * (prev - next) / (prev - 2.0f * peak + next));
+  return min_position;
+}
+
+float ParabolicApproximation(const float* const data,
+                             const unsigned int data_length,
+                             const float threshold,
+                             float* const argmin) {
+  CHARTREUSE_ASSERT(data != nullptr);
+  CHARTREUSE_ASSERT(data_length > 0);
+  CHARTREUSE_ASSERT(argmin != nullptr);
+  CHARTREUSE_ASSERT(data != argmin);
+
+  float min_value(0.0f);
+  float arg_min(0);
+  for (unsigned int idx(1); idx < data_length - 1; ++idx) {
+    const float prev(data[idx - 1]);
+    const float peak(data[idx]);
+    const float next(data[idx + 1]);
+    // Looking for peaks:
+    if (peak - prev > 0.0f) {
+      if (next - peak < 0.0f) {
+        const float tmp_argmin(ParabolicArgMin(prev, peak, next) + 1.0f);
+        const float tmp_min(LinearInterpolation(prev, peak, tmp_argmin));
+        if (tmp_min > min_value + threshold) {
+          arg_min = tmp_argmin;
+          min_value = tmp_min;
+        }
+      }
+    }
+  }
+
+  *argmin = arg_min;
+  return min_value;
 }
 
 }  // namespace algorithms

@@ -35,6 +35,19 @@ bool IsPowerOfTwo(const unsigned int value);
 /// @brief Helper for log2 computation (missing in msvc (C++11))
 float LogTwo(const float value);
 
+/// @brief Linearly interpolate between two values given the ratio
+float LinearInterpolation(const float left,
+                          const float right,
+                          const float ratio);
+
+/// @brief Retrieve the minimum of the input performing a parabolic estimation
+float ParabolicArgMin(const float prev, const float peak, const float next);
+
+float ParabolicApproximation(const float* const data,
+                             const unsigned int data_length,
+                             const float threshold,
+                             float* const argmin);
+
 }  // namespace algorithms
 }  // namespace chartreuse
 

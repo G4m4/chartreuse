@@ -46,12 +46,10 @@ class ScaleGenerator {
   /// @param[in]  length   Length of the scale in samples
   /// @param[in]  type   Type of the scale
   /// @param[in]  dft_length
-  /// @param[in]  low_edge    Scale index lower bound
   /// @param[in]  sampling_freq
   explicit ScaleGenerator(const unsigned int length,
                           const Scale::Type type,
                           const unsigned int dft_length,
-                          const unsigned int low_edge,
                           const float sampling_freq);
 
   /// @brief Retrieve the scale data
@@ -62,11 +60,9 @@ class ScaleGenerator {
   ///
   /// @param[in]  type   Type of the scale to be created
   /// @param[in]  dft_length
-  /// @param[in]  low_edge    Scale index lower bound
   /// @param[in]  sampling_freq
   void SynthesizeData(const Scale::Type type,
                       const unsigned int dft_length,
-                      const unsigned int low_edge,
                       const float sampling_freq);
 
    Eigen::VectorXf data_;  ///< Internal buffer for synthesized data

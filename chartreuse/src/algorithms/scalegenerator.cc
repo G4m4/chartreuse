@@ -29,7 +29,6 @@ namespace algorithms {
 ScaleGenerator::ScaleGenerator(const unsigned int length,
                                const Scale::Type type,
                                const unsigned int dft_length,
-                               const unsigned int low_edge,
                                const float sampling_freq)
     // TODO(gm): check if the data can be generated at compile-time
     : data_(Eigen::VectorXf::Constant(length + 1, 1, 1.0f)) {
@@ -37,7 +36,7 @@ ScaleGenerator::ScaleGenerator(const unsigned int length,
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
   CHARTREUSE_ASSERT(sampling_freq > 0.0f);
-  SynthesizeData(type, dft_length, low_edge, sampling_freq);
+  SynthesizeData(type, dft_length, sampling_freq);
 }
 
 const float* ScaleGenerator::Data(void) const {
@@ -46,15 +45,9 @@ const float* ScaleGenerator::Data(void) const {
 
 void ScaleGenerator::SynthesizeData(const Scale::Type type,
                                     const unsigned int dft_length,
-                                    const unsigned int low_edge,
                                     const float sampling_freq) {
   switch (type) {
     case Scale::kLogFreq: {
-      //const float kFactor(sampling_freq / dft_length);
-      //for (unsigned int i(0); i < data_.size(); ++i) {
-      //  const float kFftFreq(static_cast<float>(i + low_edge) * kFactor);
-      //  data_[i] = algorithms::LogTwo(kFftFreq * 0.001f);
-      //}
       const float kLowBound(2.0f * sampling_freq / dft_length);
       const float kHighBound(sampling_freq * 0.5f);
       Eigen::Array<float, Eigen::Dynamic, 1> tmp(Eigen::VectorXf::LinSpaced(Eigen::Sequential,

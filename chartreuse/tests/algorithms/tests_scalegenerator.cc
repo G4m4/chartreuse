@@ -34,14 +34,9 @@ TEST(ScaleGenerator, LogFreqRange) {
   Manager::Parameters parameters;
   Manager manager(parameters);
   const unsigned int kWindowLength(manager.AnalysisParameters().window_length);
-  const unsigned int kLowEdgeIndex(static_cast<unsigned int>(
-                     std::ceil(manager.AnalysisParameters().low_freq
-                               * manager.AnalysisParameters().dft_length
-                               / manager.AnalysisParameters().sampling_freq)));
   ScaleGenerator generator(kWindowLength,
                            kLogFreq,
                            manager.AnalysisParameters().dft_length,
-                           kLowEdgeIndex,
                            manager.AnalysisParameters().sampling_freq);
 
   const float* data(generator.Data());
@@ -58,14 +53,9 @@ TEST(ScaleGenerator, HammingSynthesisPerf) {
   Manager::Parameters parameters;
   Manager manager(parameters);
   const unsigned int kWindowLength(kDataPerfSetSize);
-  const unsigned int kLowEdgeIndex(static_cast<unsigned int>(
-                     std::ceil(manager.AnalysisParameters().low_freq
-                               * manager.AnalysisParameters().dft_length
-                               / manager.AnalysisParameters().sampling_freq)));
   ScaleGenerator generator(kWindowLength,
                            kLogFreq,
                            manager.AnalysisParameters().dft_length,
-                           kLowEdgeIndex,
                            manager.AnalysisParameters().sampling_freq);
 
   const float* data(generator.Data());

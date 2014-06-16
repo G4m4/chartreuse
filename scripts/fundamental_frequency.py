@@ -67,10 +67,10 @@ class FundamentalFrequency(object):
         self.buffer.Push(frame)
         current_frame = self.buffer.PopOverlapped(self.window_length)
 
-        xcorr = correlation.CustomAutoCorrelation(current_frame,
-                                                  self.min_lag,
-                                                  self.max_lag)
-        f0_lag = self._FindPeaks(xcorr, self.min_lag, self.max_lag)
+        self.xcorr = correlation.CustomAutoCorrelation(current_frame,
+                                                       self.min_lag,
+                                                       self.max_lag)
+        f0_lag = self._FindPeaks(self.xcorr, self.min_lag, self.max_lag)
         f0_lag += self.min_lag
         self.combed_signal = self._GetCombedSignal(current_frame,
                                                    f0_lag,

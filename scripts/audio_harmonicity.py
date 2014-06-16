@@ -52,12 +52,15 @@ class AudioHarmonicity(object):
         Actual processing function, retrieve the fundamental frequency
         for the given frame
         '''
-        self._aff.Process(frame)
+        arg_min = self._aff.Process(frame) - self._aff.min_lag
+        actual_index = numpy.floor(arg_min)
+        left = self._aff.xcorr[actual_index]
+        right = self._aff.xcorr[actual_index + 1]
+        ah = fundamental_frequency.LinearInterpolation(left, right, arg_min - actual_index)
         data = self._aff.combed_signal * self._window.window_data
         signal_spectrum = PowerSpectrum(frame * self._window.window_data,
                                         self._dft_length)
         power_spectrum = PowerSpectrum(data, self._dft_length)
-        ah = self._aff.value
         ulh = self._GetUpperFrequency(self._GetUpperLimit(signal_spectrum,
                                                           power_spectrum))
         return (ah, ulh)
@@ -124,11 +127,11 @@ if __name__ == "__main__":
     sin_data = numpy.sin(time)[0:actual_in_length]
     (_, sin_data) = read("../chartreuse/tests/data/C5_flute.wav")
     sin_data = sin_data[0:actual_in_length] / float(numpy.max(sin_data[0:actual_in_length]))
-#     time = numpy.arange(0, 1.0, 1.0 / sampling_freq)
-#     sin_data = signal.chirp(t = time,
-#                             f0 = 100.0,
-#                             t1 = 0.5,
-#                             f1 = 1000.0)[0:actual_in_length]
+    time = numpy.arange(0, 1.0, 1.0 / sampling_freq)
+    sin_data = signal.chirp(t = time,
+                            f0 = 100.0,
+                            t1 = 0.5,
+                            f1 = 1000.0)[0:actual_in_length]
     sin_data = numpy.random.rand(actual_in_length) * 2.0 - 1.0
 #     sin_data = 0.5 * numpy.ones(actual_in_length)
 #     sin_data = numpy.zeros(actual_in_length)
@@ -149,7 +152,7 @@ if __name__ == "__main__":
     pylab.plot(sin_data, label = "in")
     print("ah: " + str(numpy.max(out_data[:, 0])))
     print("ulh: " + str(numpy.max(out_data[:, 1])))
-    pylab.plot(out_data[:, 0] / numpy.max(out_data[:, 0]), label = "ah")
+    pylab.plot(out_data[:, 0], label = "ah")
     pylab.plot(out_data[:, 1] / numpy.max(out_data[:, 1]), label = "ulh")
 
     pylab.legend()

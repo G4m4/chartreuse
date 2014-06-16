@@ -20,8 +20,6 @@
 
 #include "chartreuse/src/algorithms/combedsignalgenerator.h"
 
-#include <algorithm>
-
 #include "Eigen/Core"
 
 #include "chartreuse/src/common.h"

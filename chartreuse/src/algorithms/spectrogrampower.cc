@@ -20,7 +20,6 @@
 
 #include "chartreuse/src/algorithms/spectrogrampower.h"
 
-#include <algorithm>
 #include <complex>
 
 #include "Eigen/Core"

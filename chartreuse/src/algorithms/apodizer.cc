@@ -20,8 +20,6 @@
 
 #include "chartreuse/src/algorithms/apodizer.h"
 
-#include <algorithm>
-
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
 

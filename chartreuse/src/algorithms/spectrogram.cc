@@ -20,9 +20,6 @@
 
 #include "chartreuse/src/algorithms/spectrogram.h"
 
-// std::copy_n
-#include <algorithm>
-
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/algorithms/dftraw.h"

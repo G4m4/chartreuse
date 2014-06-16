@@ -88,6 +88,8 @@ class Manager {
     const unsigned int dft_length;  ///< Spectrum signal length
     const float low_freq;  ///< Lower bound for analysis frequency spectrum
     const float high_freq;  ///< Higher bound for analysis frequency spectrum
+    const unsigned int low_edge;  ///< Lower Dft bin index to be considered
+    const unsigned int high_edge;  ///< Higher Dft bin index to be considered
     const unsigned int min_lag;  ///< Smaller lag for analysis given the above
     const unsigned int max_lag;  ///< Higher lag for analysis given the above
     const unsigned int hop_size_sample;  ///< Input signal length

@@ -44,6 +44,9 @@ Manager::Parameters::Parameters(const float sampling_freq,
       dft_length(dft_length),
       low_freq(low_freq),
       high_freq(high_freq),
+      low_edge(static_cast<unsigned int>(std::ceil(low_freq * dft_length
+                                                   / sampling_freq))),
+      high_edge(dft_length / 2 + 1),
       min_lag(static_cast<unsigned int>(std::floor(sampling_freq / high_freq))),
       max_lag(static_cast<unsigned int>(std::floor(sampling_freq / low_freq))),
       hop_size_sample(hop_size_sample),
@@ -57,6 +60,9 @@ Manager::Parameters::Parameters(const float sampling_freq,
   CHARTREUSE_ASSERT(low_freq > 0.0f);
   CHARTREUSE_ASSERT(high_freq > 0.0f);
   CHARTREUSE_ASSERT(high_freq > low_freq);
+  CHARTREUSE_ASSERT(low_edge > 0);
+  CHARTREUSE_ASSERT(high_edge > 0);
+  CHARTREUSE_ASSERT(low_edge < high_edge);
   CHARTREUSE_ASSERT(min_lag > 0);
   CHARTREUSE_ASSERT(max_lag > 0);
   CHARTREUSE_ASSERT(max_lag > min_lag);

@@ -37,7 +37,9 @@ class AudioSpectrumSpread : public Descriptor_Interface {
   /// @brief Independent process method: this is where the actual computation
   /// is done, to be used in a "raw" way when no manager is available
   void Process(const float* const spectrogram_power,
-               float* const output);
+               float* const output,
+               const unsigned int low_edge_idx,
+               const unsigned int high_edge_idx);
 
   Descriptor_Meta Meta(void) const;
 
@@ -45,8 +47,6 @@ class AudioSpectrumSpread : public Descriptor_Interface {
   // No assignment operator for this class
   AudioSpectrumSpread& operator=(const AudioSpectrumSpread& right);
 
-  const unsigned int kLowEdgeIndex_;  ///< Dft index lower bound
-  const unsigned int kHighEdgeIndex_;  ///< Dft index higher bound
   const float normalization_factor_;
   algorithms::ScaleGenerator freq_scale_;  ///< Frequency scale generator
 };

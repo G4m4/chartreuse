@@ -33,54 +33,50 @@ namespace descriptors {
 
 AudioSpectrumCentroid::AudioSpectrumCentroid(manager::Manager* manager)
     : Descriptor_Interface(manager),
-      kLowEdgeIndex_(static_cast<unsigned int>(
-                     std::ceil(manager->AnalysisParameters().low_freq
-                               * manager->AnalysisParameters().dft_length
-                               / manager->AnalysisParameters().sampling_freq))),
-      // TODO(gm): use a static kind of "GetDescriptorSize(kSpectrogramPower)"
-      kHighEdgeIndex_(manager->AnalysisParameters().dft_length / 2 + 1),
       // TODO(gm): remove this magic
       normalization_factor_(manager->AnalysisParameters().dft_length * 571.865f),
-      freq_scale_(kHighEdgeIndex_ - kLowEdgeIndex_,
+      freq_scale_(manager->AnalysisParameters().high_edge - manager->AnalysisParameters().low_edge,
                   algorithms::Scale::kLogFreq,
                   manager->AnalysisParameters().dft_length,
-                  kLowEdgeIndex_,
+                  manager->AnalysisParameters().low_edge,
                   manager->AnalysisParameters().sampling_freq) {
-  CHARTREUSE_ASSERT(kLowEdgeIndex_ > 0);
-  CHARTREUSE_ASSERT(kHighEdgeIndex_ > 0);
-  CHARTREUSE_ASSERT(kLowEdgeIndex_ < kHighEdgeIndex_);
+  // Nothing to do here for now
 }
 
 void AudioSpectrumCentroid::operator()(float* const output) {
   Process(manager_->GetDescriptor(manager::DescriptorId::kSpectrogramPower),
-          output);
+          output,
+          manager_->AnalysisParameters().low_edge,
+          manager_->AnalysisParameters().high_edge);
 }
 
 void AudioSpectrumCentroid::Process(const float* const spectrogram_power,
-                                    float* const output) {
+                                    float* const output,
+                                    const unsigned int low_edge_idx,
+                                    const unsigned int high_edge_idx) {
   CHARTREUSE_ASSERT(spectrogram_power != nullptr);
   CHARTREUSE_ASSERT(output != nullptr);
 
   // Get the normalized squared magnitude spectrogram of the frame
   Eigen::Array<float, Eigen::Dynamic, 1> power(
     Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(spectrogram_power,
-                                                             kHighEdgeIndex_));
+                                                             high_edge_idx));
   // The DC component is unchanged, everything else is doubled
   power[0] *= 0.5f;
   power *= 2.0f / normalization_factor_;
   // Summing the contributions of all frequencies lower than 62.5
-  for (unsigned int i(0); i < kLowEdgeIndex_ - 1; ++i) {
-    power[kLowEdgeIndex_ - 1] += power[i];
+  for (unsigned int i(0); i < low_edge_idx - 1; ++i) {
+    power[low_edge_idx - 1] += power[i];
   }
-  const float kPowerSum(power.tail(kHighEdgeIndex_ - kLowEdgeIndex_ + 1).sum()
+  const float kPowerSum(power.tail(high_edge_idx - low_edge_idx + 1).sum()
     // Prevent divide by zero
     + 1e-7f);
   CHARTREUSE_ASSERT(kPowerSum > 0.0f);
   // Weight each DFT bin by the log of the frequency relative to 1000Hz
   // The first bin is the low edge
   const Eigen::Array<float, Eigen::Dynamic, 1> FreqScale(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(freq_scale_.Data(),
-    kHighEdgeIndex_ - kLowEdgeIndex_ + 1));
-  const float kOut(power.tail(kHighEdgeIndex_ - kLowEdgeIndex_ + 1).cwiseProduct(FreqScale).sum());
+    high_edge_idx - low_edge_idx + 1));
+  const float kOut(power.tail(high_edge_idx - low_edge_idx + 1).cwiseProduct(FreqScale).sum());
   //float kOut(power_[kLowEdgeIndex_ - 1] * -5.0f);
   //for (unsigned int i(kLowEdgeIndex_); i < kHighEdgeIndex_; ++i) {
   //  kOut += power_[i] * freq_scale_.Data()[i - kLowEdgeIndex_];

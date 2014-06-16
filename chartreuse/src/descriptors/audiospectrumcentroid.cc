@@ -52,16 +52,19 @@ AudioSpectrumCentroid::AudioSpectrumCentroid(manager::Manager* manager)
 }
 
 void AudioSpectrumCentroid::operator()(float* const output) {
-  Process(output);
+  Process(manager_->GetDescriptor(manager::DescriptorId::kSpectrogramPower),
+          output);
 }
 
-void AudioSpectrumCentroid::Process(float* const output) {
+void AudioSpectrumCentroid::Process(const float* const spectrogram_power,
+                                    float* const output) {
+  CHARTREUSE_ASSERT(spectrogram_power != nullptr);
   CHARTREUSE_ASSERT(output != nullptr);
 
   // Get the normalized squared magnitude spectrogram of the frame
-  const float* power_ptr(manager_->GetDescriptor(manager::DescriptorId::kSpectrogramPower));
-  Eigen::Array<float, Eigen::Dynamic, 1> power(Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(power_ptr,
-    kHighEdgeIndex_));
+  Eigen::Array<float, Eigen::Dynamic, 1> power(
+    Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>>(spectrogram_power,
+                                                             kHighEdgeIndex_));
   // The DC component is unchanged, everything else is doubled
   power[0] *= 0.5f;
   power *= 2.0f / normalization_factor_;

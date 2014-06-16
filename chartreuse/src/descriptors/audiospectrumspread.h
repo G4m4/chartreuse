@@ -36,7 +36,8 @@ class AudioSpectrumSpread : public Descriptor_Interface {
 
   /// @brief Independent process method: this is where the actual computation
   /// is done, to be used in a "raw" way when no manager is available
-  void Process(float* const output);
+  void Process(const float* const spectrogram_power,
+               float* const output);
 
   Descriptor_Meta Meta(void) const;
 

@@ -94,6 +94,7 @@ Manager::Manager(const Parameters& parameters, const bool zero_init)
       audio_spectrum_spread_(this),
       audio_waveform_(this),
       audio_fundamental_frequency_(this),
+      audio_harmonicity_(this),
       ringbuf_(parameters.window_length),
       autocorrelation_(this),
       dft_(this),
@@ -185,6 +186,10 @@ const float* Manager::GetDescriptor(const DescriptorId::Type descriptor) {
           instance = &audio_fundamental_frequency_;
           break;
         }
+      case DescriptorId::kAudioHarmonicity: {
+          instance = &audio_harmonicity_;
+          break;
+        }
       case DescriptorId::kDft: {
           instance = &dft_;
           break;
@@ -242,6 +247,10 @@ descriptors::Descriptor_Meta Manager::GetDescriptorMeta(
       }
     case DescriptorId::kAudioFundamentalFrequency: {
         instance = &audio_fundamental_frequency_;
+        break;
+      }
+    case DescriptorId::kAudioHarmonicity: {
+        instance = &audio_harmonicity_;
         break;
       }
     case DescriptorId::kDft: {
@@ -340,6 +349,10 @@ float* Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) {
         }
       case DescriptorId::kAudioFundamentalFrequency: {
           instance = &audio_fundamental_frequency_;
+          break;
+        }
+      case DescriptorId::kAudioHarmonicity: {
+          instance = &audio_harmonicity_;
           break;
         }
       case DescriptorId::kDft: {

@@ -78,10 +78,10 @@ Manager::Manager(const Parameters& parameters, const bool zero_init)
       // TODO(gm): this could be computed at compile-time
       descriptors_data_(parameters.dft_length + 2
                         + parameters.dft_length + 2
-                        + 1
-                        + 1
-                        + 1
-                        + 2
+                        + 1  // AP
+                        + 1  // ASC
+                        + 1  // ASS
+                        + 2  // AW
                         + 1  // AFF
                         + parameters.dft_length + 2
                         + parameters.dft_length + 2, 0.0f),

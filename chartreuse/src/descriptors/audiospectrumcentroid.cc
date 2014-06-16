@@ -53,6 +53,11 @@ void AudioSpectrumCentroid::Process(const float* const spectrogram_power,
                                     const unsigned int high_edge_idx) {
   CHARTREUSE_ASSERT(spectrogram_power != nullptr);
   CHARTREUSE_ASSERT(output != nullptr);
+  CHARTREUSE_ASSERT(spectrogram_power != output);
+  CHARTREUSE_ASSERT(frequency_scale != nullptr);
+  CHARTREUSE_ASSERT(low_edge_idx > 0);
+  CHARTREUSE_ASSERT(high_edge_idx > 0);
+  CHARTREUSE_ASSERT(high_edge_idx > low_edge_idx);
 
   // Get the normalized squared magnitude spectrogram of the frame
   Eigen::Array<float, Eigen::Dynamic, 1> power(

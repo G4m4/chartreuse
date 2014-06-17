@@ -27,11 +27,11 @@ import fundamental_frequency
 import window
 
 
-def PowerSpectrum(data, dft_length):
+def PowerSpectrum(data, window, dft_length):
     '''
     Evaluate the power spectrum for the given data
     '''
-    fft_data = numpy.fft.rfft(data, dft_length)
+    fft_data = numpy.fft.rfft(data * window, dft_length)
     out = 2.0 * numpy.abs(fft_data ** 2)
 
     return out
@@ -57,10 +57,13 @@ class AudioHarmonicity(object):
         left = self._aff.xcorr[actual_index]
         right = self._aff.xcorr[actual_index + 1]
         ah = fundamental_frequency.LinearInterpolation(left, right, arg_min - actual_index)
-        data = self._aff.combed_signal * self._window.window_data
-        signal_spectrum = PowerSpectrum(frame * self._window.window_data,
+        # ULH
+        signal_spectrum = PowerSpectrum(frame,
+                                        self._window.window_data,
                                         self._dft_length)
-        power_spectrum = PowerSpectrum(data, self._dft_length)
+        power_spectrum = PowerSpectrum(self._aff.combed_signal,
+                                       self._window.window_data,
+                                       self._dft_length)
         ulh = self._GetUpperFrequency(self._GetUpperLimit(signal_spectrum,
                                                           power_spectrum))
         return (ah, ulh)

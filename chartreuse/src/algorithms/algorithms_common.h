@@ -40,9 +40,12 @@ float LinearInterpolation(const float left,
                           const float right,
                           const float ratio);
 
-/// @brief Retrieve the minimum of the input performing a parabolic estimation
+/// @brief Retrieve the actual maximum position of the input peak,
+/// estimated by parabolic approximation
 float ParabolicArgMin(const float prev, const float peak, const float next);
 
+/// @brief Retrieve the maximum position and value of the input buffer
+/// estimated by parabolic approximation
 float ParabolicApproximation(const float* const data,
                              const unsigned int data_length,
                              const float threshold,

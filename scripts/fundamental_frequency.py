@@ -55,7 +55,7 @@ class FundamentalFrequency(object):
         self.max_lag = int(numpy.ceil(sampling_freq / self.lofreq))
         self.min_lag = int(numpy.floor(sampling_freq / self.hifreq))
         self.frame_length = frame_length
-        self.window_length = frame_length * overlap
+        self.window_length = frame_length + overlap
         self.buffer = ringbuffer.RingBuffer(self.window_length, overlap)
         self.buffer.Fill(0.0, self.frame_length * 2)
 
@@ -136,8 +136,8 @@ if __name__ == "__main__":
 
     sampling_freq = 48000.0
     frame_length = 480
-    overlap = 3
-    window_length = overlap * frame_length
+    overlap = 2 * frame_length
+    window_length = overlap + frame_length
     actual_num_frame = 16
     actual_in_length = actual_num_frame * frame_length
 

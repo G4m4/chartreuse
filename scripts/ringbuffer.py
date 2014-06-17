@@ -91,9 +91,9 @@ class RingBuffer(object):
         out[0:right_part_length] = self._data[self._read_cursor:self._read_cursor + right_part_length]
         out[right_part_length:right_part_length + left_part_length] = self._data[0:left_part_length]
 
-        self._read_cursor += data_length / self._overlap
+        self._read_cursor += data_length - self._overlap
         self._read_cursor = self._read_cursor % self.capacity
-        self.size -= data_length / self._overlap
+        self.size -= data_length - self._overlap
 
         # Zero-padding
         if actual_copy_count < data_length:

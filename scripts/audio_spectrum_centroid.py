@@ -39,9 +39,8 @@ class AudioSpectrumCentroid(object):
         self.high_edge_idx = dft_length / 2 + 1
         self.scale = freq_scale.LogFreqScale(self.low_edge_idx,
                                              self.high_edge_idx,
-                                             sampling_freq,
-                                             dft_length)
-        self.window_length = frame_length * overlap
+                                             sampling_freq)
+        self.window_length = frame_length + overlap
         self.spectrogram = spectrogram.Spectrogram(sampling_freq,
                                                    dft_length,
                                                    frame_length,
@@ -78,8 +77,8 @@ if __name__ == "__main__":
     dft_length = 2048
 
     frame_length = 480
-    overlap = 3
-    window_length = overlap * frame_length
+    overlap = 2 * frame_length
+    window_length = overlap + frame_length
     actual_num_frame = 32
     actual_in_length = actual_num_frame * frame_length
 

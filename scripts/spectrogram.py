@@ -33,7 +33,7 @@ class Spectrogram(object):
     def __init__(self, sampling_freq, dft_length, frame_length, overlap):
         self.sampling_freq = sampling_freq
         self.dft_length = dft_length
-        self.window_length = frame_length * overlap
+        self.window_length = frame_length + overlap
         self.apodizer = window.Hamming(self.window_length)
         self.buffer = ringbuffer.RingBuffer(self.window_length, overlap)
         self.buffer.Fill(0.0, frame_length * 2)
@@ -63,8 +63,8 @@ if __name__ == "__main__":
     dft_length = 2048
 
     frame_length = 480
-    overlap = 3
-    window_length = overlap * frame_length
+    overlap = 2 * frame_length
+    window_length = overlap + frame_length
     actual_num_frame = 32
     actual_in_length = actual_num_frame * frame_length
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
 #                             f0 = 100.0,
 #                             t1 = 0.5,
 #                             f1 = 1000.0)[0:actual_in_length]
-    sin_data = numpy.random.rand(actual_in_length) * 2.0 - 1.0
+#     sin_data = numpy.random.rand(actual_in_length) * 2.0 - 1.0
 #     sin_data = 0.5 * numpy.ones(actual_in_length)
 #     sin_data = numpy.zeros(actual_in_length)
 #     pulse_occurence = 512

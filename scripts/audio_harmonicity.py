@@ -112,8 +112,8 @@ if __name__ == "__main__":
 
     sampling_freq = 48000.0
     frame_length = 480
-    overlap = 3
-    window_length = overlap * frame_length
+    overlap = 2 * frame_length
+    window_length = overlap + frame_length
     actual_num_frame = 8
     actual_in_length = actual_num_frame * frame_length
 
@@ -130,12 +130,12 @@ if __name__ == "__main__":
     sin_data = numpy.sin(time)[0:actual_in_length]
     (_, sin_data) = read("../chartreuse/tests/data/C5_flute.wav")
     sin_data = sin_data[0:actual_in_length] / float(numpy.max(sin_data[0:actual_in_length]))
-    time = numpy.arange(0, 1.0, 1.0 / sampling_freq)
-    sin_data = signal.chirp(t = time,
-                            f0 = 100.0,
-                            t1 = 0.5,
-                            f1 = 1000.0)[0:actual_in_length]
-    sin_data = numpy.random.rand(actual_in_length) * 2.0 - 1.0
+#     time = numpy.arange(0, 1.0, 1.0 / sampling_freq)
+#     sin_data = signal.chirp(t = time,
+#                             f0 = 100.0,
+#                             t1 = 0.5,
+#                             f1 = 1000.0)[0:actual_in_length]
+#     sin_data = numpy.random.rand(actual_in_length) * 2.0 - 1.0
 #     sin_data = 0.5 * numpy.ones(actual_in_length)
 #     sin_data = numpy.zeros(actual_in_length)
 #     pulse_occurence = 512

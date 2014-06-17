@@ -27,8 +27,9 @@ class LogFreqScale(object):
     '''
     Log frequency scale
     '''
-    def __init__(self, low_edge_idx, high_edge_idx, sampling_freq):
-        self.length = high_edge_idx - low_edge_idx
+    def __init__(self, length, dft_length, sampling_freq):
+        self.length = length
+        self.dft_length = dft_length
         self.sampling_freq = sampling_freq
         self._Synthesize()
 
@@ -36,7 +37,12 @@ class LogFreqScale(object):
         '''
         Actual processing function for generating the scale
         '''
-        self.data = numpy.zeros(self.length)
+        kLowBound = 2.0 * self.sampling_freq / self.dft_length
+        kHighBound = self.sampling_freq * 0.5
+        tmp = numpy.linspace(kLowBound, kHighBound, self.length)
+        tmp[0] = self.sampling_freq / (self.dft_length * (3.0 / 4.0))
+
+        self.data = numpy.log2(tmp * 0.001)
 
 if __name__ == "__main__":
     import utilities
@@ -46,11 +52,11 @@ if __name__ == "__main__":
     low_edge = 62.5
     high_edge = 1500.0
 
-    low_edge_idx = low_edge * dft_bins_count / sampling_freq
+    low_edge_idx = numpy.ceil(low_edge * dft_bins_count / sampling_freq)
     high_edge_idx = dft_bins_count / 2 + 1
-    length = high_edge_idx - low_edge_idx
+    length = high_edge_idx - low_edge_idx + 1
 
-    generator = LogFreqScale(low_edge_idx, high_edge_idx, sampling_freq)
+    generator = LogFreqScale(length, dft_bins_count, sampling_freq)
 
     out_data = generator.data
 

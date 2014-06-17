@@ -38,8 +38,8 @@ class AudioSpectrumSpread(object):
         self.high_freq = 1500.0
         self.low_edge_idx = math.ceil(self.low_freq * dft_length / sampling_freq)
         self.high_edge_idx = dft_length / 2 + 1
-        self.scale = freq_scale.LogFreqScale(self.low_edge_idx,
-                                             self.high_edge_idx,
+        self.scale = freq_scale.LogFreqScale(self.high_edge_idx - self.low_edge_idx + 1,
+                                             dft_length,
                                              sampling_freq)
         self.window_length = frame_length + overlap
         self.spectrogram = spectrogram.Spectrogram(sampling_freq,
@@ -105,11 +105,11 @@ if __name__ == "__main__":
 #     sin_data = numpy.sin(time)[0:actual_in_length]
     (_, sin_data) = read("../chartreuse/tests/data/C5_flute.wav")
     sin_data = sin_data[0:actual_in_length] / float(numpy.max(sin_data[0:actual_in_length]))
-    time = numpy.arange(0, 1.0, 1.0 / sampling_freq)
-    sin_data = signal.chirp(t = time,
-                            f0 = 100.0,
-                            t1 = 0.5,
-                            f1 = 1000.0)[0:actual_in_length]
+#     time = numpy.arange(0, 1.0, 1.0 / sampling_freq)
+#     sin_data = signal.chirp(t = time,
+#                             f0 = 100.0,
+#                             t1 = 0.5,
+#                             f1 = 1000.0)[0:actual_in_length]
 #     sin_data = numpy.random.rand(actual_in_length) * 2.0 - 1.0
 #     sin_data = 0.5 * numpy.ones(actual_in_length)
 #     sin_data = numpy.zeros(actual_in_length)

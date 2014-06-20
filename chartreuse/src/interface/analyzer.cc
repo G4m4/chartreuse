@@ -26,18 +26,19 @@
 
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/descriptors/descriptor_interface.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace interface {
 
 Analyzer::Analyzer(const float sampling_freq)
-    : desc_manager_(Manager::Parameters(sampling_freq), false),
+    : desc_manager_(*new Manager(Manager::Parameters(sampling_freq), false)),
       buffer_(chartreuse::kHopSizeSamples) {
   // Nothing to do here for now
 }
 
 Analyzer::~Analyzer() {
-  // Nothing to do here for now
+  delete &desc_manager_;
 }
 
 void Analyzer::Process(const float* const input,

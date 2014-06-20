@@ -21,11 +21,16 @@
 #ifndef CHARTREUSE_SRC_INTERFACE_ANALYZER_H_
 #define CHARTREUSE_SRC_INTERFACE_ANALYZER_H_
 
+#include <array>
+
 #include "chartreuse/src/algorithms/ringbuffer.h"
-#include "chartreuse/src/interface/manager.h"
+#include "chartreuse/src/interface/interface_common.h"
 
 namespace chartreuse {
 namespace interface {
+
+// Internal namespace
+class Manager;
 
 /// @brief Descriptors computed by the Analyzer.
 /// Note that this is a compile time known list.
@@ -65,7 +70,6 @@ class Analyzer {
 
  private:
 
-  interface::Manager desc_manager_;  ///< Audio descriptor manager
   /// @brief Normalization helper method: wraps the normalization
   /// from [in_min; in_max] into [0.0f ; 1.0f]
   ///
@@ -75,6 +79,8 @@ class Analyzer {
    float Normalize(const float input,
                    const float in_min,
                    const float in_max) const;
+
+  Manager& desc_manager_;  ///< Audio descriptor manager
   algorithms::RingBuffer buffer_;  ///< Internal buffer for data framing
 };
 

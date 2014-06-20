@@ -64,7 +64,17 @@ class Analyzer {
                float* const output);
 
  private:
+
   interface::Manager desc_manager_;  ///< Audio descriptor manager
+  /// @brief Normalization helper method: wraps the normalization
+  /// from [in_min; in_max] into [0.0f ; 1.0f]
+  ///
+  /// @param[in]  input   Input value
+  /// @param[in]  in_min   Input lower bound
+  /// @param[in]  in_max   Input higher bound
+   float Normalize(const float input,
+                   const float in_min,
+                   const float in_max) const;
   algorithms::RingBuffer buffer_;  ///< Internal buffer for data framing
 };
 

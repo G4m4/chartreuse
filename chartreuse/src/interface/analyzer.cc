@@ -56,11 +56,17 @@ void Analyzer::Process(const float* const input,
       const descriptors::Descriptor_Meta& kMeta(desc_manager_.GetDescriptorMeta(
                                                   current_descriptor));
       // Normalization
-      *output = (kRawValue - kMeta.out_min) / (kMeta.out_max - kMeta.out_min);
+      *output = Normalize(kRawValue, kMeta.out_min, kMeta.out_max);
       current_out += 1;
     }
     remaining_length -= chartreuse::kHopSizeSamples;
   }
+}
+
+float Analyzer::Normalize(const float input,
+                          const float in_min,
+                          const float in_max) const {
+  return (input - in_min) / (in_max - in_min);
 }
 
 }  // namespace interface

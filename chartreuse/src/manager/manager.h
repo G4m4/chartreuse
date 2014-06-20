@@ -82,12 +82,12 @@ class Manager {
   class Parameters {
    public:
     /// @brief Default constructor, all default parameters value defined here
-    Parameters(const float sampling_freq = 48000.0f,
-               const unsigned int dft_length = 2048,
-               const float low_freq = 62.5f,
-               const float high_freq = 1500.0f,
-               const unsigned int hop_size_sample = 480,
-               const unsigned int overlap = 3);
+    explicit Parameters(const float sampling_freq = 48000.0f,
+                        const unsigned int dft_length = 2048,
+                        const float low_freq = 62.5f,
+                        const float high_freq = 1500.0f,
+                        const unsigned int hop_size_sample = 480,
+                        const unsigned int overlap = 3);
 
     const float sampling_freq;  ///< Analysis sampling frequency
     const unsigned int dft_length;  ///< Spectrum signal length

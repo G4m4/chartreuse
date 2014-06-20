@@ -36,7 +36,7 @@
 
 // Smaller performance test sets in debug
 #if (_BUILD_CONFIGURATION_DEBUG)
-static const unsigned int kDataPerfSetSize = 48000;
+static const unsigned int kDataPerfSetSize = 4800;
 #else  // (_BUILD_CONFIGURATION_DEBUG)
 static const unsigned int kDataPerfSetSize = 100 * 48000;
 #endif  // (_BUILD_CONFIGURATION_DEBUG)
@@ -74,7 +74,7 @@ static const unsigned int kDataInSinLength(sizeof(kDataInSin)
 const std::vector<float> kInSin(kDataInSin, kDataInSin + kDataInSinLength);
 
 /// @brief Standard length for tests data sets
-static const unsigned int kDataTestSetSize(chartreuse::kHopSizeSamples * 8);
+static const unsigned int kDataTestSetSize(chartreuse::kHopSizeSamples * 2);
 
 /// @brief Uniform distribution of normalized float values
 static std::uniform_real_distribution<float> kNormDistribution(-1.0f, 1.0f);

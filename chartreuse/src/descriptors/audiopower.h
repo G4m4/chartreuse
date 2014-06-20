@@ -29,7 +29,7 @@ namespace descriptors {
 /// @brief AudioPower descriptor: for each frame, retrieve its square mean
 class AudioPower : public Descriptor_Interface {
  public:
-  explicit AudioPower(manager::Manager* manager);
+  explicit AudioPower(interface::Manager* manager);
 
   void operator()(float* const output);
 

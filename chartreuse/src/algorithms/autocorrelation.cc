@@ -23,12 +23,12 @@
 #include "Eigen/Core"
 
 #include "chartreuse/src/common.h"
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace algorithms {
 
-AutoCorrelation::AutoCorrelation(manager::Manager* manager)
+AutoCorrelation::AutoCorrelation(interface::Manager* manager)
     : Descriptor_Interface(manager) {
   // Nothing to do here for now
 }

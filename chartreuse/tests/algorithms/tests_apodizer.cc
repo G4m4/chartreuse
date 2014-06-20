@@ -21,14 +21,14 @@
 #include "chartreuse/tests/tests.h"
 
 #include "chartreuse/src/algorithms/apodizer.h"
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 // Using declarations for tested class
 using chartreuse::algorithms::Apodizer;
 // Useful using declarations
 using chartreuse::algorithms::Window::kRectangular;
 using chartreuse::algorithms::Window::kHamming;
-using chartreuse::manager::Manager;
+using chartreuse::interface::Manager;
 
 /// @brief Check that the window max is 1, and is at the middle
 TEST(Apodizer, RectangularUnitary) {

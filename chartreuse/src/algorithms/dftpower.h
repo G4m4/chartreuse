@@ -33,7 +33,7 @@ namespace algorithms {
 /// 2.0f / (dft length * input signal window length)
 class DftPower : public descriptors::Descriptor_Interface {
  public:
-  explicit DftPower(manager::Manager* manager);
+  explicit DftPower(interface::Manager* manager);
 
   void operator()(float* const output);
 

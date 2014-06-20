@@ -20,17 +20,17 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 // Useful using declarations
-using chartreuse::manager::Manager;
-using chartreuse::manager::DescriptorId::kAutoCorrelation;
+using chartreuse::interface::Manager;
+using chartreuse::interface::DescriptorId::kAutoCorrelation;
 
 /// @brief Check output range for white noise
 TEST(AutoCorrelation, WhiteNoise) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
-  chartreuse::manager::DescriptorId::Type descriptor(kAutoCorrelation);
+  chartreuse::interface::DescriptorId::Type descriptor(kAutoCorrelation);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength), true);
   manager.EnableDescriptor(descriptor, true);
@@ -58,7 +58,7 @@ TEST(AutoCorrelation, WhiteNoise) {
 TEST(AutoCorrelation, Perf) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
-  chartreuse::manager::DescriptorId::Type descriptor(kAutoCorrelation);
+  chartreuse::interface::DescriptorId::Type descriptor(kAutoCorrelation);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength), true);
   manager.EnableDescriptor(descriptor, true);

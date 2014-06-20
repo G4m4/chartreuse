@@ -20,13 +20,13 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 #include "chartreuse/src/algorithms/kissfft.h"
 
 // Useful using declarations
 using chartreuse::algorithms::KissFFT;
-using chartreuse::manager::Manager;
-using chartreuse::manager::DescriptorId::kDft;
+using chartreuse::interface::Manager;
+using chartreuse::interface::DescriptorId::kDft;
 
 static const unsigned int kFFTDataSize(1024);
 static const unsigned int kDefaultSamplingRate = 48000;

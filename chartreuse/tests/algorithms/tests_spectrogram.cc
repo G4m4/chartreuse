@@ -20,17 +20,17 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 // Useful using declarations
-using chartreuse::manager::Manager;
-using chartreuse::manager::DescriptorId::kSpectrogram;
+using chartreuse::interface::Manager;
+using chartreuse::interface::DescriptorId::kSpectrogram;
 
 /// @brief Compute the spectrogram for white noise
 TEST(Spectrogram, WhiteNoise) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
-  chartreuse::manager::DescriptorId::Type descriptor(kSpectrogram);
+  chartreuse::interface::DescriptorId::Type descriptor(kSpectrogram);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   manager.EnableDescriptor(descriptor, true);
@@ -58,7 +58,7 @@ TEST(Spectrogram, WhiteNoise) {
 TEST(Spectrogram, Sin) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
-  chartreuse::manager::DescriptorId::Type descriptor(kSpectrogram);
+  chartreuse::interface::DescriptorId::Type descriptor(kSpectrogram);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   manager.EnableDescriptor(descriptor, true);

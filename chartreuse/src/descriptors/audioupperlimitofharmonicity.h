@@ -30,7 +30,7 @@ namespace descriptors {
 /// after which the frame is no longer estimated "harmonic"
 class AudioUpperLimitOfHarmonicity : public Descriptor_Interface {
  public:
-  explicit AudioUpperLimitOfHarmonicity(manager::Manager* manager);
+  explicit AudioUpperLimitOfHarmonicity(interface::Manager* manager);
 
   void operator()(float* const output);
 

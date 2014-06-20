@@ -20,12 +20,12 @@
 
 #include "chartreuse/src/descriptors/audioupperlimitofharmonicity.h"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace descriptors {
 
-AudioUpperLimitOfHarmonicity::AudioUpperLimitOfHarmonicity(manager::Manager* manager)
+AudioUpperLimitOfHarmonicity::AudioUpperLimitOfHarmonicity(interface::Manager* manager)
     : Descriptor_Interface(manager) {
   // Nothing to do here for now
 }

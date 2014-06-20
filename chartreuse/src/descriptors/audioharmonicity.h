@@ -29,7 +29,7 @@ namespace descriptors {
 /// @brief AudioHarmonicity descriptor: retrieve each frame estimated harmonicity
 class AudioHarmonicity : public Descriptor_Interface {
  public:
-  explicit AudioHarmonicity(manager::Manager* manager);
+  explicit AudioHarmonicity(interface::Manager* manager);
 
   void operator()(float* const output);
 

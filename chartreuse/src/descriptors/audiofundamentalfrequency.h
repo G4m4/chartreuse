@@ -29,7 +29,7 @@ namespace descriptors {
 /// @brief AudioFundamentalFrequency descriptor: retrieve each frame estimated f0
 class AudioFundamentalFrequency : public Descriptor_Interface {
  public:
-  explicit AudioFundamentalFrequency(manager::Manager* manager);
+  explicit AudioFundamentalFrequency(interface::Manager* manager);
 
   void operator()(float* const output);
 

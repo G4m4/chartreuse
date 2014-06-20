@@ -33,7 +33,7 @@ namespace algorithms {
 /// within a limited interval
 class AutoCorrelation : public descriptors::Descriptor_Interface {
  public:
-  explicit AutoCorrelation(manager::Manager* manager);
+  explicit AutoCorrelation(interface::Manager* manager);
   ~AutoCorrelation();
 
   void operator()(float* const output);

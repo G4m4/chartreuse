@@ -29,7 +29,7 @@ namespace descriptors {
 /// @brief AudioPower descriptor: for each frame, retrieve its spectrum centroid
 class AudioSpectrumSpread : public Descriptor_Interface {
  public:
-  explicit AudioSpectrumSpread(manager::Manager* manager);
+  explicit AudioSpectrumSpread(interface::Manager* manager);
 
   void operator()(float* const output);
 

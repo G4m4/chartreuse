@@ -26,12 +26,12 @@
 
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace algorithms {
 
-DftRaw::DftRaw(manager::Manager* manager)
+DftRaw::DftRaw(interface::Manager* manager)
     : Descriptor_Interface(manager) {
   // Nothing to do here for now
 }

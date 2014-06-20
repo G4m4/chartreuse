@@ -33,7 +33,7 @@ namespace algorithms {
 /// 2.0f / (dft length * input signal window length)
 class SpectrogramPower : public descriptors::Descriptor_Interface {
  public:
-  explicit SpectrogramPower(manager::Manager* manager);
+  explicit SpectrogramPower(interface::Manager* manager);
 
   void operator()(float* const output);
 

@@ -26,12 +26,12 @@
 #include "Eigen/Core"
 
 #include "chartreuse/src/algorithms/algorithms_common.h"
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace descriptors {
 
-AudioSpectrumSpread::AudioSpectrumSpread(manager::Manager* manager)
+AudioSpectrumSpread::AudioSpectrumSpread(interface::Manager* manager)
     : Descriptor_Interface(manager),
       // TODO(gm): remove this magic
       normalization_factor_(manager->AnalysisParameters().dft_length * 571.865f) {
@@ -39,7 +39,7 @@ AudioSpectrumSpread::AudioSpectrumSpread(manager::Manager* manager)
 }
 
 void AudioSpectrumSpread::operator()(float* const output) {
-  Process(manager_->GetDescriptor(manager::DescriptorId::kSpectrogramPower),
+  Process(manager_->GetDescriptor(interface::DescriptorId::kSpectrogramPower),
           output,
           manager_->FrequencyScale(),
           manager_->AnalysisParameters().low_edge,
@@ -62,7 +62,7 @@ void AudioSpectrumSpread::Process(const float* const spectrogram_power,
 
   // Get the centroid of the frame
   const float kCentroid(*manager_->GetDescriptor(
-    manager::DescriptorId::kAudioSpectrumCentroid));
+    interface::DescriptorId::kAudioSpectrumCentroid));
 
   // Get the normalized squared magnitude spectrogram of the frame
   Eigen::Array<float, Eigen::Dynamic, 1> power(

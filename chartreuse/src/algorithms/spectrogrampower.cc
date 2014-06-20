@@ -26,19 +26,19 @@
 
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace algorithms {
 
-SpectrogramPower::SpectrogramPower(manager::Manager* manager)
+SpectrogramPower::SpectrogramPower(interface::Manager* manager)
     : Descriptor_Interface(manager) {
   // Nothing to do here for now
 }
 
 void SpectrogramPower::operator()(float* const output) {
-  Process(manager_->GetDescriptor(manager::DescriptorId::kDft),
-    manager_->GetDescriptorMeta(manager::DescriptorId::kSpectrogram).out_dim,
+  Process(manager_->GetDescriptor(interface::DescriptorId::kDft),
+    manager_->GetDescriptorMeta(interface::DescriptorId::kSpectrogram).out_dim,
     output);
 }
 

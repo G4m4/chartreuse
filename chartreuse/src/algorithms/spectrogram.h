@@ -37,7 +37,7 @@ namespace algorithms {
 class Spectrogram : public descriptors::Descriptor_Interface {
  public:
   /// @brief Default constructor
-  explicit Spectrogram(manager::Manager* manager);
+  explicit Spectrogram(interface::Manager* manager);
   ~Spectrogram();
 
   void operator()(float* const output);

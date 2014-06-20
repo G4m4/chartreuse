@@ -26,12 +26,12 @@
 
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace algorithms {
 
-DftPower::DftPower(manager::Manager* manager)
+DftPower::DftPower(interface::Manager* manager)
     : Descriptor_Interface(manager),
       // TODO(gm): remove the magic, replace it by actual norm computation
       normalization_factor_(2.0f
@@ -41,8 +41,8 @@ DftPower::DftPower(manager::Manager* manager)
 }
 
 void DftPower::operator()(float* const output) {
-  Process(manager_->GetDescriptor(manager::DescriptorId::kDft),
-          manager_->GetDescriptorMeta(manager::DescriptorId::kDft).out_dim,
+  Process(manager_->GetDescriptor(interface::DescriptorId::kDft),
+          manager_->GetDescriptorMeta(interface::DescriptorId::kDft).out_dim,
           output);
 }
 

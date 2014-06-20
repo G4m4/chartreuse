@@ -26,9 +26,9 @@
 namespace chartreuse {
 
 // Internal forward declaration
-namespace manager {
+namespace interface {
 class Manager;
-}  // namespace manager
+}  // namespace interface
 
 namespace descriptors {
 
@@ -62,7 +62,7 @@ struct Descriptor_Meta {
 class Descriptor_Interface {
  public:
    /// @brief Constructor, mandatory requires to give the manager to be used
-  explicit Descriptor_Interface(manager::Manager* const manager)
+  explicit Descriptor_Interface(interface::Manager* const manager)
       : manager_(manager) {
     CHARTREUSE_ASSERT(manager != nullptr);
   }
@@ -83,7 +83,7 @@ class Descriptor_Interface {
   virtual Descriptor_Meta Meta(void) const = 0;
 
  protected:
-  manager::Manager* const manager_;  ///< Internal access to common manager
+  interface::Manager* const manager_;  ///< Internal access to common manager
 
  private:
   // No assignment operator for this class

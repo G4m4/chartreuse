@@ -26,12 +26,12 @@
 #include "Eigen/Core"
 
 #include "chartreuse/src/algorithms/algorithms_common.h"
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace descriptors {
 
-AudioSpectrumCentroid::AudioSpectrumCentroid(manager::Manager* manager)
+AudioSpectrumCentroid::AudioSpectrumCentroid(interface::Manager* manager)
     : Descriptor_Interface(manager),
       // TODO(gm): remove this magic
       normalization_factor_(manager->AnalysisParameters().dft_length * 571.865f) {
@@ -39,7 +39,7 @@ AudioSpectrumCentroid::AudioSpectrumCentroid(manager::Manager* manager)
 }
 
 void AudioSpectrumCentroid::operator()(float* const output) {
-  Process(manager_->GetDescriptor(manager::DescriptorId::kSpectrogramPower),
+  Process(manager_->GetDescriptor(interface::DescriptorId::kSpectrogramPower),
           output,
           manager_->FrequencyScale(),
           manager_->AnalysisParameters().low_edge,

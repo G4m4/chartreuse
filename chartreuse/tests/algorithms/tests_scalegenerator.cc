@@ -21,13 +21,13 @@
 #include "chartreuse/tests/tests.h"
 
 #include "chartreuse/src/algorithms/scalegenerator.h"
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 // Using declarations for tested class
 using chartreuse::algorithms::ScaleGenerator;
 // Useful using declarations
 using chartreuse::algorithms::Scale::kLogFreq;
-using chartreuse::manager::Manager;
+using chartreuse::interface::Manager;
 
 /// @brief Check window data range
 TEST(ScaleGenerator, LogFreqRange) {

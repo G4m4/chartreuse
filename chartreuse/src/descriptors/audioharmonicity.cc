@@ -25,13 +25,13 @@
 
 #include "Eigen/Core"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
 
 namespace chartreuse {
 namespace descriptors {
 
-AudioHarmonicity::AudioHarmonicity(manager::Manager* manager)
+AudioHarmonicity::AudioHarmonicity(interface::Manager* manager)
     : Descriptor_Interface(manager) {
   // Nothing to do here for now
 }
@@ -39,8 +39,8 @@ AudioHarmonicity::AudioHarmonicity(manager::Manager* manager)
 void AudioHarmonicity::operator()(float* const output) {
   // Retrieve current frame autocorrelation & AFF
   const float kAFF(*manager_->GetDescriptor(
-    manager::DescriptorId::kAudioFundamentalFrequency));
-  Process(manager_->GetDescriptor(manager::DescriptorId::kAutoCorrelation),
+    interface::DescriptorId::kAudioFundamentalFrequency));
+  Process(manager_->GetDescriptor(interface::DescriptorId::kAutoCorrelation),
           kAFF,
           manager_->AnalysisParameters().min_lag,
           output);

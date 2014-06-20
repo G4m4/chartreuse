@@ -24,12 +24,12 @@
 
 #include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/common.h"
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace algorithms {
 
-KissFFT::KissFFT(manager::Manager* manager)
+KissFFT::KissFFT(interface::Manager* manager)
     : Descriptor_Interface(manager),
       config_(kiss_fftr_alloc(manager_->AnalysisParameters().dft_length,
                               0,

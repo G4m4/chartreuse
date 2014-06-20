@@ -22,12 +22,12 @@
 
 #include "Eigen/Core"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace descriptors {
 
-AudioWaveform::AudioWaveform(manager::Manager* manager)
+AudioWaveform::AudioWaveform(interface::Manager* manager)
     : Descriptor_Interface(manager) {
   // Nothing to do here!
 }

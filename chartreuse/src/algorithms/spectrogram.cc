@@ -23,12 +23,12 @@
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
 #include "chartreuse/src/algorithms/dftraw.h"
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 namespace chartreuse {
 namespace algorithms {
 
-Spectrogram::Spectrogram(manager::Manager* manager)
+Spectrogram::Spectrogram(interface::Manager* manager)
     : Descriptor_Interface(manager),
       dft_(manager) {
   // Nothing to do here for now

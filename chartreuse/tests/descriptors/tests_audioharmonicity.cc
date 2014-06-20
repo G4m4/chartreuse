@@ -20,17 +20,17 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 // Useful using declarations
-using chartreuse::manager::Manager;
-using chartreuse::manager::DescriptorId::kAudioHarmonicity;
+using chartreuse::interface::Manager;
+using chartreuse::interface::DescriptorId::kAudioHarmonicity;
 
 /// @brief Compute the descriptor for a null signal,
 /// check its output
 TEST(AudioHarmonicity, Null) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioHarmonicity);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioHarmonicity);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -54,8 +54,8 @@ TEST(AudioHarmonicity, Null) {
 /// @brief Compute the descriptor for an uniform white noise,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioHarmonicity, WhiteNoise) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioHarmonicity);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioHarmonicity);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -79,8 +79,8 @@ TEST(AudioHarmonicity, WhiteNoise) {
 /// @brief Compute the descriptor for a pure sinusoid,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioHarmonicity, Sin) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioHarmonicity);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioHarmonicity);
 
   std::size_t index(0);
   const unsigned int kFrameLength(manager.AnalysisParameters().hop_size_sample);
@@ -101,8 +101,8 @@ TEST(AudioHarmonicity, Sin) {
 /// check the descriptor output
 TEST(AudioHarmonicity, LowFreq) {
   const float kFrequency(1.0f);
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioHarmonicity);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioHarmonicity);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -128,8 +128,8 @@ TEST(AudioHarmonicity, LowFreq) {
 /// check the descriptor output
 TEST(AudioHarmonicity, HighFreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioHarmonicity);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioHarmonicity);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -154,8 +154,8 @@ TEST(AudioHarmonicity, HighFreq) {
 /// @brief Compute the descriptor for a constant value,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioHarmonicity, Constant) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioHarmonicity);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioHarmonicity);
   const float kConstant(1.0f);
 
   std::size_t index(0);
@@ -179,8 +179,8 @@ TEST(AudioHarmonicity, Constant) {
 
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioHarmonicity, Perf) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioHarmonicity);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioHarmonicity);
 
   std::size_t index(0);
   // Computing the mean output prevents the compiler from optimizing out things

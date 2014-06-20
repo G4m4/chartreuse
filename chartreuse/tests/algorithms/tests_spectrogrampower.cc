@@ -20,17 +20,17 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 // Useful using declarations
-using chartreuse::manager::Manager;
-using chartreuse::manager::DescriptorId::kSpectrogramPower;
+using chartreuse::interface::Manager;
+using chartreuse::interface::DescriptorId::kSpectrogramPower;
 
 /// @brief Compute the spectrogram power for white noise
 TEST(SpectrogramPower, WhiteNoise) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
-  chartreuse::manager::DescriptorId::Type descriptor(kSpectrogramPower);
+  chartreuse::interface::DescriptorId::Type descriptor(kSpectrogramPower);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   manager.EnableDescriptor(descriptor, true);
@@ -58,7 +58,7 @@ TEST(SpectrogramPower, WhiteNoise) {
 TEST(SpectrogramPower, Sin) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
-  chartreuse::manager::DescriptorId::Type descriptor(kSpectrogramPower);
+  chartreuse::interface::DescriptorId::Type descriptor(kSpectrogramPower);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   manager.EnableDescriptor(descriptor, true);
@@ -82,7 +82,7 @@ TEST(SpectrogramPower, Sin) {
 TEST(SpectrogramPower, Perf) {
   const unsigned int kDftLength(2048);
   const float kSamplingFreq(48000.0f);
-  chartreuse::manager::DescriptorId::Type descriptor(kSpectrogramPower);
+  chartreuse::interface::DescriptorId::Type descriptor(kSpectrogramPower);
 
   Manager manager(Manager::Parameters(kSamplingFreq, kDftLength));
   manager.EnableDescriptor(descriptor, true);

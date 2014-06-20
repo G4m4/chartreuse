@@ -30,7 +30,7 @@ namespace algorithms {
 /// @brief Dft "raw" algorithm implementation class
 class DftRaw : public descriptors::Descriptor_Interface {
  public:
-  explicit DftRaw(manager::Manager* manager);
+  explicit DftRaw(interface::Manager* manager);
 
   void operator()(float* const output);
 

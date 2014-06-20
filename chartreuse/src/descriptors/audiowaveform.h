@@ -29,7 +29,7 @@ namespace descriptors {
 /// @brief AudioWaveform descriptor: for each frame, retrieve min and max
 class AudioWaveform : public Descriptor_Interface {
  public:
-  explicit AudioWaveform(manager::Manager* manager);
+  explicit AudioWaveform(interface::Manager* manager);
 
   void operator()(float* const output);
 

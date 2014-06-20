@@ -20,17 +20,17 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 // Useful using declarations
-using chartreuse::manager::Manager;
-using chartreuse::manager::DescriptorId::kAudioWaveform;
+using chartreuse::interface::Manager;
+using chartreuse::interface::DescriptorId::kAudioWaveform;
 
 /// @brief Compute the descriptor for a null signal,
 /// check its output
 TEST(AudioWaveform, Null) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioWaveform);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -54,8 +54,8 @@ TEST(AudioWaveform, Null) {
 /// @brief Compute the descriptor for an uniform white noise,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, WhiteNoise) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioWaveform);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -79,8 +79,8 @@ TEST(AudioWaveform, WhiteNoise) {
 /// @brief Compute the descriptor for a pure sinusoid,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, Sin) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioWaveform);
 
   std::size_t index(0);
   const unsigned int kFrameLength(manager.AnalysisParameters().hop_size_sample);
@@ -101,8 +101,8 @@ TEST(AudioWaveform, Sin) {
 /// check the descriptor output
 TEST(AudioWaveform, LowFreq) {
   const float kFrequency(1.0f);
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioWaveform);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -128,8 +128,8 @@ TEST(AudioWaveform, LowFreq) {
 /// check the descriptor output
 TEST(AudioWaveform, Highfreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioWaveform);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -154,8 +154,8 @@ TEST(AudioWaveform, Highfreq) {
 /// @brief Compute the descriptor for a constant value,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioWaveform, Constant) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioWaveform);
   const float kConstant(manager.GetDescriptorMeta(descriptor).out_max);
 
   std::size_t index(0);
@@ -179,8 +179,8 @@ TEST(AudioWaveform, Constant) {
 
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioWaveform, Perf) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioWaveform);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioWaveform);
 
   std::size_t index(0);
   // Computing the mean output prevents the compiler from optimizing out things

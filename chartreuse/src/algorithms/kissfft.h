@@ -33,7 +33,7 @@ namespace algorithms {
 /// @brief Kiss FFT algorithm wrapper class
 class KissFFT : public descriptors::Descriptor_Interface {
  public:
-  explicit KissFFT(manager::Manager* manager);
+  explicit KissFFT(interface::Manager* manager);
   ~KissFFT();
 
   void operator()(float* const output);

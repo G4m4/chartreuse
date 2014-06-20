@@ -25,20 +25,20 @@
 
 #include "Eigen/Core"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
 
 namespace chartreuse {
 namespace descriptors {
 
-AudioFundamentalFrequency::AudioFundamentalFrequency(manager::Manager* manager)
+AudioFundamentalFrequency::AudioFundamentalFrequency(interface::Manager* manager)
     : Descriptor_Interface(manager) {
   // Nothing to do here for now
 }
 
 void AudioFundamentalFrequency::operator()(float* const output) {
   // Retrieve current frame autocorrelation
-  Process(manager_->GetDescriptor(manager::DescriptorId::kAutoCorrelation),
+  Process(manager_->GetDescriptor(interface::DescriptorId::kAutoCorrelation),
           manager_->AnalysisParameters().min_lag,
           manager_->AnalysisParameters().max_lag,
           output);

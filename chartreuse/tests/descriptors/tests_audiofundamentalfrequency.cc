@@ -20,17 +20,17 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 // Useful using declarations
-using chartreuse::manager::Manager;
-using chartreuse::manager::DescriptorId::kAudioFundamentalFrequency;
+using chartreuse::interface::Manager;
+using chartreuse::interface::DescriptorId::kAudioFundamentalFrequency;
 
 /// @brief Compute the descriptor for a null signal,
 /// check its output
 TEST(AudioFundamentalFrequency, Null) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -54,8 +54,8 @@ TEST(AudioFundamentalFrequency, Null) {
 /// @brief Compute the descriptor for an uniform white noise,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioFundamentalFrequency, WhiteNoise) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
 
   std::size_t index(0);
   while (index < kDataTestSetSize) {
@@ -79,8 +79,8 @@ TEST(AudioFundamentalFrequency, WhiteNoise) {
 /// @brief Compute the descriptor for a pure sinusoid,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioFundamentalFrequency, Sin) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
 
   std::size_t index(0);
   const unsigned int kFrameLength(manager.AnalysisParameters().hop_size_sample);
@@ -101,8 +101,8 @@ TEST(AudioFundamentalFrequency, Sin) {
 /// check the descriptor output
 TEST(AudioFundamentalFrequency, LowFreq) {
   const float kFrequency(1.0f);
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -128,8 +128,8 @@ TEST(AudioFundamentalFrequency, LowFreq) {
 /// check the descriptor output
 TEST(AudioFundamentalFrequency, HighFreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
 
   std::size_t index(0);
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -154,8 +154,8 @@ TEST(AudioFundamentalFrequency, HighFreq) {
 /// @brief Compute the descriptor for a constant value,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioFundamentalFrequency, Constant) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
   const float kConstant(1.0f);
 
   std::size_t index(0);
@@ -179,8 +179,8 @@ TEST(AudioFundamentalFrequency, Constant) {
 
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioFundamentalFrequency, Perf) {
-  Manager manager(kSamplingFreq);
-  chartreuse::manager::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
+  Manager manager(Manager::Parameters::Parameters(kSamplingFreq));
+  chartreuse::interface::DescriptorId::Type descriptor(kAudioFundamentalFrequency);
 
   std::size_t index(0);
   // Computing the mean output prevents the compiler from optimizing out things

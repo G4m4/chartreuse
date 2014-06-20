@@ -48,6 +48,19 @@ TEST(Analyzer, WhiteNoise) {
     analyzer.Process(&frame[0],
                      frame.size(),
                      &out_data[0]);
+    for (unsigned int subframe_idx(0);
+         subframe_idx < kExpectedSubframesCount;
+         ++subframe_idx) {
+      for (unsigned int descriptor_idx(0);
+           descriptor_idx < kAvailableDescriptors.size();
+           ++descriptor_idx) {
+        const unsigned int kActualIdx(subframe_idx * kAvailableDescriptors.size()
+                                      + descriptor_idx);
+        const float kValue(out_data[kActualIdx]);
+        EXPECT_GE(1.0f, kValue);
+        EXPECT_LE(0.0f, kValue);
+      }
+    }  // subframe_idx
     index += frame.size();
   }
 }

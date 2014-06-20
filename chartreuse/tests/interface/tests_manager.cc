@@ -40,8 +40,6 @@ TEST(Manager, WhiteNoise) {
     manager.EnableDescriptor(static_cast<Type>(descriptor_idx), true);
   }
 
-  std::vector<float> out_data(manager.DescriptorsOutputSize());
-
   std::size_t index(0);
   while (index < kDataTestSetSize) {
     std::array<float, chartreuse::kHopSizeSamples> frame;
@@ -77,8 +75,6 @@ TEST(Manager, Perf) {
        ++descriptor_idx) {
     manager.EnableDescriptor(static_cast<Type>(descriptor_idx), true);
   }
-
-  std::vector<float> out_data(manager.DescriptorsOutputSize());
 
   std::size_t index(0);
   while (index < kDataPerfSetSize) {

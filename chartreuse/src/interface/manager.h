@@ -42,31 +42,10 @@
 #include "chartreuse/src/descriptors/audiospectrumspread.h"
 #include "chartreuse/src/descriptors/audiowaveform.h"
 
+#include "chartreuse/src/interface/interface_common.h"
+
 namespace chartreuse {
 namespace interface {
-
-namespace DescriptorId {
-
-/// @brief Any available descriptor is uniquely identified by this constant
-enum Type {
-  kAudioPower = 0,
-  kAudioSpectrumCentroid,
-  kAudioSpectrumSpread,
-  kAudioWaveform,
-  kAudioFundamentalFrequency,
-  kAudioHarmonicity,
-  kDft,
-  kSpectrogram,
-  kDftPower,
-  kSpectrogramPower,
-  kAutoCorrelation,
-  kCount
-};
-
-/// @brief Pre-Increment operator for the enum
-Type operator++(const Type value);
-
-}  // namespace DescriptorId
 
 /// @brief Manager class:
 /// Handle multiple descriptors retrieval in an efficient manner,

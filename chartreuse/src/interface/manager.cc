@@ -29,11 +29,6 @@
 namespace chartreuse {
 namespace interface {
 
-DescriptorId::Type DescriptorId::operator++(const DescriptorId::Type value) {
-  const unsigned int value_int(static_cast<unsigned int>(value));
-  return static_cast<DescriptorId::Type>(value_int + 1);
-}
-
 Manager::Parameters::Parameters(const float sampling_freq,
                                 const unsigned int dft_length,
                                 const float low_freq,

@@ -26,6 +26,7 @@
 using chartreuse::interface::Manager;
 using chartreuse::interface::DescriptorId::kCount;
 using chartreuse::interface::DescriptorId::Type;
+using chartreuse::descriptors::Descriptor_Meta;
 
 /// @brief Compute all descriptors for white noise
 TEST(Manager, WhiteNoise) {
@@ -50,6 +51,17 @@ TEST(Manager, WhiteNoise) {
                   [&] {return kNormDistribution(kRandomGenerator);});
     manager.ProcessFrame(&frame[0],
                          frame.size());
+    for (unsigned int descriptor_idx(0);
+         descriptor_idx < kCount;
+         ++descriptor_idx) {
+      const Type descriptor(static_cast<Type>(descriptor_idx));
+      const Descriptor_Meta& desc_meta(manager.GetDescriptorMeta(descriptor));
+      const float* out_data(manager.GetDescriptor(descriptor));
+      for (unsigned int desc_index(0); desc_index < desc_meta.out_dim; ++desc_index) {
+        EXPECT_GE(desc_meta.out_max, out_data[desc_index]);
+        EXPECT_LE(desc_meta.out_min, out_data[desc_index]);
+      }
+    }
     index += frame.size();
   }
 }

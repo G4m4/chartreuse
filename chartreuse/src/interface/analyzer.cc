@@ -25,6 +25,7 @@
 #include <array>
 
 #include "chartreuse/src/common.h"
+#include "chartreuse/src/descriptors/descriptor_interface.h"
 
 namespace chartreuse {
 namespace interface {
@@ -49,9 +50,13 @@ void Analyzer::Process(const float* const input,
     for (unsigned int desc_idx(0);
          desc_idx < kAvailableDescriptors.size();
          ++desc_idx) {
-      std::copy_n(desc_manager_.GetDescriptor(kAvailableDescriptors[desc_idx]),
-                  1,
-                  current_out);
+      const DescriptorId::Type current_descriptor(
+        kAvailableDescriptors[desc_idx]);
+      const float kRawValue(*desc_manager_.GetDescriptor(current_descriptor));
+      const descriptors::Descriptor_Meta& kMeta(desc_manager_.GetDescriptorMeta(
+                                                  current_descriptor));
+      // Normalization
+      *output = (kRawValue - kMeta.out_min) / (kMeta.out_max - kMeta.out_min);
       current_out += 1;
     }
     remaining_length -= chartreuse::kHopSizeSamples;

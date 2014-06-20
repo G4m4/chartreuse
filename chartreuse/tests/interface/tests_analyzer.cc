@@ -24,6 +24,7 @@
 
 // Using declarations for tested class
 using chartreuse::interface::Analyzer;
+// Using declarations for related classes
 using chartreuse::interface::kAvailableDescriptors;
 
 /// @brief Feed the analyzer with white noise

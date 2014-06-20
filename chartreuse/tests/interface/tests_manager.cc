@@ -24,6 +24,7 @@
 
 // Using declarations for tested class
 using chartreuse::interface::Manager;
+// Using declarations for related classes
 using chartreuse::interface::DescriptorId::kCount;
 using chartreuse::interface::DescriptorId::Type;
 using chartreuse::descriptors::Descriptor_Meta;

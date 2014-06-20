@@ -29,7 +29,7 @@ using chartreuse::interface::DescriptorId::kAudioSpectrumSpread;
 /// @brief Compute the descriptor for a null signal,
 /// check its output
 TEST(AudioSpectrumSpread, Null) {
-  Manager manager((Manager::Parameters::Parameters(kSamplingFreq)));
+  Manager manager((Manager::Parameters(kSamplingFreq)));
   chartreuse::interface::DescriptorId::Type descriptor(kAudioSpectrumSpread);
 
   std::size_t index(0);
@@ -54,7 +54,7 @@ TEST(AudioSpectrumSpread, Null) {
 /// @brief Compute the descriptor for an uniform white noise,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumSpread, WhiteNoise) {
-  Manager manager((Manager::Parameters::Parameters(kSamplingFreq)));
+  Manager manager((Manager::Parameters(kSamplingFreq)));
   chartreuse::interface::DescriptorId::Type descriptor(kAudioSpectrumSpread);
 
   std::size_t index(0);
@@ -79,7 +79,7 @@ TEST(AudioSpectrumSpread, WhiteNoise) {
 /// @brief Compute the descriptor for a pure sinusoid,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumSpread, Sin) {
-  Manager manager((Manager::Parameters::Parameters(kSamplingFreq)));
+  Manager manager((Manager::Parameters(kSamplingFreq)));
   chartreuse::interface::DescriptorId::Type descriptor(kAudioSpectrumSpread);
 
   std::size_t index(0);
@@ -101,7 +101,7 @@ TEST(AudioSpectrumSpread, Sin) {
 /// check the descriptor output
 TEST(AudioSpectrumSpread, LowFreq) {
   const float kFrequency(1.0f);
-  Manager manager((Manager::Parameters::Parameters(kSamplingFreq)));
+  Manager manager((Manager::Parameters(kSamplingFreq)));
   chartreuse::interface::DescriptorId::Type descriptor(kAudioSpectrumSpread);
 
   std::size_t index(0);
@@ -128,7 +128,7 @@ TEST(AudioSpectrumSpread, LowFreq) {
 /// check the descriptor output
 TEST(AudioSpectrumSpread, HighFreq) {
   const float kFrequency((kSamplingFreq - 10.f) / 2.0f);
-  Manager manager((Manager::Parameters::Parameters(kSamplingFreq)));
+  Manager manager((Manager::Parameters(kSamplingFreq)));
   chartreuse::interface::DescriptorId::Type descriptor(kAudioSpectrumSpread);
 
   std::size_t index(0);
@@ -154,7 +154,7 @@ TEST(AudioSpectrumSpread, HighFreq) {
 /// @brief Compute the descriptor for a constant value,
 /// check that its range lies within [out_min ; out_max]
 TEST(AudioSpectrumSpread, Constant) {
-  Manager manager((Manager::Parameters::Parameters(kSamplingFreq)));
+  Manager manager((Manager::Parameters(kSamplingFreq)));
   chartreuse::interface::DescriptorId::Type descriptor(kAudioSpectrumSpread);
   const float kConstant(1.0f);
 
@@ -179,7 +179,7 @@ TEST(AudioSpectrumSpread, Constant) {
 
 /// @brief Performance test for computing a fixed length signal
 TEST(AudioSpectrumSpread, Perf) {
-  Manager manager((Manager::Parameters::Parameters(kSamplingFreq)));
+  Manager manager((Manager::Parameters(kSamplingFreq)));
   chartreuse::interface::DescriptorId::Type descriptor(kAudioSpectrumSpread);
 
   std::size_t index(0);

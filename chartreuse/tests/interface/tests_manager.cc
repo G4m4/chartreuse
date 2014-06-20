@@ -33,7 +33,7 @@ using chartreuse::descriptors::Descriptor_Meta;
 TEST(Manager, WhiteNoise) {
   const float kSamplingFreq(48000.0f);
 
-  Manager manager((Manager::Parameters::Parameters(kSamplingFreq)));
+  Manager manager((Manager::Parameters(kSamplingFreq)));
 
   for (unsigned int descriptor_idx(0);
        descriptor_idx < kCount;
@@ -69,7 +69,7 @@ TEST(Manager, WhiteNoise) {
 TEST(Manager, Perf) {
   const float kSamplingFreq(48000.0f);
 
-  Manager manager((Manager::Parameters::Parameters(kSamplingFreq)));
+  Manager manager((Manager::Parameters(kSamplingFreq)));
 
   for (unsigned int descriptor_idx(0);
        descriptor_idx < kCount;

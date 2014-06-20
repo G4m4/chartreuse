@@ -18,7 +18,7 @@
 /// You should have received a copy of the GNU General Public License
 /// along with Chartreuse.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 // std::floor
 #include <cmath>
@@ -27,7 +27,7 @@
 #include "chartreuse/src/descriptors/descriptor_interface.h"
 
 namespace chartreuse {
-namespace manager {
+namespace interface {
 
 DescriptorId::Type DescriptorId::operator++(const DescriptorId::Type value) {
   const unsigned int value_int(static_cast<unsigned int>(value));
@@ -390,5 +390,5 @@ float* Manager::DescriptorDataPtr(const DescriptorId::Type descriptor) {
   return &descriptors_data_[0] + data_offset;
 }
 
-}  // namespace manager
+}  // namespace interface
 }  // namespace chartreuse

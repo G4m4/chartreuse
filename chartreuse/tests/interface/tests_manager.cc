@@ -20,12 +20,12 @@
 
 #include "chartreuse/tests/tests.h"
 
-#include "chartreuse/src/manager/manager.h"
+#include "chartreuse/src/interface/manager.h"
 
 // Using declarations for tested class
-using chartreuse::manager::Manager;
-using chartreuse::manager::DescriptorId::kCount;
-using chartreuse::manager::DescriptorId::Type;
+using chartreuse::interface::Manager;
+using chartreuse::interface::DescriptorId::kCount;
+using chartreuse::interface::DescriptorId::Type;
 
 /// @brief Compute all descriptors for white noise
 TEST(Manager, WhiteNoise) {

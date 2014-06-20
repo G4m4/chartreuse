@@ -15,7 +15,7 @@ include_directories(
 # Include all subdirectories tests source files
 add_subdirectory(algorithms)
 add_subdirectory(descriptors)
-add_subdirectory(manager)
+add_subdirectory(interface)
 
 # Group sources
 source_group("algorithms"
@@ -26,9 +26,9 @@ source_group("descriptors"
   FILES
   ${CHARTREUSE_TESTS_DESCRIPTORS_SRC}
 )
-source_group("manager"
+source_group("interface"
   FILES
-  ${CHARTREUSE_TESTS_MANAGER_SRC}
+  ${CHARTREUSE_TESTS_INTERFACE_SRC}
 )
 
 # Source files
@@ -37,7 +37,7 @@ set(CHARTREUSE_TESTS_SRC
     tests.cc
     ${CHARTREUSE_TESTS_ALGORITHMS_SRC}
     ${CHARTREUSE_TESTS_DESCRIPTORS_SRC}
-    ${CHARTREUSE_TESTS_MANAGER_SRC}
+    ${CHARTREUSE_TESTS_INTERFACE_SRC}
 )
 set(CHARTREUSE_TESTS_HDR
     debug.h

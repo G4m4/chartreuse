@@ -18,8 +18,8 @@
 /// You should have received a copy of the GNU General Public License
 /// along with Chartreuse.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CHARTREUSE_SRC_MANAGER_MANAGER_H_
-#define CHARTREUSE_SRC_MANAGER_MANAGER_H_
+#ifndef CHARTREUSE_SRC_INTERFACE_MANAGER_H_
+#define CHARTREUSE_SRC_INTERFACE_MANAGER_H_
 
 #include <array>
 #include <vector>
@@ -43,7 +43,7 @@
 #include "chartreuse/src/descriptors/audiowaveform.h"
 
 namespace chartreuse {
-namespace manager {
+namespace interface {
 
 namespace DescriptorId {
 
@@ -71,8 +71,6 @@ Type operator++(const Type value);
 /// @brief Manager class:
 /// Handle multiple descriptors retrieval in an efficient manner,
 /// by batching common processing between numerous descriptors.
-///
-/// This should be your preferred way to retrieve descriptors from any input.
 class Manager {
  public:
   /// @brief Manager parameters class
@@ -217,7 +215,7 @@ class Manager {
   algorithms::ScaleGenerator freq_scale_;  ///< Frequency scale generator
 };
 
-}  // namespace manager
+}  // namespace interface
 }  // namespace chartreuse
 
-#endif  // CHARTREUSE_SRC_MANAGER_MANAGER_H_
+#endif  // CHARTREUSE_SRC_INTERFACE_MANAGER_H_

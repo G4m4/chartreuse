@@ -35,12 +35,13 @@ TEST(Analyzer, WhiteNoiseRange) {
                                              / chartreuse::kHopSizeSamples);
 
   Analyzer analyzer(kSamplingFreq);
+  const unsigned int kMaxIteration(1);
 
   std::vector<float> out_data(kAvailableDescriptors.size()
                               * kExpectedSubframesCount);
 
   std::size_t index(0);
-  while (index < kDataTestSetSize) {
+  while (index < kMaxIteration) {
     std::vector<float> frame(kFrameLength);
     // Fill the frame with random data
     std::generate(frame.begin(),
@@ -62,7 +63,7 @@ TEST(Analyzer, WhiteNoiseRange) {
         EXPECT_LE(0.0f, kValue);
       }
     }  // subframe_idx
-    index += frame.size();
+    index += 1;
   }
 }
 
@@ -74,6 +75,7 @@ TEST(Analyzer, WhiteNoiseConsistency) {
   const unsigned int kExpectedSubframesCount(kFrameLength
                                              / chartreuse::kHopSizeSamples);
   const float kEpsilon(1e-3f);
+  const unsigned int kMaxIteration(2);
 
   Analyzer analyzer(kSamplingFreq);
 
@@ -81,7 +83,7 @@ TEST(Analyzer, WhiteNoiseConsistency) {
                               * kExpectedSubframesCount);
 
   std::size_t index(0);
-  while (index < kDataTestSetSize) {
+  while (index < kMaxIteration) {
     std::vector<float> frame(kFrameLength);
     // Fill the frame with random data
     std::generate(frame.begin(),

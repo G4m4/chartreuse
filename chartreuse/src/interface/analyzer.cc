@@ -41,9 +41,9 @@ Analyzer::~Analyzer() {
   delete &desc_manager_;
 }
 
-void Analyzer::Process(const float* const input,
-                       const unsigned int length,
-                       float* const output) {
+unsigned int Analyzer::Process(const float* const input,
+                               const unsigned int length,
+                               float* const output) {
   unsigned int current_index(0);
   float* current_out(output);
   while (length - current_index >= chartreuse::kHopSizeSamples) {
@@ -63,6 +63,8 @@ void Analyzer::Process(const float* const input,
     }
     current_index += chartreuse::kHopSizeSamples;
   }
+  CHARTREUSE_ASSERT(current_index % chartreuse::kHopSizeSamples == 0);
+  return current_index / chartreuse::kHopSizeSamples;
 }
 
 float Analyzer::Normalize(const float input,

@@ -61,12 +61,14 @@ class Analyzer {
   ///
   /// @param[in]  input   Input frame data
   /// @param[in]  length   Input frame length
-  /// @param[out]  input   Output data, in a flattened structure as follows:
+  /// @param[out]  output   Output data, in a flattened structure as follows:
   ///
   /// subframe1_desc_1 ... subframe1_desc_N subframe2_desc_1 ... subframe2_desc_N
-  void Process(const float* const input,
-               const unsigned int length,
-               float* const output);
+  ///
+  /// @return Actual count of processed subframes
+  unsigned int Process(const float* const input,
+                       const unsigned int length,
+                       float* const output);
 
  private:
 

@@ -68,8 +68,8 @@ TEST(Analyzer, WhiteNoiseRange) {
 }
 
 /// @brief Feed the analyzer with white noise,
-/// check consitency accross subframes
-TEST(Analyzer, WhiteNoiseConsistency) {
+/// check consistency across subframes
+TEST(Analyzer, WhiteNoiseSubframeConsistency) {
   const float kSamplingFreq(48000.0f);
   const unsigned int kFrameLength(chartreuse::kHopSizeSamples * 3);
   const unsigned int kExpectedSubframesCount(kFrameLength
@@ -94,7 +94,54 @@ TEST(Analyzer, WhiteNoiseConsistency) {
                      &out_data[0]);
     // Expecting each subframe to be very close to the second one
     // The first one is ignored due to the "empty first buffer" effect
-    for (unsigned int subframe_idx(2);
+    for (unsigned int subframe_idx(1);
+         subframe_idx < kExpectedSubframesCount;
+         ++subframe_idx) {
+      for (unsigned int descriptor_idx(0);
+        descriptor_idx < kAvailableDescriptors.size();
+        ++descriptor_idx) {
+        const unsigned int kActualIdx(subframe_idx * kAvailableDescriptors.size()
+          + descriptor_idx);
+        const float kValue(out_data[kActualIdx]);
+        EXPECT_NEAR(out_data[descriptor_idx + kAvailableDescriptors.size()],
+                    kValue,
+                    kEpsilon);
+      }
+    }  // subframe_idx
+    index += 1;
+  }
+}
+
+/// @brief Feed the analyzer with a perfect sinusoid,
+/// check consistency across subframes
+TEST(Analyzer, SinSubframeConsistency) {
+  const float kSamplingFreq(48000.0f);
+  const unsigned int kFrameLength(chartreuse::kHopSizeSamples * 3);
+  const unsigned int kExpectedSubframesCount(kFrameLength
+                                             / chartreuse::kHopSizeSamples);
+  const float kFrequency(445.0f);
+  const float kEpsilon(7e-2f);
+  const unsigned int kMaxIteration(2);
+
+  SinusGenerator generator(kFrequency, kSamplingFreq);
+  Analyzer analyzer(kSamplingFreq);
+
+  std::vector<float> out_data(kAvailableDescriptors.size()
+                              * kExpectedSubframesCount);
+
+  std::size_t index(0);
+  while (index < kMaxIteration) {
+    std::vector<float> frame(kFrameLength);
+    // Fill the frame with sin data
+    std::generate(frame.begin(),
+                  frame.end(),
+                  [&] {return generator();});
+    analyzer.Process(&frame[0],
+                     kFrameLength,
+                     &out_data[0]);
+    // Expecting each subframe to be very close to the second one
+    // The first one is ignored due to the "empty first buffer" effect
+    for (unsigned int subframe_idx(1);
          subframe_idx < kExpectedSubframesCount;
          ++subframe_idx) {
       for (unsigned int descriptor_idx(0);
@@ -108,6 +155,71 @@ TEST(Analyzer, WhiteNoiseConsistency) {
                     kEpsilon);
       }
     }  // subframe_idx
-    index += frame.size();
+    index += 1;
+  }
+}
+
+/// @brief Feed the analyzer with a perfect low frequency sinusoid,
+/// check consistency across frames
+///
+/// This is a convoluted way to check that the analyzer internal buffer
+/// makes a good job of handling remaining data when the  input block size
+/// is not a mutliple of the internal one.
+TEST(Analyzer, SinInterFrameConsistency) {
+  const float kSamplingFreq(48000.0f);
+  const unsigned int kFrameLength(chartreuse::kHopSizeSamples * 7 / 2);
+  const unsigned int kMaxSubframesCount(
+    static_cast<unsigned int>(std::ceil(static_cast<float>(kFrameLength)
+                                          / chartreuse::kHopSizeSamples)));
+  const float kFrequency(75.0f);
+  const float kEpsilon(7e-2f);
+  const unsigned int kMaxIteration(4);
+
+  SinusGenerator generator(kFrequency, kSamplingFreq);
+  Analyzer analyzer(kSamplingFreq);
+
+  std::vector<float> out_data(kAvailableDescriptors.size()
+                              * kMaxSubframesCount);
+
+  std::vector<float> ref_data(kAvailableDescriptors.size());
+
+  std::vector<float> frame(kFrameLength);
+  std::generate(frame.begin(),
+                frame.end(),
+                [&] {return generator();});
+  analyzer.Process(&frame[0],
+                    kFrameLength,
+                    &out_data[0]);
+  // The second subframe of the first frame is taken as a reference
+  std::copy_n(&out_data[kAvailableDescriptors.size()],
+              kAvailableDescriptors.size(),
+              ref_data.begin());
+
+  std::size_t index(1);
+  while (index < kMaxIteration) {
+    std::vector<float> frame(kFrameLength);
+    std::generate(frame.begin(),
+                  frame.end(),
+                  [&] {return generator();});
+    const unsigned int kActualSubframesCount(analyzer.Process(&frame[0],
+                                                              kFrameLength,
+                                                              &out_data[0]));
+    // Expecting each subframe to be very close to the second one
+    // The first one is ignored due to the "empty first buffer" effect
+    for (unsigned int subframe_idx(0);
+         subframe_idx < kActualSubframesCount;
+         ++subframe_idx) {
+      for (unsigned int descriptor_idx(0);
+        descriptor_idx < kAvailableDescriptors.size();
+        ++descriptor_idx) {
+        const unsigned int kActualIdx(subframe_idx * kAvailableDescriptors.size()
+          + descriptor_idx);
+        const float kValue(out_data[kActualIdx]);
+        EXPECT_NEAR(ref_data[descriptor_idx],
+                    kValue,
+                    kEpsilon);
+      }
+    }  // subframe_idx
+    index += 1;
   }
 }

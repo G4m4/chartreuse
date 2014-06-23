@@ -31,8 +31,8 @@ using chartreuse::interface::kAvailableDescriptors;
 TEST(Analyzer, WhiteNoise) {
   const float kSamplingFreq(48000.0f);
   const unsigned int kFrameLength(480);
-  const unsigned int kExpectedSubframesCount(chartreuse::kHopSizeSamples
-                                             / kFrameLength);
+  const unsigned int kExpectedSubframesCount(kFrameLength
+                                             / chartreuse::kHopSizeSamples);
 
   Analyzer analyzer(kSamplingFreq);
 

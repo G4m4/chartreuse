@@ -51,6 +51,16 @@ class RingBuffer {
                      const std::size_t count,
                      const unsigned int overlap);
 
+  /// @brief Pop elements out of the buffer (no overlap)
+  ///
+  /// Output may be zero-padded if more elements are poped than those available
+  ///
+  /// In this method the reading cursor will advance from count
+  ///
+  /// @param[out] dest    Buffer to store the elements into
+  /// @param[in]  count   Elements count to retrieve
+  void Pop(float* dest, const std::size_t count);
+
   /// @brief Push elements into the buffer
   ///
   /// @param[in]  src   Buffer to push

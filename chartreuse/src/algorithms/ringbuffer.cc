@@ -91,6 +91,10 @@ void RingBuffer::PopOverlapped(float* dest,
   }
 }
 
+void RingBuffer::Pop(float* dest, const std::size_t count) {
+  return PopOverlapped(dest, count, 1);
+}
+
 void RingBuffer::Push(const float* const src, const std::size_t count) {
   CHARTREUSE_ASSERT(IsGood());
   CHARTREUSE_ASSERT(count > 0);

@@ -44,10 +44,11 @@ Analyzer::~Analyzer() {
 void Analyzer::Process(const float* const input,
                        const unsigned int length,
                        float* const output) {
-  unsigned int remaining_length(length);
+  unsigned int current_index(0);
   float* current_out(output);
-  while (remaining_length >= chartreuse::kHopSizeSamples) {
-    desc_manager_.ProcessFrame(input, chartreuse::kHopSizeSamples);
+  while (length - current_index >= chartreuse::kHopSizeSamples) {
+    desc_manager_.ProcessFrame(&input[current_index],
+                               chartreuse::kHopSizeSamples);
     for (unsigned int desc_idx(0);
          desc_idx < kAvailableDescriptors.size();
          ++desc_idx) {
@@ -60,7 +61,7 @@ void Analyzer::Process(const float* const input,
       *current_out = Normalize(kRawValue, kMeta.out_min, kMeta.out_max);
       current_out += 1;
     }
-    remaining_length -= chartreuse::kHopSizeSamples;
+    current_index += chartreuse::kHopSizeSamples;
   }
 }
 

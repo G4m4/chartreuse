@@ -32,7 +32,7 @@ namespace chartreuse {
 namespace interface {
 
 Analyzer::Analyzer(const float sampling_freq)
-    : desc_manager_(*new Manager(Manager::Parameters(sampling_freq), false)),
+    : desc_manager_(*new Manager(Manager::Parameters(sampling_freq), true)),
       buffer_(chartreuse::kHopSizeSamples) {
   // Nothing to do here for now
 }

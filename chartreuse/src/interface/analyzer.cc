@@ -57,7 +57,7 @@ void Analyzer::Process(const float* const input,
       const descriptors::Descriptor_Meta& kMeta(desc_manager_.GetDescriptorMeta(
                                                   current_descriptor));
       // Normalization
-      *output = Normalize(kRawValue, kMeta.out_min, kMeta.out_max);
+      *current_out = Normalize(kRawValue, kMeta.out_min, kMeta.out_max);
       current_out += 1;
     }
     remaining_length -= chartreuse::kHopSizeSamples;

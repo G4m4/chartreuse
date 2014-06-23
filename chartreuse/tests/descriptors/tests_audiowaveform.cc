@@ -111,7 +111,7 @@ TEST(AudioWaveform, LowFreq) {
     // Fill the frame with sin data
     std::generate(frame.begin(),
                   frame.end(),
-                  generator);
+                  [&] {return generator();});
     manager.ProcessFrame(&frame[0], frame.size());
     const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);
@@ -138,7 +138,7 @@ TEST(AudioWaveform, Highfreq) {
     // Fill the frame with sin data
     std::generate(frame.begin(),
                   frame.end(),
-                  generator);
+                  [&] {return generator();});
     manager.ProcessFrame(&frame[0], frame.size());
     const float* out_data(manager.GetDescriptor(descriptor));
     for (unsigned int desc_index(0);

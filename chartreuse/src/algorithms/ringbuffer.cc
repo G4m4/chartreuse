@@ -35,9 +35,7 @@ RingBuffer::RingBuffer(const std::size_t capacity)
       reading_position_(0) {
   CHARTREUSE_ASSERT(capacity > 0);
   data_ = static_cast<float*>(new float[capacity_]);
-  std::fill(&data_[0],
-            &data_[capacity_],
-            0.0f);
+  std::fill_n(&data_[0], capacity_, 0.0f);
 }
 
 RingBuffer::~RingBuffer() {
@@ -58,37 +56,29 @@ void RingBuffer::PopOverlapped(float* dest,
     (std::max(static_cast<int>(count - size_), 0))));
   // Actual elements count to be copied
   const std::size_t copy_count(count - zeropadding_count);
-  // If data needs to be copied...(e.g. ringbuffer size > 0)
-  if (copy_count > 0) {
-    // Length of the "right" part: from reading cursor to the buffer end
-    const std::size_t right_part_size(std::min(capacity_ - reading_position_,
-                                       copy_count));
-    // Length of the "left" part: from the buffer beginning
-    // to the last element to be copied
-    const std::size_t left_part_size(copy_count - right_part_size);
 
-    //  Copying the first part
-    std::copy(&data_[reading_position_],
-              &data_[reading_position_ + right_part_size],
-              &dest[0]);
-    if (0 != left_part_size) {
-      //  copy the second part (if there is one)
-      std::copy(&data_[0],
-                &data_[left_part_size],
-                &dest[right_part_size]);
-    }
+  // Length of the "right" part: from reading cursor to the buffer end
+  const std::size_t right_part_size(std::min(capacity_ - reading_position_,
+                                     copy_count));
+  // Length of the "left" part: from the buffer beginning
+  // to the last element to be copied
+  const std::size_t left_part_size(copy_count - right_part_size);
 
-    reading_position_ += copy_count / overlap;
-    reading_position_ = reading_position_ % capacity_;
 
-    size_ -= copy_count / overlap;
-  }  // If data needs to be copied...
+  //  Copy the first part
+  std::copy_n(&data_[reading_position_], right_part_size, &dest[0]);
+  //  Copy the second part
+  std::copy_n(&data_[0], left_part_size, &dest[right_part_size]);
+
+  reading_position_ += copy_count / overlap;
+  reading_position_ = reading_position_ % capacity_;
+
+  size_ -= copy_count / overlap;
+
   // Zero-padding
-  if (zeropadding_count) {
-    std::fill(&dest[copy_count],
-              &dest[copy_count + zeropadding_count],
+  std::fill_n(&dest[copy_count],
+              zeropadding_count,
               0.0f);
-  }
 }
 
 void RingBuffer::Pop(float* dest, const std::size_t count) {
@@ -106,16 +96,10 @@ void RingBuffer::Push(const float* const src, const std::size_t count) {
   // to the last element to be pushed
   const std::size_t left_part_size(count - right_part_size);
 
-  //  Copying the first part
-  std::copy(&src[0],
-            &src[right_part_size],
-            &data_[writing_position_]);
-  if (0 != left_part_size) {
-    //  copy the second part (if there is one)
-    std::copy(&src[right_part_size],
-              &src[right_part_size + left_part_size],
-              &data_[0]);
-  }
+  //  Copy the first part
+  std::copy_n(&src[0], right_part_size, &data_[writing_position_]);
+  //  Copy the second part
+  std::copy_n(&src[right_part_size], left_part_size, &data_[0]);
 
   writing_position_ += count;
   writing_position_ = writing_position_ % capacity_;
@@ -135,15 +119,9 @@ void RingBuffer::Fill(const float value, const std::size_t count) {
   const std::size_t left_part_size(count - right_part_size);
 
   // Filling the first part
-  std::fill(&data_[writing_position_],
-            &data_[writing_position_ + right_part_size],
-            value);
-  if (0 != left_part_size) {
-    // Fill the second part (if there is one)
-    std::fill(&data_[0],
-              &data_[left_part_size],
-              value);
-  }
+  std::fill_n(&data_[writing_position_], right_part_size, value);
+  // Fill the second part
+  std::fill_n(&data_[0], left_part_size, value);
 
   writing_position_ += count;
   writing_position_ = writing_position_ % capacity_;
@@ -156,9 +134,7 @@ void RingBuffer::Clear(void) {
   reading_position_ = 0;
   size_ = 0;
   if (IsGood()) {
-    std::fill(&data_[0],
-              &data_[Capacity()],
-              0.0f);
+    std::fill_n(&data_[0], Capacity(), 0.0f);
   }
 }
 

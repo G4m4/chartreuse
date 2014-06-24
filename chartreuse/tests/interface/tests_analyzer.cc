@@ -246,14 +246,13 @@ TEST(Analyzer, SinTinyBlockSize) {
   std::vector<float> ref_data(kAvailableDescriptors.size());
 
   std::vector<float> frame(kFrameLength);
-  std::generate(frame.begin(),
-                frame.end(),
-                [&] {return generator();});
-  analyzer.Process(&frame[0],
-                    kFrameLength,
-                    &out_data[0]);
-  // The second subframe of the first frame is taken as a reference
-  std::copy_n(&out_data[kAvailableDescriptors.size()],
+  unsigned int subframe_count(0);
+  while (subframe_count < 1) {
+    std::generate(frame.begin(), frame.end(), [&] {return generator(); });
+    subframe_count = analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
+  }
+  // Here there is no 2nd subframe, so the first one of the first frame is taken
+  std::copy_n(&out_data[0],
               kAvailableDescriptors.size(),
               ref_data.begin());
 

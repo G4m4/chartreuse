@@ -56,7 +56,10 @@ unsigned int Analyzer::Process(const float* const input,
   // it would have been used as another subframe...
   CHARTREUSE_ASSERT(buffer_.Size() < chartreuse::kHopSizeSamples);
   const unsigned int kCompletingCount(
-    std::min(chartreuse::kHopSizeSamples - buffer_.Size(), length));
+    std::min(
+      // Cast required for resolving the ambiguity on 64b systems
+      chartreuse::kHopSizeSamples - static_cast<unsigned int>(buffer_.Size()),
+      length));
   const unsigned int kPoppedCount(buffer_.Size());
   // Fill the buffer so it makes a whole subframe
   buffer_.Push(&input[0], kCompletingCount);

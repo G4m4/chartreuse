@@ -74,7 +74,7 @@ TEST(Analyzer, WhiteNoiseSubframeConsistency) {
   const unsigned int kFrameLength(chartreuse::kHopSizeSamples * 3);
   const unsigned int kExpectedSubframesCount(kFrameLength
                                              / chartreuse::kHopSizeSamples);
-  const float kEpsilon(7e-2f);
+  const float kEpsilon(5e-2f);
   const unsigned int kMaxIteration(2);
 
   Analyzer analyzer(kSamplingFreq);
@@ -120,7 +120,7 @@ TEST(Analyzer, SinSubframeConsistency) {
   const unsigned int kExpectedSubframesCount(kFrameLength
                                              / chartreuse::kHopSizeSamples);
   const float kFrequency(445.0f);
-  const float kEpsilon(7e-2f);
+  const float kEpsilon(2e-2f);
   const unsigned int kMaxIteration(2);
 
   SinusGenerator generator(kFrequency, kSamplingFreq);
@@ -167,12 +167,13 @@ TEST(Analyzer, SinSubframeConsistency) {
 /// is not a mutliple of the internal one.
 TEST(Analyzer, SinInterFrameConsistency) {
   const float kSamplingFreq(48000.0f);
+  // The subframe count is set to be not an integer
   const unsigned int kFrameLength(chartreuse::kHopSizeSamples * 7 / 2);
   const unsigned int kMaxSubframesCount(
     static_cast<unsigned int>(std::ceil(static_cast<float>(kFrameLength)
                                           / chartreuse::kHopSizeSamples)));
   const float kFrequency(75.0f);
-  const float kEpsilon(7e-2f);
+  const float kEpsilon(2e-2f);
   const unsigned int kMaxIteration(4);
 
   SinusGenerator generator(kFrequency, kSamplingFreq);

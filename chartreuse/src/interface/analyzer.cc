@@ -46,6 +46,37 @@ unsigned int Analyzer::Process(const float* const input,
                                float* const output) {
   unsigned int current_index(0);
   float* current_out(output);
+  // TODO(gm): beware of the case wih a tiny input length
+  // AND a tiny buffer remaining count!
+  // First process the remaining data from the last call
+  const unsigned int kPoppedCount(buffer_.Size());
+  if (kPoppedCount > 0) {
+    float tmp_input[chartreuse::kHopSizeSamples];
+    // If more data than one hop size was remaining at the last call,
+    // it would have been used as another subframe...
+    CHARTREUSE_ASSERT(buffer_.Size() < chartreuse::kHopSizeSamples);
+    // ...Which means that we can empty the buffer here
+    buffer_.Pop(&tmp_input[0], kPoppedCount);
+    // Completing with the current input data
+    std::copy_n(input,
+                chartreuse::kHopSizeSamples - kPoppedCount,
+                &tmp_input[kPoppedCount]);
+    current_index += kPoppedCount;
+    desc_manager_.ProcessFrame(&tmp_input[0],
+                                chartreuse::kHopSizeSamples);
+    for (unsigned int desc_idx(0);
+         desc_idx < kAvailableDescriptors.size();
+         ++desc_idx) {
+      const DescriptorId::Type current_descriptor(
+        kAvailableDescriptors[desc_idx]);
+      const float kRawValue(*desc_manager_.GetDescriptor(current_descriptor));
+      const descriptors::Descriptor_Meta& kMeta(desc_manager_.GetDescriptorMeta(
+        current_descriptor));
+      // Normalization
+      *current_out = Normalize(kRawValue, kMeta.out_min, kMeta.out_max);
+      current_out += 1;
+    }
+  }
   while (length - current_index >= chartreuse::kHopSizeSamples) {
     desc_manager_.ProcessFrame(&input[current_index],
                                chartreuse::kHopSizeSamples);
@@ -63,8 +94,10 @@ unsigned int Analyzer::Process(const float* const input,
     }
     current_index += chartreuse::kHopSizeSamples;
   }
-  CHARTREUSE_ASSERT(current_index % chartreuse::kHopSizeSamples == 0);
-  return current_index / chartreuse::kHopSizeSamples;
+  CHARTREUSE_ASSERT(buffer_.Size() == 0);
+  buffer_.Push(&input[current_index], length - current_index);
+
+  return (current_index + kPoppedCount) / chartreuse::kHopSizeSamples;
 }
 
 float Analyzer::Normalize(const float input,

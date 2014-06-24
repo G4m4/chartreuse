@@ -223,3 +223,65 @@ TEST(Analyzer, SinInterFrameConsistency) {
     index += 1;
   }
 }
+
+/// @brief Feed the analyzer with a perfect low frequency sinusoid,
+/// check consistency across frames when a tiny block size is being used
+TEST(Analyzer, SinTinyBlockSize) {
+  const float kSamplingFreq(48000.0f);
+  // The subframe count is set to be a small integer
+  const unsigned int kFrameLength(chartreuse::kHopSizeSamples / 10);
+  const unsigned int kMaxSubframesCount(
+    static_cast<unsigned int>(std::ceil(static_cast<float>(kFrameLength)
+                                          / chartreuse::kHopSizeSamples)));
+  const float kFrequency(75.0f);
+  const float kEpsilon(2e-2f);
+  const unsigned int kMaxIteration(4);
+
+  SinusGenerator generator(kFrequency, kSamplingFreq);
+  Analyzer analyzer(kSamplingFreq);
+
+  std::vector<float> out_data(kAvailableDescriptors.size()
+                              * kMaxSubframesCount);
+
+  std::vector<float> ref_data(kAvailableDescriptors.size());
+
+  std::vector<float> frame(kFrameLength);
+  std::generate(frame.begin(),
+                frame.end(),
+                [&] {return generator();});
+  analyzer.Process(&frame[0],
+                    kFrameLength,
+                    &out_data[0]);
+  // The second subframe of the first frame is taken as a reference
+  std::copy_n(&out_data[kAvailableDescriptors.size()],
+              kAvailableDescriptors.size(),
+              ref_data.begin());
+
+  std::size_t index(1);
+  while (index < kMaxIteration) {
+    std::vector<float> frame(kFrameLength);
+    std::generate(frame.begin(),
+                  frame.end(),
+                  [&] {return generator();});
+    const unsigned int kActualSubframesCount(analyzer.Process(&frame[0],
+                                                              kFrameLength,
+                                                              &out_data[0]));
+    // Expecting each subframe to be very close to the second one
+    // The first one is ignored due to the "empty first buffer" effect
+    for (unsigned int subframe_idx(0);
+         subframe_idx < kActualSubframesCount;
+         ++subframe_idx) {
+      for (unsigned int descriptor_idx(0);
+        descriptor_idx < kAvailableDescriptors.size();
+        ++descriptor_idx) {
+        const unsigned int kActualIdx(subframe_idx * kAvailableDescriptors.size()
+          + descriptor_idx);
+        const float kValue(out_data[kActualIdx]);
+        EXPECT_NEAR(ref_data[descriptor_idx],
+                    kValue,
+                    kEpsilon);
+      }
+    }  // subframe_idx
+    index += 1;
+  }
+}

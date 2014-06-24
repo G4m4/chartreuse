@@ -44,6 +44,11 @@ Analyzer::~Analyzer() {
 unsigned int Analyzer::Process(const float* const input,
                                const unsigned int length,
                                float* const output) {
+  CHARTREUSE_ASSERT(input != nullptr);
+  CHARTREUSE_ASSERT(length > 0);
+  CHARTREUSE_ASSERT(output != nullptr);
+  CHARTREUSE_ASSERT(input != output);
+
   unsigned int current_index(0);
   float* current_out(output);
   // First process the remaining data from the last call
@@ -92,6 +97,7 @@ unsigned int Analyzer::Process(const float* const input,
     // Normalization
     *current_out = Normalize(kRawValue, kMeta.out_min, kMeta.out_max);
     current_out += 1;
+  }
   CHARTREUSE_ASSERT(buffer_.Size() == 0);
   buffer_.Push(&input[current_index], length - current_index);
 

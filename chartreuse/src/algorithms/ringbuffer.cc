@@ -47,7 +47,6 @@ void RingBuffer::PopOverlapped(float* dest,
                                const std::size_t count,
                                const unsigned int overlap) {
   CHARTREUSE_ASSERT(IsGood());
-  CHARTREUSE_ASSERT(count > 0);
   CHARTREUSE_ASSERT(overlap > 0);
 
   // Is zero padding required ?
@@ -87,7 +86,6 @@ void RingBuffer::Pop(float* dest, const std::size_t count) {
 
 void RingBuffer::Push(const float* const src, const std::size_t count) {
   CHARTREUSE_ASSERT(IsGood());
-  CHARTREUSE_ASSERT(count > 0);
   CHARTREUSE_ASSERT(count <= Capacity() - Size());
   // Length of the "right" part: from writing cursor to the buffer end
   const std::size_t right_part_size(std::min(capacity_ - writing_position_,

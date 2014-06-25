@@ -85,7 +85,7 @@ float ParabolicApproximation(const float* const data,
         const float tmp_argmin(ParabolicArgMin(prev, peak, next) + 1.0f);
         const float tmp_min(LinearInterpolation(prev, peak, tmp_argmin));
         if (tmp_min > min_value + threshold) {
-          arg_min = tmp_argmin;
+          arg_min = tmp_argmin + idx;
           min_value = tmp_min;
         }
       }

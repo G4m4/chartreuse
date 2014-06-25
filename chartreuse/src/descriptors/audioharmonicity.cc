@@ -20,7 +20,7 @@
 
 #include "chartreuse/src/descriptors/audioharmonicity.h"
 
-// std::floor
+// std::floor, std::fabs
 #include <cmath>
 
 #include "Eigen/Core"
@@ -67,13 +67,13 @@ void AudioHarmonicity::Process(const float* const autocorrelation,
                     kRight,
                     kActualLag - static_cast<float>(kActualIndex)));
 
-  output[0] = out;
+  output[0] = std::fabs(out);
 }
 
 Descriptor_Meta AudioHarmonicity::Meta(void) const {
   return Descriptor_Meta(
     1,
-    -1.0f,
+    0.0f,
     1.0f);
 }
 

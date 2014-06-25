@@ -32,9 +32,15 @@ namespace interface {
 // Internal namespace
 class Manager;
 
+/// @brief Available descriptors count
+// TODO(gm): this could be cleaner since the size of the array below
+// is known at compile-time...
+static const unsigned int kAvailableDescriptorsCount(5);
+
 /// @brief Descriptors computed by the Analyzer.
 /// Note that this is a compile time known list.
-static const std::array<DescriptorId::Type, 5> kAvailableDescriptors = { {
+static const std::array<DescriptorId::Type,
+                        kAvailableDescriptorsCount> kAvailableDescriptors = {{
   DescriptorId::kAudioPower,
   DescriptorId::kAudioSpectrumCentroid,
   DescriptorId::kAudioSpectrumSpread,

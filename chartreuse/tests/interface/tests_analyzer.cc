@@ -72,7 +72,7 @@ TEST(Analyzer, WhiteNoiseSubframeConsistency) {
   const unsigned int kFrameLength(chartreuse::kHopSizeSamples * 3);
   const unsigned int kExpectedSubframesCount(kFrameLength
                                              / chartreuse::kHopSizeSamples);
-  const float kEpsilon(5e-2f);
+  const float kEpsilon(7e-2f);
   const unsigned int kMaxIteration(2);
 
   Analyzer analyzer(kSamplingFreq);

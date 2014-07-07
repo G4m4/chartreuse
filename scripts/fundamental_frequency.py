@@ -92,7 +92,7 @@ class FundamentalFrequency(object):
                     argmin = ParabolicArgMin(neighbourhood)
                     interpolated_min = LinearInterpolation(data[i - 1],
                                                            data[i],
-                                                           1.0 + argmin)
+                                                           argmin)
                     # Value of the parabolic approximation, not proven useful
 #                         interpolated_min = data[i - 1] * data[i - 1] \
 #                                             - 8.0 * data[i - 1] * data[i] \

@@ -159,8 +159,8 @@ TEST(Analyzer, SinSubframeConsistency) {
 /// check consistency across frames
 ///
 /// This is a convoluted way to check that the analyzer internal buffer
-/// makes a good job of handling remaining data when the  input block size
-/// is not a mutliple of the internal one.
+/// makes a good job of handling remaining data when the input block size
+/// is not a multiple of the internal one.
 TEST(Analyzer, SinInterFrameConsistency) {
   const float kSamplingFreq(48000.0f);
   // The subframe count is set to be not an integer
@@ -183,8 +183,8 @@ TEST(Analyzer, SinInterFrameConsistency) {
   std::vector<float> frame(kFrameLength);
   std::generate(frame.begin(), frame.end(), [&] {return generator();});
   analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
-  // The second subframe of the first frame is taken as a reference
-  std::copy_n(&out_data[kAvailableDescriptors.size()],
+  // The third subframe of the first frame is taken as a reference
+  std::copy_n(&out_data[kAvailableDescriptors.size() * 2],
               kAvailableDescriptors.size(),
               ref_data.begin());
 
@@ -225,7 +225,7 @@ TEST(Analyzer, SinTinyBlockSize) {
                                           / chartreuse::kHopSizeSamples)));
   const float kFrequency(75.0f);
   const float kEpsilon(2e-2f);
-  const unsigned int kMaxIteration(4);
+  const unsigned int kMaxIteration(11);
 
   SinusGenerator generator(kFrequency, kSamplingFreq);
   Analyzer analyzer(kSamplingFreq);
@@ -237,11 +237,11 @@ TEST(Analyzer, SinTinyBlockSize) {
 
   std::vector<float> frame(kFrameLength);
   unsigned int subframe_count(0);
-  while (subframe_count < 1) {
+  while (subframe_count < 3) {
     std::generate(frame.begin(), frame.end(), [&] {return generator(); });
-    subframe_count = analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
+    subframe_count += analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
   }
-  // Here there is no 2nd subframe, so the first one of the first frame is taken
+  // Here there is no 2nd subframe, so the first one of the third frame is taken
   std::copy_n(&out_data[0], kAvailableDescriptors.size(), ref_data.begin());
 
   std::size_t index(1);

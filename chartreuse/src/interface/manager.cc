@@ -72,16 +72,7 @@ Manager::Parameters::Parameters(const float sampling_freq,
 Manager::Manager(const Parameters& parameters, const bool zero_init)
     : enabled_descriptors_(),
       computed_descriptors_(),
-      // TODO(gm): this could be computed at compile-time
-      descriptors_data_(parameters.dft_length + 2
-                        + parameters.dft_length + 2
-                        + 1  // AP
-                        + 1  // ASC
-                        + 1  // ASS
-                        + 2  // AW
-                        + 1  // AFF
-                        + parameters.dft_length + 2
-                        + parameters.dft_length + 2, 0.0f),
+      descriptors_data_(),
       current_frame_(parameters.hop_size_sample),
       current_window_(parameters.dft_length),
       current_window_apodized_(parameters.dft_length),
@@ -114,6 +105,12 @@ Manager::Manager(const Parameters& parameters, const bool zero_init)
                   parameters.window_length * (parameters.overlap - 1)
                   / parameters.overlap);
   }
+  // TODO(gm): this could be computed at compile-time
+  unsigned int desc_data_size(0);
+  for (unsigned int desc_idx(0); desc_idx < DescriptorId::kCount; ++desc_idx) {
+    desc_data_size += GetDescriptorMeta(static_cast<DescriptorId::Type>(desc_idx)).out_dim;
+  }
+  descriptors_data_.resize(desc_data_size);
   enabled_descriptors_.fill(false);
   computed_descriptors_.fill(false);
 }

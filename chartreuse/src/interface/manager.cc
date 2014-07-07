@@ -20,6 +20,8 @@
 
 #include "chartreuse/src/interface/manager.h"
 
+// std::copy_n
+#include <algorithm>
 // std::floor
 #include <cmath>
 

@@ -98,10 +98,9 @@ TEST(Analyzer, WhiteNoiseSubframeConsistency) {
            ++descriptor_idx) {
         const unsigned int kActualIdx(subframe_idx * kAvailableDescriptors.size()
           + descriptor_idx);
+        const float kExpected(out_data[descriptor_idx + kAvailableDescriptors.size()]);
         const float kValue(out_data[kActualIdx]);
-        EXPECT_NEAR(out_data[descriptor_idx + kAvailableDescriptors.size()],
-                    kValue,
-                    kEpsilon);
+        EXPECT_NEAR(kExpected, kValue, kEpsilon);
       }
     }  // subframe_idx
     index += 1;
@@ -141,10 +140,9 @@ TEST(Analyzer, SinSubframeConsistency) {
            ++descriptor_idx) {
         const unsigned int kActualIdx(subframe_idx * kAvailableDescriptors.size()
           + descriptor_idx);
+        const float kExpected(out_data[descriptor_idx + kAvailableDescriptors.size()]);
         const float kValue(out_data[kActualIdx]);
-        EXPECT_NEAR(out_data[kAvailableDescriptors.size() + descriptor_idx],
-                    kValue,
-                    kEpsilon);
+        EXPECT_NEAR(kExpected, kValue, kEpsilon);
       }
     }  // subframe_idx
     index += 1;
@@ -201,10 +199,9 @@ TEST(Analyzer, SinInterFrameConsistency) {
            ++descriptor_idx) {
         const unsigned int kActualIdx(subframe_idx * kAvailableDescriptors.size()
           + descriptor_idx);
+        const float kExpected(ref_data[descriptor_idx]);
         const float kValue(out_data[kActualIdx]);
-        EXPECT_NEAR(ref_data[descriptor_idx],
-                    kValue,
-                    kEpsilon);
+        EXPECT_NEAR(kExpected, kValue, kEpsilon);
       }
     }  // subframe_idx
     index += 1;
@@ -258,10 +255,9 @@ TEST(Analyzer, SinTinyBlockSize) {
            ++descriptor_idx) {
         const unsigned int kActualIdx(subframe_idx * kAvailableDescriptors.size()
           + descriptor_idx);
+        const float kExpected(ref_data[descriptor_idx]);
         const float kValue(out_data[kActualIdx]);
-        EXPECT_NEAR(ref_data[descriptor_idx],
-                    kValue,
-                    kEpsilon);
+        EXPECT_NEAR(kExpected, kValue, kEpsilon);
       }
     }  // subframe_idx
     index += 1;

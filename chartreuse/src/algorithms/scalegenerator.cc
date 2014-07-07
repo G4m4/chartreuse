@@ -20,6 +20,8 @@
 
 #include "chartreuse/src/algorithms/scalegenerator.h"
 
+#include "Eigen/Core"
+
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
 
@@ -31,7 +33,7 @@ ScaleGenerator::ScaleGenerator(const unsigned int length,
                                const unsigned int dft_length,
                                const float sampling_freq)
     // TODO(gm): check if the data can be generated at compile-time
-    : data_(Eigen::VectorXf::Constant(length + 1, 1, 1.0f)) {
+    : data_(length + 1, 1.0f) {
   CHARTREUSE_ASSERT(length > 0);
   CHARTREUSE_ASSERT(dft_length > 0);
   CHARTREUSE_ASSERT(IsPowerOfTwo(dft_length));
@@ -54,9 +56,10 @@ void ScaleGenerator::SynthesizeData(const Scale::Type type,
                                                                             data_.size(),
                                                                             kLowBound,
                                                                             kHighBound));
-      tmp(0) = sampling_freq / (dft_length * (3.0f / 4.0f));
       const float kInvLog2(1.442695040888963f);
-      data_ = (tmp * 0.001f).log() * kInvLog2;
+      Eigen::Map<Eigen::Array<float, Eigen::Dynamic, 1>> internal_data(&data_[0], data_.size());
+      internal_data = (tmp * 0.001f).log() * kInvLog2;
+      internal_data(0) = std::log((0.001f * sampling_freq) / (dft_length * (3.0f / 4.0f))) * kInvLog2;
       break;
     }
     default: {

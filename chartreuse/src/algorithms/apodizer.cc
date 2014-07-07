@@ -20,6 +20,8 @@
 
 #include "chartreuse/src/algorithms/apodizer.h"
 
+#include "Eigen/Core"
+
 #include "chartreuse/src/common.h"
 #include "chartreuse/src/algorithms/algorithms_common.h"
 
@@ -30,7 +32,7 @@ Apodizer::Apodizer(const unsigned int length,
                    const Window::Type type)
     // TODO(gm): check if the data can be generated at compile-time
     // At least the default version (rectangular) is done here
-    : data_(Eigen::Array<float, Eigen::Dynamic, 1>::Constant(length, 1, 1.0f)) {
+    : data_(length, 1.0f) {
   CHARTREUSE_ASSERT(length > 0);
   SynthesizeData(type);
 }
@@ -38,7 +40,8 @@ Apodizer::Apodizer(const unsigned int length,
 void Apodizer::ApplyWindow(float* const buffer) const {
   const Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>> input(buffer, data_.size());
   Eigen::Map<Eigen::Array<float, Eigen::Dynamic, 1>> data_map(buffer, data_.size());
-  data_map = input.cwiseProduct(data_);
+  const Eigen::Map<const Eigen::Array<float, Eigen::Dynamic, 1>> internal_data(&data_[0], data_.size());
+  data_map = input.cwiseProduct(internal_data);
 }
 
 void Apodizer::SynthesizeData(const Window::Type type) {
@@ -54,7 +57,8 @@ void Apodizer::SynthesizeData(const Window::Type type) {
                                                                 data_.size(),
                                                                 0.0f,
                                                                 kHighBound));
-      data_ = const_data - 0.46f * cos_data.cos();
+      Eigen::Map<Eigen::Array<float, Eigen::Dynamic, 1>> internal_data(&data_[0], data_.size());
+      internal_data = const_data - 0.46f * cos_data.cos();
       break;
     }
     default: {

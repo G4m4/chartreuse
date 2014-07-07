@@ -21,7 +21,7 @@
 #ifndef CHARTREUSE_SRC_ALGORITHMS_SCALEGENERATOR_H_
 #define CHARTREUSE_SRC_ALGORITHMS_SCALEGENERATOR_H_
 
-#include "Eigen/Core"
+#include <vector>
 
 namespace chartreuse {
 namespace algorithms {
@@ -65,7 +65,7 @@ class ScaleGenerator {
                       const unsigned int dft_length,
                       const float sampling_freq);
 
-   Eigen::VectorXf data_;  ///< Internal buffer for synthesized data
+   std::vector<float> data_;  ///< Internal buffer for synthesized data
 };
 
 }  // namespace algorithms

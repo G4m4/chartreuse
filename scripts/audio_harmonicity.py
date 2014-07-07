@@ -53,7 +53,7 @@ class AudioHarmonicity(object):
         for the given frame
         '''
         arg_min = self._aff.Process(frame) - self._aff.min_lag
-        actual_index = numpy.floor(arg_min)
+        actual_index = min(numpy.floor(arg_min), len(self._aff.xcorr) - 2)
         left = self._aff.xcorr[actual_index]
         right = self._aff.xcorr[actual_index + 1]
         ah = fundamental_frequency.LinearInterpolation(left, right, arg_min - actual_index)

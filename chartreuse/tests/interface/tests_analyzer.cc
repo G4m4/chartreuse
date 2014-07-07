@@ -41,6 +41,14 @@ TEST(Analyzer, WhiteNoiseRange) {
   std::vector<float> out_data(kAvailableDescriptors.size()
                               * kExpectedSubframesCount);
 
+  // Eliminating the first two subframes values
+  unsigned int subframe_count(0);
+  while (subframe_count < 3) {
+    std::vector<float> frame(kFrameLength);
+    std::generate(frame.begin(), frame.end(), [&] {return kNormDistribution(kRandomGenerator); });
+    subframe_count += analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
+  }
+
   std::size_t index(0);
   while (index < kMaxIteration) {
     std::vector<float> frame(kFrameLength);
@@ -81,6 +89,14 @@ TEST(Analyzer, WhiteNoiseSubframeConsistency) {
   std::vector<float> out_data(kAvailableDescriptors.size()
                               * kExpectedSubframesCount);
 
+  // Eliminating the first two subframes values
+  unsigned int subframe_count(0);
+  while (subframe_count < 3) {
+    std::vector<float> frame(kFrameLength);
+    std::generate(frame.begin(), frame.end(), [&] {return kNormDistribution(kRandomGenerator); });
+    subframe_count += analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
+  }
+
   std::size_t index(0);
   while (index < kMaxIteration) {
     std::vector<float> frame(kFrameLength);
@@ -90,8 +106,7 @@ TEST(Analyzer, WhiteNoiseSubframeConsistency) {
                   [&] {return kNormDistribution(kRandomGenerator);});
     analyzer.Process(&frame[0], frame.size(), &out_data[0]);
     // Expecting each subframe to be very close to the second one
-    // The first one is ignored due to the "empty first buffer" effect
-    for (unsigned int subframe_idx(1);
+    for (unsigned int subframe_idx(0);
          subframe_idx < kExpectedSubframesCount;
          ++subframe_idx) {
       for (unsigned int descriptor_idx(0);
@@ -130,6 +145,14 @@ TEST(Analyzer, SinSubframeConsistency) {
   std::vector<float> out_data(kAvailableDescriptors.size()
                               * kExpectedSubframesCount);
 
+  // Eliminating the first two subframes values
+  unsigned int subframe_count(0);
+  while (subframe_count < 3) {
+    std::vector<float> frame(kFrameLength);
+    std::generate(frame.begin(), frame.end(), [&] {return generator(); });
+    subframe_count += analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
+  }
+
   std::size_t index(0);
   while (index < kMaxIteration) {
     std::vector<float> frame(kFrameLength);
@@ -137,8 +160,7 @@ TEST(Analyzer, SinSubframeConsistency) {
     std::generate(frame.begin(), frame.end(), [&] {return generator();});
     analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
     // Expecting each subframe to be very close to the second one
-    // The first one is ignored due to the "empty first buffer" effect
-    for (unsigned int subframe_idx(1);
+    for (unsigned int subframe_idx(0);
          subframe_idx < kExpectedSubframesCount;
          ++subframe_idx) {
       for (unsigned int descriptor_idx(0);
@@ -180,15 +202,20 @@ TEST(Analyzer, SinInterFrameConsistency) {
 
   std::vector<float> ref_data(kAvailableDescriptors.size());
 
-  std::vector<float> frame(kFrameLength);
-  std::generate(frame.begin(), frame.end(), [&] {return generator();});
-  analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
-  // The third subframe of the first frame is taken as a reference
+  // Eliminating the first two subframes values
+  unsigned int subframe_count(0);
+  while (subframe_count < 3) {
+    std::vector<float> frame(kFrameLength);
+    std::generate(frame.begin(), frame.end(), [&] {return generator(); });
+    subframe_count += analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
+  }
+
+  // The third subframe of the second frame is taken as a reference
   std::copy_n(&out_data[kAvailableDescriptors.size() * 2],
               kAvailableDescriptors.size(),
               ref_data.begin());
 
-  std::size_t index(1);
+  std::size_t index(0);
   while (index < kMaxIteration) {
     std::vector<float> frame(kFrameLength);
     std::generate(frame.begin(), frame.end(), [&] {return generator();});
@@ -196,7 +223,6 @@ TEST(Analyzer, SinInterFrameConsistency) {
                                                               kFrameLength,
                                                               &out_data[0]));
     // Expecting each subframe to be very close to the second one
-    // The first one is ignored due to the "empty first buffer" effect
     for (unsigned int subframe_idx(0);
          subframe_idx < kActualSubframesCount;
          ++subframe_idx) {
@@ -235,13 +261,15 @@ TEST(Analyzer, SinTinyBlockSize) {
 
   std::vector<float> ref_data(kAvailableDescriptors.size());
 
-  std::vector<float> frame(kFrameLength);
+  // Eliminating the first two subframes values
   unsigned int subframe_count(0);
   while (subframe_count < 3) {
+    std::vector<float> frame(kFrameLength);
     std::generate(frame.begin(), frame.end(), [&] {return generator(); });
     subframe_count += analyzer.Process(&frame[0], kFrameLength, &out_data[0]);
   }
-  // Here there is no 2nd subframe, so the first one of the third frame is taken
+
+  // The third subframe is taken as a reference
   std::copy_n(&out_data[0], kAvailableDescriptors.size(), ref_data.begin());
 
   std::size_t index(1);

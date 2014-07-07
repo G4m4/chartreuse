@@ -66,7 +66,7 @@ class AudioHarmonicity(object):
                                        self._dft_length)
         ulh = self._GetUpperFrequency(self._GetUpperLimit(signal_spectrum,
                                                           power_spectrum))
-        return (ah, ulh)
+        return (numpy.abs(ah), ulh)
 
     def _GetUpperLimit(self, signal_spectrum, power_spectrum):
         '''

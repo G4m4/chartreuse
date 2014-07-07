@@ -59,7 +59,7 @@ void AudioFundamentalFrequency::Process(const float* const autocorrelation,
   const unsigned int kDataLength(max_lag - min_lag);
   // TODO(gm): This is a magic, why?
   const float kThreshold(5e-3f);
-  algorithms::ParabolicApproximation(&autocorrelation[min_lag],
+  algorithms::ParabolicApproximation(&autocorrelation[0],
                                      kDataLength,
                                      kThreshold,
                                      &argmin);
